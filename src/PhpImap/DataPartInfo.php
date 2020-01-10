@@ -47,7 +47,7 @@ class DataPartInfo
      */
     public int $options;
 
-    private ?string $data = null;
+    protected ?string $data = null;
 
     /**
      * @param string|int $id
@@ -73,6 +73,11 @@ class DataPartInfo
             $this->data = $this->mail->imap('fetchbody', [$this->id, $this->part, $this->options]);
         }
 
+        return $this->processFetch();
+    }
+
+    protected function processFetch()
+    {
         switch ($this->encoding) {
             case ENC7BIT:
                 /** @var string|null */
