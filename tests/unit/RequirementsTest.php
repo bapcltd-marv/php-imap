@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace PhpImap;
+
 use PHPUnit\Framework\TestCase;
 
 final class RequirementsTest extends TestCase
@@ -27,6 +29,6 @@ final class RequirementsTest extends TestCase
      */
     public function testRequiredExtensionsAreEnabled(string $extension): void
     {
-        $this->assertTrue(extension_loaded($extension));
+        $this->assertTrue(\extension_loaded($extension));
     }
 }
