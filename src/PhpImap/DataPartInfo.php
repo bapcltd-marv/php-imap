@@ -79,10 +79,6 @@ class DataPartInfo
     protected function processFetch()
     {
         switch ($this->encoding) {
-            case ENC7BIT:
-                /** @var string|null */
-                $this->data = $this->data;
-                break;
             case ENC8BIT:
                 $this->data = imap_utf8($this->data);
                 break;
@@ -95,14 +91,6 @@ class DataPartInfo
                 break;
             case ENCQUOTEDPRINTABLE:
                 $this->data = quoted_printable_decode($this->data);
-                break;
-            case ENCOTHER:
-                /** @var string|null */
-                $this->data = $this->data;
-                break;
-            default:
-                /** @var string|null */
-                $this->data = $this->data;
                 break;
         }
 
