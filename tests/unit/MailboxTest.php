@@ -7,9 +7,13 @@ declare(strict_types=1);
  *
  * @author Sebastian Kraetzig <sebastian-kraetzig@gmx.de>
  */
+
+namespace PhpImap;
+
+use DateTime;
+use Exception;
 use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\InvalidParameterException;
-use PhpImap\Mailbox;
 use PHPUnit\Framework\TestCase;
 
 final class MailboxTest extends TestCase
@@ -185,7 +189,7 @@ final class MailboxTest extends TestCase
      */
     public function testSetAndGetImapSearchOption(): void
     {
-        define('ANYTHING', 0);
+        \define('ANYTHING', 0);
 
         $mailbox = $this->getMailbox();
 
