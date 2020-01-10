@@ -103,6 +103,8 @@ class IncomingMail extends IncomingMailHeader
             throw new InvalidArgumentException('Argument 1 passed to '.__METHOD__.'() does not have an id specified!');
         }
         $this->attachments[$attachment->id] = $attachment;
+
+        $this->setHasAttachments(true);
     }
 
     /**
@@ -143,6 +145,8 @@ class IncomingMail extends IncomingMailHeader
         }
 
         unset($this->attachments[$id]);
+
+        $this->setHasAttachments([] !== $this->attachments);
 
         return true;
     }
