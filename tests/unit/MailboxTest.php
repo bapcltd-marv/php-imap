@@ -83,12 +83,12 @@ final class MailboxTest extends TestCase
         $attachmentsDir = '.';
         $serverEncoding = 'UTF-8  ';
 
-        $mailbox = new Mailbox($imapPath, $login, $password, $attachmentsDir, $serverEncoding);
+        $mailbox = new Fixtures\Mailbox($imapPath, $login, $password, $attachmentsDir, $serverEncoding);
 
-        $this->assertAttributeEquals('{imap.example.com:993/imap/ssl}INBOX', 'imapPath', $mailbox);
-        $this->assertAttributeEquals('php-imap@example.com', 'imapLogin', $mailbox);
-        $this->assertAttributeEquals(realpath('.'), 'attachmentsDir', $mailbox);
-        $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
+        $this->assertSame('{imap.example.com:993/imap/ssl}INBOX', $mailbox->getImapPath());
+        $this->assertSame('php-imap@example.com', $mailbox->getLogin());
+        $this->assertSame(realpath('.'), $mailbox->getAttachmentsDir());
+        $this->assertSame('UTF-8', $mailbox->getServerEncoding());
     }
 
     /**
@@ -110,7 +110,7 @@ final class MailboxTest extends TestCase
     {
         // Default character encoding should be set
         $mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir);
-        $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
+        $this->assertSame('UTF-8', $mailbox->getServerEncoding());
     }
 
     /**
@@ -120,11 +120,11 @@ final class MailboxTest extends TestCase
     {
         // Server encoding should be always upper formatted
         $mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, 'utf-8');
-        $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
+        $this->assertSame('UTF-8', $mailbox->getServerEncoding());
 
         $mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, 'UTF7-IMAP');
         $mailbox->setServerEncoding('uTf-8');
-        $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
+        $this->assertSame('UTF-8', $mailbox->getServerEncoding());
     }
 
     /**
