@@ -66,7 +66,10 @@ class Mailbox
      */
     protected array $timeouts = [];
 
-    protected bool $attachmentsIgnore = false;
+    /**
+     * Allow to ignore attachments when they are not required and boost performance.
+     */
+    public bool $attachmentsIgnore = false;
 
     protected string $pathDelimiter = '.';
 
@@ -258,24 +261,6 @@ class Mailbox
         }
 
         $this->imapSearchOption = $imapSearchOption;
-    }
-
-    /**
-     * Set $this->attachmentsIgnore param. Allow to ignore attachments when they are not required and boost performance.
-     */
-    public function setAttachmentsIgnore(bool $attachmentsIgnore): void
-    {
-        $this->attachmentsIgnore = $attachmentsIgnore;
-    }
-
-    /**
-     * Get $this->attachmentsIgnore param.
-     *
-     * @return bool $attachmentsIgnore
-     */
-    public function getAttachmentsIgnore(): bool
-    {
-        return $this->attachmentsIgnore;
     }
 
     /**
@@ -1242,8 +1227,8 @@ class Mailbox
             $isAttachment = true;
         }
 
-        // Do NOT parse attachments, when getAttachmentsIgnore() is true
-        if ($this->getAttachmentsIgnore()
+        // Do NOT parse attachments, when Mailbox::$attachmentsIgnore is true
+        if ($this->attachmentsIgnore
             && (TYPEMULTIPART !== $partStructure->type
             && (TYPETEXT !== $partStructure->type || !\in_array(strtolower($partStructure->subtype), ['plain', 'html'])))
         ) {
