@@ -728,42 +728,24 @@ class Mailbox
 
     /**
      * Add the flag \Seen to a mail.
-     *
-     * @param string $mailId
-     *
-     * @return void
-     *
-     * @todo query appropriate param type
      */
-    public function markMailAsRead($mailId)
+    public function markMailAsRead(string $mailId)
     {
         $this->setFlag([$mailId], '\\Seen');
     }
 
     /**
      * Remove the flag \Seen from a mail.
-     *
-     * @param string $mailId
-     *
-     * @return void
-     *
-     * @todo query appropriate param type
      */
-    public function markMailAsUnread($mailId)
+    public function markMailAsUnread(string $mailId)
     {
         $this->clearFlag([$mailId], '\\Seen');
     }
 
     /**
      * Add the flag \Flagged to a mail.
-     *
-     * @param string $mailId
-     *
-     * @return void
-     *
-     * @todo query appropriate param type
      */
-    public function markMailAsImportant($mailId)
+    public function markMailAsImportant(string $mailId)
     {
         $this->setFlag([$mailId], '\\Flagged');
     }
