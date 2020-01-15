@@ -323,7 +323,7 @@ class Mailbox
             $this->imapRetriesNum = $retriesNum;
         }
 
-        if (\is_array($params) and \count($params) > 0) {
+        if (null != $params and \count($params) > 0) {
             $supported_params = ['DISABLE_AUTHENTICATOR'];
 
             foreach (array_keys($params) as $key) {
@@ -690,10 +690,6 @@ class Mailbox
 
     /**
      * Add the flag \Seen to a mail.
-     *
-     * @todo query appropriate param type
-     *
-     * @todo query appropriate param type
      */
     public function markMailAsRead(string $mailId): void
     {
@@ -702,10 +698,6 @@ class Mailbox
 
     /**
      * Remove the flag \Seen from a mail.
-     *
-     * @todo query appropriate param type
-     *
-     * @todo query appropriate param type
      */
     public function markMailAsUnread(string $mailId): void
     {
@@ -714,10 +706,6 @@ class Mailbox
 
     /**
      * Add the flag \Flagged to a mail.
-     *
-     * @todo query appropriate param type
-     *
-     * @todo query appropriate param type
      */
     public function markMailAsImportant(string $mailId): void
     {
