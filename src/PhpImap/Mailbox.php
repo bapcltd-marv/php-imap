@@ -90,7 +90,7 @@ class Mailbox
      * @param string $imapPath
      * @param string $login
      * @param string $password
-     * @param string $attachmentsDir
+     * @param string|null $attachmentsDir
      * @param string $serverEncoding
      *
      * @throws InvalidParameterException
