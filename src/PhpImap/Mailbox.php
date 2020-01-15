@@ -431,7 +431,6 @@ class Mailbox
 		return $this->imapStream;
 	}
 
-	/** @return bool */
 	public function hasImapStream() : bool
 	{
 		return is_resource($this->imapStream) && imap_ping($this->imapStream);

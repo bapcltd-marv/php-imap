@@ -19,6 +19,7 @@ use function trim;
 class DataPartInfo
 {
 	const TEXT_PLAIN = 0;
+
 	const TEXT_HTML = 1;
 
 	/**
