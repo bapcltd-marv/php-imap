@@ -1764,7 +1764,7 @@ class Mailbox
 	{
 		array_unshift($senders, $sender);
 
-		/** @var list<string> */
+		/** @psalm-var list<string> */
 		$senders = array_values(array_unique(array_map('mb_strtolower', $senders)));
 
 		$out = [];
@@ -1773,7 +1773,7 @@ class Mailbox
 			$out = array_merge($out, $this->searchMailbox($criteria . ' FROM ' . $sender, $disableServerEncoding));
 		}
 
-		/** @var list<int> */
+		/** @psalm-var list<int> */
 		return array_values(array_unique($out, SORT_NUMERIC));
 	}
 }
