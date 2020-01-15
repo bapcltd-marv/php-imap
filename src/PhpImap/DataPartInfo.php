@@ -25,7 +25,7 @@ class DataPartInfo
      *
      * @readonly
      */
-    public $id;
+    public int $id;
 
     /**
      * @var int|mixed
@@ -35,7 +35,7 @@ class DataPartInfo
     public $encoding;
 
     /** @var string|null */
-    public $charset;
+    public ?string $charset = null;
 
     /**
      * @var 0|string
@@ -49,17 +49,17 @@ class DataPartInfo
      *
      * @readonly
      */
-    public $mail;
+    public Mailbox $mail;
 
     /**
      * @var int
      *
      * @readonly
      */
-    public $options;
+    public int $options;
 
     /** @var string|null */
-    protected $data;
+    protected ?string $data = null;
 
     /**
      * @param 0|string  $part

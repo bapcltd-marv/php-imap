@@ -12,7 +12,7 @@ namespace PhpImap;
 class IncomingMailHeader
 {
     /** @var int|null The IMAP message ID - not the "Message-ID:"-header of the email */
-    public $id;
+    public ?int $id = null;
 
     /** @var string|null */
     public $imapPath;
@@ -21,108 +21,108 @@ class IncomingMailHeader
     public $mailboxFolder;
 
     /** @var bool */
-    public $isDraft = false;
+    public bool $isDraft = false;
 
     /** @var string|null */
-    public $date;
+    public ?string $date = null;
 
     /** @var string|null */
-    public $headersRaw;
+    public ?string $headersRaw = null;
 
     /** @var object|null */
-    public $headers;
+    public ?object $headers = null;
 
     /** @var string|null */
-    public $mimeVersion;
+    public ?string $mimeVersion = null;
 
     /** @var string|null */
-    public $xVirusScanned;
+    public ?string $xVirusScanned = null;
 
     /** @var string|null */
-    public $organization;
+    public ?string $organization = null;
 
     /** @var string|null */
-    public $contentType;
+    public ?string $contentType = null;
 
     /** @var string|null */
-    public $xMailer;
+    public ?string $xMailer = null;
 
     /** @var string|null */
-    public $contentLanguage;
+    public ?string $contentLanguage = null;
 
     /** @var string|null */
-    public $xSenderIp;
+    public ?string $xSenderIp = null;
 
     /** @var string|null */
-    public $priority;
+    public ?string $priority = null;
 
     /** @var string|null */
-    public $importance;
+    public ?string $importance = null;
 
     /** @var string|null */
-    public $sensitivity;
+    public ?string $sensitivity = null;
 
     /** @var string|null */
-    public $autoSubmitted;
+    public ?string $autoSubmitted = null;
 
     /** @var string|null */
-    public $precedence;
+    public ?string $precedence = null;
 
     /** @var string|null */
-    public $failedRecipients;
+    public ?string $failedRecipients = null;
 
     /** @var string|null */
-    public $subject;
+    public ?string $subject = null;
 
     /** @var string|null */
-    public $fromHost;
+    public ?string $fromHost = null;
 
     /** @var string|null */
-    public $fromName;
+    public ?string $fromName = null;
 
     /** @var string|null */
-    public $fromAddress;
+    public ?string $fromAddress = null;
 
     /** @var string|null */
-    public $senderHost;
+    public ?string $senderHost = null;
 
     /** @var string|null */
-    public $senderName;
+    public ?string $senderName = null;
 
     /** @var string|null */
-    public $senderAddress;
+    public ?string $senderAddress = null;
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $to = [];
+    public array $to = [];
 
     /** @var string|null */
-    public $toString;
+    public ?string $toString = null;
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $cc = [];
+    public array $cc = [];
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $bcc = [];
+    public array $bcc = [];
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $replyTo = [];
+    public array $replyTo = [];
 
     /** @var string|null */
-    public $messageId;
+    public ?string $messageId = null;
 }

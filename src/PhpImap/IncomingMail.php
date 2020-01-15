@@ -22,23 +22,23 @@ class IncomingMail extends IncomingMailHeader
     /**
      * @var IncomingMailAttachment[]
      */
-    protected $attachments = [];
+    protected array $attachments = [];
 
     /** @var bool */
-    protected $hasAttachments = false;
+    protected bool $hasAttachments = false;
 
     /**
      * @var DataPartInfo[][]
      *
      * @psalm-var array{0:list<DataPartInfo>, 1:list<DataPartInfo>}
      */
-    protected $dataInfo = [[], []];
+    protected array $dataInfo = [[], []];
 
     /** @var string|null */
-    private $textPlain;
+    private ?string $textPlain = null;
 
     /** @var string|null */
-    private $textHtml;
+    private ?string $textHtml = null;
 
     /**
      * __get() is utilized for reading data from inaccessible (protected
