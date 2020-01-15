@@ -68,7 +68,7 @@ class LiveMailboxTest extends TestCase
      *
      * @group live
      */
-    public function testGetImapStream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8')
+    public function testGetImapStream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8'): void
     {
         list($mailbox, $remove_mailbox) = $this->getMailbox(
             $imapPath,
@@ -251,7 +251,7 @@ class LiveMailboxTest extends TestCase
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
      */
-    public function testMailCompose(array $envelope, array $body, string $expected_result)
+    public function testMailCompose(array $envelope, array $body, string $expected_result): void
     {
         $this->assertSame($expected_result, Imap::mail_compose($envelope, $body));
     }
@@ -300,7 +300,7 @@ class LiveMailboxTest extends TestCase
         array $body,
         string $_expected_compose_result,
         bool $pre_compose
-    ) {
+    ): void {
         if ($this->MaybeSkipAppendTest($envelope)) {
             return;
         }
@@ -377,7 +377,7 @@ class LiveMailboxTest extends TestCase
         array $body,
         string $_expected_compose_result,
         bool $pre_compose
-    ) {
+    ): void {
         if ($this->MaybeSkipAppendTest($envelope)) {
             return;
         }
@@ -466,7 +466,7 @@ class LiveMailboxTest extends TestCase
         array $body,
         string $_expected_compose_result,
         bool $pre_compose
-    ) {
+    ): void {
         if ($this->MaybeSkipAppendTest($envelope)) {
             return;
         }
@@ -564,7 +564,7 @@ class LiveMailboxTest extends TestCase
         array $body,
         string $expected_compose_result,
         bool $pre_compose
-    ) {
+    ): void {
         if ($this->MaybeSkipAppendTest($envelope)) {
             return;
         }
