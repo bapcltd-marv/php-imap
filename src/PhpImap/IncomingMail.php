@@ -39,7 +39,7 @@ class IncomingMail extends IncomingMailHeader
     /** @var string|null */
     private $textHtml;
 
-    public function setHeader(IncomingMailHeader $header)
+    public function setHeader(IncomingMailHeader $header): void
     {
         /** @psalm-var array<string, scalar|array|object|null> */
         $array = get_object_vars($header);
@@ -51,7 +51,7 @@ class IncomingMail extends IncomingMailHeader
     /**
      * @param DataPartInfo::TEXT_PLAIN|DataPartInfo::TEXT_HTML $type
      */
-    public function addDataPartInfo(DataPartInfo $dataInfo, int $type)
+    public function addDataPartInfo(DataPartInfo $dataInfo, int $type): void
     {
         $this->dataInfo[$type][] = $dataInfo;
     }
@@ -100,7 +100,7 @@ class IncomingMail extends IncomingMailHeader
         return isset($this->$name);
     }
 
-    public function addAttachment(IncomingMailAttachment $attachment)
+    public function addAttachment(IncomingMailAttachment $attachment): void
     {
         if (!\is_string($attachment->id)) {
             throw new InvalidArgumentException('Argument 1 passed to '.__METHOD__.'() does not have an id specified!');
@@ -113,7 +113,7 @@ class IncomingMail extends IncomingMailHeader
      *
      * @param bool $hasAttachments True, if IncomingMail[] has one or more attachments
      */
-    public function setHasAttachments(bool $hasAttachments)
+    public function setHasAttachments(bool $hasAttachments): void
     {
         $this->hasAttachments = $hasAttachments;
     }
@@ -193,7 +193,7 @@ class IncomingMail extends IncomingMailHeader
      * Embed inline image attachments as base64 to allow for
      * email html to display inline images automatically.
      */
-    public function embedImageAttachments()
+    public function embedImageAttachments(): void
     {
         preg_match_all("/\bcid:[^'\"\s]{1,256}/mi", $this->textHtml, $matches);
 

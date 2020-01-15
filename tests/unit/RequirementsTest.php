@@ -25,7 +25,7 @@ final class RequirementsTest extends TestCase
      *
      * @dataProvider extensionProvider
      */
-    public function testRequiredExtensionsAreEnabled(string $extension)
+    public function testRequiredExtensionsAreEnabled(string $extension): void
     {
         $this->assertTrue(extension_loaded($extension));
     }

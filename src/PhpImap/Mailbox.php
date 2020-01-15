@@ -115,11 +115,9 @@ class Mailbox
     /**
      * Authenticates the IMAP client with the OAuth access token.
      *
-     * @return void
-     *
      * @throws Exception If any error occured
      */
-    protected function _oauthAuthentication()
+    protected function _oauthAuthentication(): void
     {
         $oauth_command = 'A AUTHENTICATE XOAUTH2 '.$this->_constructAuthString();
 
@@ -145,12 +143,10 @@ class Mailbox
      *
      * @param string $access_token OAuth token from your application (eg. Google Mail)
      *
-     * @return void
-     *
      * @throws InvalidArgumentException If no access token is provided
      * @throws Exception                If OAuth authentication was unsuccessful
      */
-    public function setOAuthToken(string $access_token)
+    public function setOAuthToken(string $access_token): void
     {
         if (empty(trim($access_token))) {
             throw new InvalidParameterException('setOAuthToken() requires an access token as parameter!');
@@ -182,7 +178,7 @@ class Mailbox
      *
      * @throws InvalidParameterException
      */
-    public function setPathDelimiter(string $delimiter)
+    public function setPathDelimiter(string $delimiter): void
     {
         if (!$this->validatePathDelimiter($delimiter)) {
             throw new InvalidParameterException('setPathDelimiter() can only set the delimiter to these characters: ".", "/"');
@@ -236,7 +232,7 @@ class Mailbox
      *
      * @throws InvalidParameterException
      */
-    public function setServerEncoding(string $serverEncoding)
+    public function setServerEncoding(string $serverEncoding): void
     {
         $serverEncoding = strtoupper(trim($serverEncoding));
 
@@ -268,7 +264,7 @@ class Mailbox
      *
      * @throws InvalidParameterException
      */
-    public function setImapSearchOption(int $imapSearchOption)
+    public function setImapSearchOption(int $imapSearchOption): void
     {
         $supported_options = [SE_FREE, SE_UID];
 
@@ -282,7 +278,7 @@ class Mailbox
     /**
      * Set $this->attachmentsIgnore param. Allow to ignore attachments when they are not required and boost performance.
      */
-    public function setAttachmentsIgnore(bool $attachmentsIgnore)
+    public function setAttachmentsIgnore(bool $attachmentsIgnore): void
     {
         $this->attachmentsIgnore = $attachmentsIgnore;
     }
@@ -307,7 +303,7 @@ class Mailbox
      *
      * @throws InvalidParameterException
      */
-    public function setTimeouts(int $timeout, array $types = [IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT])
+    public function setTimeouts(int $timeout, array $types = [IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT]): void
     {
         $supported_types = [IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT];
 
@@ -336,7 +332,7 @@ class Mailbox
      *
      * @throws InvalidParameterException
      */
-    public function setConnectionArgs(int $options = 0, int $retriesNum = 0, array $params = null)
+    public function setConnectionArgs(int $options = 0, int $retriesNum = 0, array $params = null): void
     {
         if (0 != $options) {
             $supported_options = [OP_READONLY, OP_ANONYMOUS, OP_HALFOPEN, CL_EXPUNGE, OP_DEBUG, OP_SHORTCACHE, OP_SILENT, OP_PROTOTYPE, OP_SECURE];
@@ -374,7 +370,7 @@ class Mailbox
      *
      * @throws InvalidParameterException
      */
-    public function setAttachmentsDir(string $attachmentsDir)
+    public function setAttachmentsDir(string $attachmentsDir): void
     {
         if (empty(trim($attachmentsDir))) {
             throw new InvalidParameterException('setAttachmentsDir() expects a string as first parameter!');
@@ -397,20 +393,16 @@ class Mailbox
 
     /**
      * Sets / Changes the attempts / retries to connect.
-     *
-     * @return void
      */
-    public function setConnectionRetry(int $maxAttempts)
+    public function setConnectionRetry(int $maxAttempts): void
     {
         $this->connectionRetry = $maxAttempts;
     }
 
     /**
      * Sets / Changes the delay between each attempt / retry to connect.
-     *
-     * @return void
      */
-    public function setConnectionRetryDelay(int $milliseconds)
+    public function setConnectionRetryDelay(int $milliseconds): void
     {
         $this->connectionRetryDelay = $milliseconds;
     }
@@ -478,7 +470,7 @@ class Mailbox
      *
      * @throws Exception
      */
-    public function switchMailbox(string $imapPath)
+    public function switchMailbox(string $imapPath): void
     {
         if (strpos($imapPath, '}') > 0) {
             $this->imapPath = $imapPath;
@@ -541,7 +533,7 @@ class Mailbox
     /**
      * Disconnects from IMAP server / mailbox.
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         if ($this->hasImapStream()) {
             $this->imap('close', [$this->getImapStream(false), $this->expungeOnDisconnect ? CL_EXPUNGE : 0], false, null);
@@ -551,7 +543,7 @@ class Mailbox
     /**
      * Sets 'expunge on disconnect' parameter.
      */
-    public function setExpungeOnDisconnect(bool $isEnabled)
+    public function setExpungeOnDisconnect(bool $isEnabled): void
     {
         $this->expungeOnDisconnect = $isEnabled;
     }
@@ -583,7 +575,7 @@ class Mailbox
      *
      * @see   imap_createmailbox()
      */
-    public function createMailbox(string $name)
+    public function createMailbox(string $name): void
     {
         $this->imap('createmailbox', $this->getCombinedPath($name));
     }
@@ -607,7 +599,7 @@ class Mailbox
      * @param string $oldName Current name of mailbox, which you want to rename (eg. 'PhpImap')
      * @param string $newName New name of mailbox, to which you want to rename it (eg. 'PhpImapTests')
      */
-    public function renameMailbox(string $oldName, string $newName)
+    public function renameMailbox(string $oldName, string $newName): void
     {
         $this->imap('renamemailbox', [$this->getCombinedPath($oldName), $this->getCombinedPath($newName)]);
     }
@@ -669,7 +661,7 @@ class Mailbox
      *
      * @see   imap_savebody()
      */
-    public function saveMail(int $mailId, string $filename = 'email.eml')
+    public function saveMail(int $mailId, string $filename = 'email.eml'): void
     {
         $this->imap('savebody', [$filename, $mailId, '', (SE_UID == $this->imapSearchOption) ? FT_UID : 0]);
     }
@@ -681,7 +673,7 @@ class Mailbox
      *
      * @see   imap_delete()
      */
-    public function deleteMail(int $mailId)
+    public function deleteMail(int $mailId): void
     {
         $this->imap('delete', [$mailId.':'.$mailId, (SE_UID == $this->imapSearchOption) ? FT_UID : 0]);
     }
@@ -693,10 +685,8 @@ class Mailbox
      * @param string $mailBox Mailbox name
      *
      * @see imap_mail_move()
-     *
-     * @return void
      */
-    public function moveMail(string $mailId, string $mailBox)
+    public function moveMail(string $mailId, string $mailBox): void
     {
         $this->imap('mail_move', [$mailId, $mailBox, CP_UID]) && $this->expungeDeletedMails();
     }
@@ -709,7 +699,7 @@ class Mailbox
      *
      * @see   imap_mail_copy()
      */
-    public function copyMail(string $mailId, string $mailBox)
+    public function copyMail(string $mailId, string $mailBox): void
     {
         $this->imap('mail_copy', [$mailId, $mailBox, CP_UID]) && $this->expungeDeletedMails();
     }
@@ -719,7 +709,7 @@ class Mailbox
      *
      * @see imap_expunge()
      */
-    public function expungeDeletedMails()
+    public function expungeDeletedMails(): void
     {
         $this->imap('expunge');
     }
@@ -729,7 +719,7 @@ class Mailbox
      *
      * @todo query appropriate param type
      */
-    public function markMailAsRead(string $mailId)
+    public function markMailAsRead(string $mailId): void
     {
         $this->setFlag([$mailId], '\\Seen');
     }
@@ -739,7 +729,7 @@ class Mailbox
      *
      * @todo query appropriate param type
      */
-    public function markMailAsUnread(string $mailId)
+    public function markMailAsUnread(string $mailId): void
     {
         $this->clearFlag([$mailId], '\\Seen');
     }
@@ -749,7 +739,7 @@ class Mailbox
      *
      * @todo query appropriate param type
      */
-    public function markMailAsImportant(string $mailId)
+    public function markMailAsImportant(string $mailId): void
     {
         $this->setFlag([$mailId], '\\Flagged');
     }
@@ -757,7 +747,7 @@ class Mailbox
     /**
      * Add the flag \Seen to a mails.
      */
-    public function markMailsAsRead(array $mailId)
+    public function markMailsAsRead(array $mailId): void
     {
         $this->setFlag($mailId, '\\Seen');
     }
@@ -765,7 +755,7 @@ class Mailbox
     /**
      * Remove the flag \Seen from some mails.
      */
-    public function markMailsAsUnread(array $mailId)
+    public function markMailsAsUnread(array $mailId): void
     {
         $this->clearFlag($mailId, '\\Seen');
     }
@@ -773,7 +763,7 @@ class Mailbox
     /**
      * Add the flag \Flagged to some mails.
      */
-    public function markMailsAsImportant(array $mailId)
+    public function markMailsAsImportant(array $mailId): void
     {
         $this->setFlag($mailId, '\\Flagged');
     }
@@ -784,7 +774,7 @@ class Mailbox
      * @param array  $mailsIds Array of mail IDs
      * @param string $flag     Which you can set are \Seen, \Answered, \Flagged, \Deleted, and \Draft as defined by RFC2060
      */
-    public function setFlag(array $mailsIds, string $flag)
+    public function setFlag(array $mailsIds, string $flag): void
     {
         $this->imap('setflag_full', [implode(',', $mailsIds), $flag, ST_UID]);
     }
@@ -795,7 +785,7 @@ class Mailbox
      * @param array  $mailsIds Array of mail IDs
      * @param string $flag     Which you can delete are \Seen, \Answered, \Flagged, \Deleted, and \Draft as defined by RFC2060
      */
-    public function clearFlag(array $mailsIds, string $flag)
+    public function clearFlag(array $mailsIds, string $flag): void
     {
         $this->imap('clearflag_full', [implode(',', $mailsIds), $flag, ST_UID]);
     }
@@ -1207,11 +1197,9 @@ class Mailbox
      *
      * @psalm-param PARTSTRUCTURE $partStructure
      *
-     * @return void
-     *
      * @todo refactor type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
      */
-    protected function initMailPart(IncomingMail $mail, object $partStructure, $partNum, bool $markAsSeen = true, bool $emlParse = false)
+    protected function initMailPart(IncomingMail $mail, object $partStructure, $partNum, bool $markAsSeen = true, bool $emlParse = false): void
     {
         if (!isset($mail->id)) {
             throw new InvalidArgumentException('Argument 1 passeed to '.__METHOD__.'() did not have the id property set!');
@@ -1557,7 +1545,7 @@ class Mailbox
      *
      * @throws Exception
      */
-    public function subscribeMailbox(string $mailbox)
+    public function subscribeMailbox(string $mailbox): void
     {
         $this->imap('subscribe', $this->getCombinedPath($mailbox));
     }
@@ -1565,11 +1553,9 @@ class Mailbox
     /**
      * Unsubscribe from a mailbox.
      *
-     * @return void
-     *
      * @throws Exception
      */
-    public function unsubscribeMailbox(string $mailbox)
+    public function unsubscribeMailbox(string $mailbox): void
     {
         $this->imap('unsubscribe', $this->getCombinedPath($mailbox));
     }
@@ -1770,11 +1756,9 @@ class Mailbox
     }
 
     /**
-     * @return void
-     *
      * @todo revisit redundant condition issues pending fix of https://github.com/vimeo/psalm/issues/2626
      */
-    protected function pingOrDisconnect()
+    protected function pingOrDisconnect(): void
     {
         if ($this->imapStream && (!\is_resource($this->imapStream) || !imap_ping($this->imapStream))) {
             $this->disconnect();
