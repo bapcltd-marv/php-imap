@@ -37,7 +37,7 @@ final class MailboxTest extends TestCase
      *
      * @var string
      */
-    private $imapPath = '{imap.example.com:993/imap/ssl/novalidate-cert}INBOX';
+    private string $imapPath = '{imap.example.com:993/imap/ssl/novalidate-cert}INBOX';
 
     /**
      * Holds the imap username.
@@ -46,28 +46,28 @@ final class MailboxTest extends TestCase
      *
      * @psalm-var string
      */
-    private $login = 'php-imap@example.com';
+    private string $login = 'php-imap@example.com';
 
     /**
      * Holds the imap user password.
      *
      * @var string
      */
-    private $password = 'v3rY!53cEt&P4sSWöRd$';
+    private string $password = 'v3rY!53cEt&P4sSWöRd$';
 
     /**
      * Holds the relative name of the directory, where email attachments will be saved.
      *
      * @var string
      */
-    private $attachmentsDir = '.';
+    private string $attachmentsDir = '.';
 
     /**
      * Holds the server encoding setting.
      *
      * @var string
      */
-    private $serverEncoding = 'UTF-8';
+    private string $serverEncoding = 'UTF-8';
 
     /**
      * Test, that the constructor trims possible variables
@@ -224,6 +224,9 @@ final class MailboxTest extends TestCase
     public function testSetAndGetImapSearchOption(): void
     {
         $mailbox = $this->getMailbox();
+
+        $mailbox->setImapSearchOption(SE_FREE);
+        $this->assertEquals($mailbox->getImapSearchOption(), 2);
 
         $mailbox->setImapSearchOption(SE_FREE);
         $this->assertEquals($mailbox->getImapSearchOption(), 2);
