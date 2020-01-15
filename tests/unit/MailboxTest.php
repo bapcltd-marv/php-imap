@@ -353,33 +353,7 @@ final class MailboxTest extends TestCase
      */
     public function testGetAttachmentsAreNotIgnoredByDefault(): void
     {
-        $this->assertEquals($this->getMailbox()->getAttachmentsIgnore(), false);
-    }
-
-    /**
-     * Provides test data for testing attachments ignore.
-     *
-     * @psalm-return array<string, array{0:bool}>
-     */
-    public function attachmentsIgnoreProvider(): array
-    {
-        /** @psalm-var array<string, array{0:bool}> */
-        return [
-            'true' => [true],
-            'false' => [false],
-        ];
-    }
-
-    /**
-     * Test, that attachments can be ignored and only valid values are accepted.
-     *
-     * @dataProvider attachmentsIgnoreProvider
-     */
-    public function testSetAttachmentsIgnore(bool $paramValue): void
-    {
-        $mailbox = $this->getMailbox();
-        $mailbox->setAttachmentsIgnore($paramValue);
-        $this->assertEquals($mailbox->getAttachmentsIgnore(), $paramValue);
+        $this->assertEquals($this->getMailbox()->attachmentsIgnore, false);
     }
 
     /**
