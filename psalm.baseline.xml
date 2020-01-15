@@ -19,21 +19,17 @@
       <code>\is_object($item)</code>
       <code>\is_resource($this-&gt;imapStream)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="5">
+    <InvalidArgument occurrences="6">
       <code>$str</code>
       <code>$str</code>
       <code>$str</code>
+      <code>$partStructure-&gt;id</code>
       <code>$mailboxes</code>
       <code>$mailboxes</code>
     </InvalidArgument>
-    <InvalidScalarArgument occurrences="2">
-      <code>$partStructure-&gt;id</code>
-      <code>$option &amp;&amp; FT_PREFETCHTEXT</code>
-    </InvalidScalarArgument>
-    <MismatchingDocblockParamType occurrences="3">
+    <MismatchingDocblockParamType occurrences="2">
       <code>scalar|array|object|resource|null</code>
       <code>scalar|array|object|resource|null</code>
-      <code>string</code>
     </MismatchingDocblockParamType>
     <MixedArgument occurrences="9">
       <code>$param-&gt;value</code>
