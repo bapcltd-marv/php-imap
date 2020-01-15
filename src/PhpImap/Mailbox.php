@@ -716,6 +716,8 @@ class Mailbox
 
     /**
      * Add the flag \Seen to a mail.
+     *
+     * @todo query appropriate param type
      */
     public function markMailAsRead(string $mailId): void
     {
@@ -724,6 +726,8 @@ class Mailbox
 
     /**
      * Remove the flag \Seen from a mail.
+     *
+     * @todo query appropriate param type
      */
     public function markMailAsUnread(string $mailId): void
     {
@@ -732,6 +736,8 @@ class Mailbox
 
     /**
      * Add the flag \Flagged to a mail.
+     *
+     * @todo query appropriate param type
      */
     public function markMailAsImportant(string $mailId): void
     {
