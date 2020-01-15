@@ -9,7 +9,7 @@ final class RequirementsTest extends TestCase
      *
      * @psalm-return array<string, array{0:string}>
      */
-    public function extensionProvider()
+    public function extensionProvider(): array
     {
         return [
             'imap' => ['imap'],
@@ -25,7 +25,7 @@ final class RequirementsTest extends TestCase
      *
      * @param string $extension
      */
-    public function testRequiredExtensionsAreEnabled($extension)
+    public function testRequiredExtensionsAreEnabled(string $extension)
     {
         $this->assertTrue(extension_loaded($extension));
     }

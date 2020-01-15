@@ -59,7 +59,7 @@ class DataPartInfo
      * @param int|mixed  $encoding
      * @param int        $options
      */
-    public function __construct(Mailbox $mail, $id, $part, $encoding, $options)
+    public function __construct(Mailbox $mail, $id, $part, $encoding, int $options)
     {
         $this->mail = $mail;
         $this->id = $id;
@@ -71,7 +71,7 @@ class DataPartInfo
     /**
      * @return string
      */
-    public function fetch()
+    public function fetch(): string
     {
         if (0 == $this->part) {
             /** @var string */
