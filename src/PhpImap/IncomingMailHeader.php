@@ -55,7 +55,6 @@ class IncomingMailHeader
 	*/
 	public array $to = [];
 
-	/** @var string|null */
 	public ?string $toString = null;
 
 	/**
