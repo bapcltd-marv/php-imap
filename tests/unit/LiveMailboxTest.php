@@ -51,7 +51,7 @@ class LiveMailboxTest extends TestCase
      *
      * @todo drop php 5.6, add paragonie/hidden-string to require-dev
      */
-    public function MailBoxProvider()
+    public function MailBoxProvider(): array
     {
         if (!\class_exists(HiddenString::class)) {
             $this->markTestSkipped('paragonie/hidden-string not installed!');
@@ -82,7 +82,7 @@ class LiveMailboxTest extends TestCase
      *
      * @return void
      */
-    public function testGetImapStream(HiddenString $imapPath, HiddenString $login, HiddenString $password, $attachmentsDir, $serverEncoding = 'UTF-8')
+    public function testGetImapStream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8')
     {
         list($mailbox, $remove_mailbox) = $this->getMailbox(
             $imapPath,
@@ -262,14 +262,12 @@ class LiveMailboxTest extends TestCase
      *
      * @group compose
      *
-     * @param string $expected_result
-     *
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
      *
      * @return void
      */
-    public function test_mail_compose(array $envelope, array $body, $expected_result)
+    public function test_mail_compose(array $envelope, array $body, string $expected_result)
     {
         static::assertSame($expected_result, Imap::mail_compose($envelope, $body));
     }
@@ -308,9 +306,6 @@ class LiveMailboxTest extends TestCase
      * @depends testGetImapStream
      * @depends test_mail_compose
      *
-     * @param string $_expected_compose_result
-     * @param bool   $pre_compose
-     *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
@@ -321,8 +316,8 @@ class LiveMailboxTest extends TestCase
         array $mailbox_args,
         array $envelope,
         array $body,
-        $_expected_compose_result,
-        $pre_compose
+        string $_expected_compose_result,
+        bool $pre_compose
     ) {
         if (!isset($envelope['subject'])) {
             static::markTestSkipped(
@@ -402,9 +397,6 @@ class LiveMailboxTest extends TestCase
      *
      * @depends test_append
      *
-     * @param string $_expected_compose_result
-     * @param bool   $pre_compose
-     *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
@@ -415,8 +407,8 @@ class LiveMailboxTest extends TestCase
         array $mailbox_args,
         array $envelope,
         array $body,
-        $_expected_compose_result,
-        $pre_compose
+        string $_expected_compose_result,
+        bool $pre_compose
     ) {
         if (!isset($envelope['subject'])) {
             static::markTestSkipped(
@@ -508,9 +500,6 @@ class LiveMailboxTest extends TestCase
      *
      * @depends test_append
      *
-     * @param string $_expected_compose_result
-     * @param bool   $pre_compose
-     *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
@@ -521,8 +510,8 @@ class LiveMailboxTest extends TestCase
         array $mailbox_args,
         array $envelope,
         array $body,
-        $_expected_compose_result,
-        $pre_compose
+        string $_expected_compose_result,
+        bool $pre_compose
     ) {
         if (!isset($envelope['subject'])) {
             static::markTestSkipped(
@@ -623,9 +612,6 @@ class LiveMailboxTest extends TestCase
      *
      * @depends test_append
      *
-     * @param string $expected_compose_result
-     * @param bool   $pre_compose
-     *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
@@ -636,8 +622,8 @@ class LiveMailboxTest extends TestCase
         array $mailbox_args,
         array $envelope,
         array $body,
-        $expected_compose_result,
-        $pre_compose
+        string $expected_compose_result,
+        bool $pre_compose
     ) {
         if (!isset($envelope['subject'])) {
             static::markTestSkipped(

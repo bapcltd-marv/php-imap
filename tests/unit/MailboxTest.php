@@ -111,11 +111,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider SetAndGetServerEncodingProvider
      *
-     * @param string $encoding
-     *
      * @return void
      */
-    public function testSetAndGetServerEncoding($encoding)
+    public function testSetAndGetServerEncoding(string $encoding)
     {
         $mailbox = $this->getMailbox();
 
@@ -159,7 +157,7 @@ final class MailboxTest extends TestCase
      *
      * @return array<string, array{0:bool, 1:string}>
      */
-    public function serverEncodingProvider()
+    public function serverEncodingProvider(): array
     {
         return [
             // Supported encodings
@@ -187,12 +185,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider serverEncodingProvider
      *
-     * @param bool   $bool
-     * @param string $encoding
-     *
      * @return void
      */
-    public function testServerEncodingOnlyUseSupportedSettings($bool, $encoding)
+    public function testServerEncodingOnlyUseSupportedSettings(bool $bool, string $encoding)
     {
         $mailbox = $this->getMailbox();
 
@@ -264,7 +259,7 @@ final class MailboxTest extends TestCase
      *
      * @psalm-return array{0:string}[]
      */
-    public function pathDelimiterProvider()
+    public function pathDelimiterProvider(): array
     {
         return [
             '0' => ['0'],
@@ -333,11 +328,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider pathDelimiterProvider
      *
-     * @param string $str
-     *
      * @return void
      */
-    public function testPathDelimiterIsBeingChecked($str)
+    public function testPathDelimiterIsBeingChecked(string $str)
     {
         $supported_delimiters = ['.', '/'];
 
@@ -380,18 +373,14 @@ final class MailboxTest extends TestCase
     /**
      * Provides test data for testing attachments ignore.
      *
-     * @psalm-return array<string, array{0:'assertEquals'|'expectException', 1:scalar}>
+     * @psalm-return array<string, array{0:bool}>
      */
-    public function attachmentsIgnoreProvider()
+    public function attachmentsIgnoreProvider(): array
     {
-        /** @psalm-var array<string, array{0:'assertEquals'|'expectException', 1:scalar}> */
+        /** @psalm-var array<string, array{0:bool}> */
         return [
-            'true' => ['assertEquals', true],
-            'false' => ['assertEquals', false],
-            '1' => ['expectException', 1],
-            '0' => ['expectException', 0],
-            'something' => ['expectException', 'something'],
-            '2' => ['expectException', 2],
+            'true' => [true],
+            'false' => [false],
         ];
     }
 
@@ -400,23 +389,13 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider attachmentsIgnoreProvider
      *
-     * @psalm-param 'expectException'|'assertEquals' $assertTest
-     *
-     * @param scalar $paramValue
-     *
      * @return void
      */
-    public function testSetAttachmentsIgnore($assertTest, $paramValue)
+    public function testSetAttachmentsIgnore(bool $paramValue)
     {
         $mailbox = $this->getMailbox();
-
-        if ('expectException' == $assertTest) {
-            $this->expectException(InvalidParameterException::class);
             $mailbox->setAttachmentsIgnore($paramValue);
-        } else {
-            $mailbox->setAttachmentsIgnore((bool) $paramValue);
-            $this->assertEquals($mailbox->getAttachmentsIgnore(), (bool) $paramValue);
-        }
+        $this->assertEquals($mailbox->getAttachmentsIgnore(), $paramValue);
     }
 
     /**
@@ -424,7 +403,7 @@ final class MailboxTest extends TestCase
      *
      * @psalm-return array<string, array{0:string}>
      */
-    public function encodingTestStringsProvider()
+    public function encodingTestStringsProvider(): array
     {
         return [
             'Avañe’ẽ' => ['Avañe’ẽ'], // Guaraní
@@ -464,11 +443,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider encodingTestStringsProvider
      *
-     * @param string $str
-     *
      * @return void
      */
-    public function testEncodingToUtf7DecodeBackToUtf8($str)
+    public function testEncodingToUtf7DecodeBackToUtf8(string $str)
     {
         $mailbox = $this->getMailbox();
 
@@ -483,11 +460,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider encodingTestStringsProvider
      *
-     * @param string $str
-     *
      * @return void
      */
-    public function testMimeDecodingReturnsCorrectValues($str)
+    public function testMimeDecodingReturnsCorrectValues(string $str)
     {
         $this->assertEquals($this->getMailbox()->decodeMimeStr($str, 'utf-8'), $str);
     }
@@ -495,25 +470,25 @@ final class MailboxTest extends TestCase
     /**
      * Provides test data for testing parsing datetimes.
      *
-     * @psalm-return array<string, array{0:string, 1:numeric}>
+     * @psalm-return array<string, array{0:string, 1:int}>
      */
-    public function datetimeProvider()
+    public function datetimeProvider(): array
     {
         return [
-            'Sun, 14 Aug 2005 16:13:03 +0000 (CEST)' => ['2005-08-14T16:13:03+00:00', '1124035983'],
-            'Sun, 14 Aug 2005 16:13:03 +0000' => ['2005-08-14T16:13:03+00:00', '1124035983'],
+            'Sun, 14 Aug 2005 16:13:03 +0000 (CEST)' => ['2005-08-14T16:13:03+00:00', 1124035983],
+            'Sun, 14 Aug 2005 16:13:03 +0000' => ['2005-08-14T16:13:03+00:00', 1124035983],
 
-            'Sun, 14 Aug 2005 16:13:03 +1000 (CEST)' => ['2005-08-14T06:13:03+00:00', '1123999983'],
-            'Sun, 14 Aug 2005 16:13:03 +1000' => ['2005-08-14T06:13:03+00:00', '1123999983'],
-            'Sun, 14 Aug 2005 16:13:03 -1000' => ['2005-08-15T02:13:03+00:00', '1124071983'],
+            'Sun, 14 Aug 2005 16:13:03 +1000 (CEST)' => ['2005-08-14T06:13:03+00:00', 1123999983],
+            'Sun, 14 Aug 2005 16:13:03 +1000' => ['2005-08-14T06:13:03+00:00', 1123999983],
+            'Sun, 14 Aug 2005 16:13:03 -1000' => ['2005-08-15T02:13:03+00:00', 1124071983],
 
-            'Sun, 14 Aug 2005 16:13:03 +1100 (CEST)' => ['2005-08-14T05:13:03+00:00', '1123996383'],
-            'Sun, 14 Aug 2005 16:13:03 +1100' => ['2005-08-14T05:13:03+00:00', '1123996383'],
-            'Sun, 14 Aug 2005 16:13:03 -1100' => ['2005-08-15T03:13:03+00:00', '1124075583'],
+            'Sun, 14 Aug 2005 16:13:03 +1100 (CEST)' => ['2005-08-14T05:13:03+00:00', 1123996383],
+            'Sun, 14 Aug 2005 16:13:03 +1100' => ['2005-08-14T05:13:03+00:00', 1123996383],
+            'Sun, 14 Aug 2005 16:13:03 -1100' => ['2005-08-15T03:13:03+00:00', 1124075583],
 
-            '14 Aug 2005 16:13:03 +1000 (CEST)' => ['2005-08-14T06:13:03+00:00', '1123999983'],
-            '14 Aug 2005 16:13:03 +1000' => ['2005-08-14T06:13:03+00:00', '1123999983'],
-            '14 Aug 2005 16:13:03 -1000' => ['2005-08-15T02:13:03+00:00', '1124071983'],
+            '14 Aug 2005 16:13:03 +1000 (CEST)' => ['2005-08-14T06:13:03+00:00', 1123999983],
+            '14 Aug 2005 16:13:03 +1000' => ['2005-08-14T06:13:03+00:00', 1123999983],
+            '14 Aug 2005 16:13:03 -1000' => ['2005-08-15T02:13:03+00:00', 1124071983],
         ];
     }
 
@@ -522,16 +497,13 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider datetimeProvider
      *
-     * @param string  $dateToParse
-     * @param numeric $epochToCompare
-     *
      * @return void
      */
-    public function testParsedDateDifferentTimeZones($dateToParse, $epochToCompare)
+    public function testParsedDateDifferentTimeZones(string $dateToParse, int $epochToCompare)
     {
         $parsedDt = $this->getMailbox()->parseDateTime($dateToParse);
         $parsedDateTime = new DateTime($parsedDt);
-        $this->assertEquals($parsedDateTime->format('U'), $epochToCompare);
+        $this->assertEquals($parsedDateTime->getTimestamp(), $epochToCompare);
     }
 
     /**
@@ -539,7 +511,7 @@ final class MailboxTest extends TestCase
      *
      * @psalm-return array<string, array{0:string}>
      */
-    public function invalidDatetimeProvider()
+    public function invalidDatetimeProvider(): array
     {
         return [
             'Sun, 14 Aug 2005 16:13:03 +9000 (CEST)' => ['Sun, 14 Aug 2005 16:13:03 +9000 (CEST)'],
@@ -553,11 +525,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider invalidDatetimeProvider
      *
-     * @param string $dateToParse
-     *
      * @return void
      */
-    public function testParsedDateWithUnparseableDateTime($dateToParse)
+    public function testParsedDateWithUnparseableDateTime(string $dateToParse)
     {
         $parsedDt = $this->getMailbox()->parseDateTime($dateToParse);
         $this->assertEquals($parsedDt, $dateToParse);
@@ -581,7 +551,7 @@ final class MailboxTest extends TestCase
      *
      * @psalm-return list<array{0:string, 1:string}>
      */
-    public function mimeEncodingProvider()
+    public function mimeEncodingProvider(): array
     {
         return [
             ['=?iso-8859-1?Q?Sebastian_Kr=E4tzig?= <sebastian.kraetzig@example.com>', 'Sebastian Krätzig <sebastian.kraetzig@example.com>'],
@@ -600,12 +570,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider mimeEncodingProvider
      *
-     * @param string $str
-     * @param string $expected
-     *
      * @return void
      */
-    public function testMimeEncoding($str, $expected)
+    public function testMimeEncoding(string $str, string $expected)
     {
         $mailbox = $this->getMailbox();
 
@@ -622,7 +589,7 @@ final class MailboxTest extends TestCase
      *
      * @psalm-return array<string, array{0:'assertNull'|'expectException', 1:int, 2:list<1|2|3|4>}>
      */
-    public function timeoutsProvider()
+    public function timeoutsProvider(): array
     {
         /** @psalm-var array<string, array{0:'assertNull'|'expectException', 1:int, 2:list<int>}> */
         return [
@@ -644,16 +611,14 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider timeoutsProvider
      *
-     * @param string $assertMethod
-     * @param int    $timeout
-     * @param int[]  $types
+     * @param int[] $types
      *
      * @psalm-param 'assertNull'|'expectException' $assertMethod
      * @psalm-param list<1|2|3|4> $types
      *
      * @return void
      */
-    public function testSetTimeouts($assertMethod, $timeout, $types)
+    public function testSetTimeouts(string $assertMethod, int $timeout, array $types)
     {
         $mailbox = $this->getMailbox();
 
@@ -670,7 +635,7 @@ final class MailboxTest extends TestCase
      *
      * @psalm-return list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>}>
      */
-    public function connectionArgsProvider()
+    public function connectionArgsProvider(): array
     {
         /** @psalm-var list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>}> */
         return [
@@ -688,12 +653,11 @@ final class MailboxTest extends TestCase
             ['assertNull', OP_READONLY, 3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['assertNull', OP_READONLY, 12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
 
-            ['expectException', OP_READONLY.OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+            ['expectException', OP_READONLY | OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['expectException', OP_READONLY, -1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['expectException', OP_READONLY, -3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['expectException', OP_READONLY, -12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-            ['expectException', OP_READONLY, '-1', ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-            ['expectException', OP_READONLY, '1', ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+            ['expectException', OP_READONLY, -1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['expectException', OP_READONLY, 0, [null]],
         ];
     }
@@ -703,16 +667,11 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider connectionArgsProvider
      *
-     * @param string     $assertMethod
-     * @param int        $option
-     * @param int        $retriesNum
-     * @param array|null $param
-     *
      * @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty> $param
      *
      * @return void
      */
-    public function testSetConnectionArgs($assertMethod, $option, $retriesNum, $param)
+    public function testSetConnectionArgs(string $assertMethod, int $option, int $retriesNum, array $param = null)
     {
         $mailbox = $this->getMailbox();
 
@@ -729,7 +688,7 @@ final class MailboxTest extends TestCase
      *
      * @psalm-return array<string, array{0:string, 1:string, 2?:string}>
      */
-    public function mimeStrDecodingProvider()
+    public function mimeStrDecodingProvider(): array
     {
         return [
             '<bde36ec8-9710-47bc-9ea3-bf0425078e33@php.imap>' => ['<bde36ec8-9710-47bc-9ea3-bf0425078e33@php.imap>', '<bde36ec8-9710-47bc-9ea3-bf0425078e33@php.imap>'],
@@ -750,13 +709,9 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider mimeStrDecodingProvider
      *
-     * @param string $str
-     * @param string $expectedStr
-     * @param string $serverEncoding
-     *
      * @return void
      */
-    public function testDecodeMimeStr($str, $expectedStr, $serverEncoding = 'utf-8')
+    public function testDecodeMimeStr(string $str, string $expectedStr, string $serverEncoding = 'utf-8')
     {
         $mailbox = $this->getMailbox();
 
@@ -765,11 +720,9 @@ final class MailboxTest extends TestCase
     }
 
     /**
-     * @return array
-     *
      * @psalm-return list<array{0:string, 1:string, 2:class-string<\Exception>, 3:string}>
      */
-    public function attachmentDirFailureProvider()
+    public function attachmentDirFailureProvider(): array
     {
         return [
             [
@@ -798,14 +751,11 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider attachmentDirFailureProvider
      *
-     * @param string $initialDir
-     * @param string $attachmentsDir
-     * @param string $expectedException
-     * @param string $expectedExceptionMessage
-     *
      * @psalm-param class-string<\Exception> $expectedException
+     *
+     * @return void
      */
-    public function testAttachmentDirFailure($initialDir, $attachmentsDir, $expectedException, $expectedExceptionMessage)
+    public function testAttachmentDirFailure(string $initialDir, string $attachmentsDir, string $expectedException, string $expectedExceptionMessage)
     {
         $mailbox = new Mailbox('', '', '', $initialDir);
 
@@ -817,10 +767,7 @@ final class MailboxTest extends TestCase
         $mailbox->setAttachmentsDir($attachmentsDir);
     }
 
-    /**
-     * @return Mailbox
-     */
-    protected function getMailbox()
+    protected function getMailbox(): Mailbox
     {
         return new Mailbox($this->imapPath, $this->login, $this->password, $this->attachmentsDir, $this->serverEncoding);
     }
