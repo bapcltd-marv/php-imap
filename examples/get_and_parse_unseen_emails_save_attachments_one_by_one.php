@@ -52,7 +52,7 @@
         }
 
         // Save attachments one by one
-        if (!$mailbox->getAttachmentsIgnore()) {
+        if (!$mailbox->attachmentsIgnore) {
             $attachments = $email->getAttachments();
 
             foreach ($attachments as $attachment) {
