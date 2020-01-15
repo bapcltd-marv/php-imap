@@ -5,8 +5,7 @@ env:
 language: php
 
 php:
-  - 7.2.0
-  - 7.2
+  - 7.3.0
   - 7.3
 
 env:
@@ -15,7 +14,7 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.2.0
+    - php: 7.3.0
       dist: xenial
       env:
         - lint="yes"
