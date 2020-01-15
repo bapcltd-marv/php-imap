@@ -5,8 +5,8 @@ env:
 language: php
 
 php:
-  - 7.3.0
-  - 7.3
+  - 7.4.0
+  - 7.4
 
 env:
   - phpunitflags="--stop-on-failure --testdox --exclude-group=live"
@@ -14,7 +14,7 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.3.0
+    - php: 7.4.0
       dist: xenial
       env:
         - lint="yes"
