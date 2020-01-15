@@ -17,36 +17,36 @@ use UnexpectedValueException;
 class IncomingMailAttachment
 {
     /** @var string|null */
-    public $id;
+    public ?string $id = null;
 
     /** @var string|null */
-    public $contentId;
+    public ?string $contentId = null;
 
     /** @var string|null */
-    public $name;
+    public ?string $name = null;
 
     /** @var string|null */
-    public $disposition;
+    public ?string $disposition = null;
 
     /** @var string|null */
-    public $charset;
+    public ?string $charset = null;
 
     /** @var bool|null */
-    public $emlOrigin;
+    public ?bool $emlOrigin = null;
 
     /** @var string|null */
-    private $file_path;
+    private ?string $file_path = null;
 
     /** @var DataPartInfo|null */
-    private $dataInfo;
+    private ?DataPartInfo $dataInfo = null;
 
     /**
      * @var string|null
      */
-    private $mimeType;
+    private ?string $mimeType = null;
 
     /** @var string|null */
-    private $filePath;
+    private ?string $filePath = null;
 
     public function __get(string $name)
     {

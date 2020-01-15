@@ -34,56 +34,56 @@ use UnexpectedValueException;
 class Mailbox
 {
     /** @var string */
-    protected $imapPath;
+    protected string $imapPath;
 
     /** @var string */
-    protected $imapLogin;
+    protected string $imapLogin;
 
     /** @var string */
-    protected $imapPassword;
+    protected string $imapPassword;
 
     /** @var string|null */
-    protected $imapOAuthAccessToken = null;
+    protected ?string $imapOAuthAccessToken = null;
 
     /** @var int */
-    protected $imapSearchOption = SE_UID;
+    protected int $imapSearchOption = SE_UID;
 
     /** @var int */
-    protected $connectionRetry = 0;
+    protected int $connectionRetry = 0;
 
     /** @var int */
-    protected $connectionRetryDelay = 100;
+    protected int $connectionRetryDelay = 100;
 
     /** @var int */
-    protected $imapOptions = 0;
+    protected int $imapOptions = 0;
 
     /** @var int */
-    protected $imapRetriesNum = 0;
+    protected int $imapRetriesNum = 0;
 
     /** @var array */
-    protected $imapParams = [];
+    protected array $imapParams = [];
 
     /** @var string */
-    protected $serverEncoding = 'UTF-8';
+    protected string $serverEncoding = 'UTF-8';
 
     /** @var string|null */
-    protected $attachmentsDir = null;
+    protected ?string $attachmentsDir = null;
 
     /** @var bool */
-    protected $expungeOnDisconnect = true;
+    protected bool $expungeOnDisconnect = true;
 
     /**
      * @var int[]
      *
      * @psalm-var array{1?:int, 2?:int, 3?:int, 4?:int}
      */
-    protected $timeouts = [];
+    protected array $timeouts = [];
 
     /** @var bool */
-    protected $attachmentsIgnore = false;
+    protected bool $attachmentsIgnore = false;
 
     /** @var string */
-    protected $pathDelimiter = '.';
+    protected string $pathDelimiter = '.';
 
     /** @var resource|null */
     private $imapStream;

@@ -29,7 +29,7 @@ class DataPartInfo
     public $encoding;
 
     /** @var string|null */
-    public $charset;
+    public ?string $charset = null;
 
     /**
      * @var string|int
@@ -43,17 +43,17 @@ class DataPartInfo
      *
      * @readonly
      */
-    public $mail;
+    public Mailbox $mail;
 
     /**
      * @var int
      *
      * @readonly
      */
-    public $options;
+    public int $options;
 
     /** @var string|null */
-    private $data;
+    private ?string $data = null;
 
     /**
      * @param string|int $id

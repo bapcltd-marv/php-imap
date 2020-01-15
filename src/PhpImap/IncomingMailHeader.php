@@ -12,90 +12,90 @@ namespace PhpImap;
 class IncomingMailHeader
 {
     /** @var string|null $id The IMAP message ID - not the "Message-ID:"-header of the email */
-    public $id;
+    public ?string $id = null;
 
     /** @var bool */
-    public $isDraft = false;
+    public bool $isDraft = false;
 
     /** @var string|null */
-    public $date;
+    public ?string $date = null;
 
     /** @var string|null */
-    public $headersRaw;
+    public ?string $headersRaw = null;
 
     /** @var object|null */
-    public $headers;
+    public ?object $headers = null;
 
     /** @var string|null */
-    public $priority;
+    public ?string $priority = null;
 
     /** @var string|null */
-    public $importance;
+    public ?string $importance = null;
 
     /** @var string|null */
-    public $sensitivity;
+    public ?string $sensitivity = null;
 
     /** @var string|null */
-    public $autoSubmitted;
+    public ?string $autoSubmitted = null;
 
     /** @var string|null */
-    public $precedence;
+    public ?string $precedence = null;
 
     /** @var string|null */
-    public $failedRecipients;
+    public ?string $failedRecipients = null;
 
     /** @var string|null */
-    public $subject;
+    public ?string $subject = null;
 
     /** @var string|null */
-    public $fromHost;
+    public ?string $fromHost = null;
 
     /** @var string|null */
-    public $fromName;
+    public ?string $fromName = null;
 
     /** @var string|null */
-    public $fromAddress;
+    public ?string $fromAddress = null;
 
     /** @var string|null */
-    public $senderHost;
+    public ?string $senderHost = null;
 
     /** @var string|null */
-    public $senderName;
+    public ?string $senderName = null;
 
     /** @var string|null */
-    public $senderAddress;
+    public ?string $senderAddress = null;
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $to = [];
+    public array $to = [];
 
     /** @var string|null */
-    public $toString;
+    public ?string $toString = null;
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $cc = [];
+    public array $cc = [];
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $bcc = [];
+    public array $bcc = [];
 
     /**
      * @var (string|null)[]
      *
      * @psalm-var array<string, string|null>
      */
-    public $replyTo = [];
+    public array $replyTo = [];
 
     /** @var string|null */
-    public $messageId;
+    public ?string $messageId = null;
 }
