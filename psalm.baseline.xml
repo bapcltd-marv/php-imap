@@ -16,13 +16,25 @@
   </file>
   <file src="src/PhpImap/Mailbox.php">
     <DocblockTypeContradiction occurrences="2">
-      <code>\is_int($retriesNum)</code>
+      <code>\is_object($item)</code>
       <code>\is_resource($this-&gt;imapStream)</code>
     </DocblockTypeContradiction>
+    <InvalidArgument occurrences="5">
+      <code>$str</code>
+      <code>$str</code>
+      <code>$str</code>
+      <code>$mailboxes</code>
+      <code>$mailboxes</code>
+    </InvalidArgument>
     <InvalidScalarArgument occurrences="2">
       <code>$partStructure-&gt;id</code>
       <code>$option &amp;&amp; FT_PREFETCHTEXT</code>
     </InvalidScalarArgument>
+    <MismatchingDocblockParamType occurrences="3">
+      <code>scalar|array|object|resource|null</code>
+      <code>scalar|array|object|resource|null</code>
+      <code>string</code>
+    </MismatchingDocblockParamType>
     <MixedArgument occurrences="9">
       <code>$param-&gt;value</code>
       <code>$param-&gt;value</code>
@@ -81,11 +93,10 @@
       <code>unsubscribeMailbox</code>
     </PossiblyUnusedMethod>
     <RedundantCondition occurrences="1">
-      <code>null != $params and !empty($params)</code>
+      <code>null != $params and \count($params) &gt; 0</code>
     </RedundantCondition>
-    <RedundantConditionGivenDocblockType occurrences="3">
-      <code>!\is_int($retriesNum) or $retriesNum &lt; 0</code>
-      <code>\is_int($retriesNum)</code>
+    <RedundantConditionGivenDocblockType occurrences="2">
+      <code>\is_object($item)</code>
       <code>!\is_resource($this-&gt;imapStream) || !imap_ping($this-&gt;imapStream)</code>
     </RedundantConditionGivenDocblockType>
     <UnusedVariable occurrences="1">
