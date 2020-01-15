@@ -166,7 +166,7 @@ class Mailbox
      *
      * @return string|null $access_token OAuth Access Token
      */
-    public function getOAuthToken()
+    public function getOAuthToken(): ?string
     {
         return $this->imapOAuthAccessToken;
     }
@@ -386,7 +386,7 @@ class Mailbox
      *
      * @return string|null Attachments dir
      */
-    public function getAttachmentsDir()
+    public function getAttachmentsDir(): ?string
     {
         return $this->attachmentsDir;
     }
@@ -1569,7 +1569,7 @@ class Mailbox
      *
      * @throws Exception
      */
-    public function imap(string $methodShortName, $args = [], bool $prependConnectionAsFirstArg = true, $throwExceptionClass = Exception::class)
+    public function imap(string $methodShortName, $args = [], bool $prependConnectionAsFirstArg = true, ?string $throwExceptionClass = Exception::class)
     {
         $method_name = 'imap_'.$methodShortName;
         if (!\function_exists($method_name)) {
@@ -1652,11 +1652,9 @@ class Mailbox
     }
 
     /**
-     * @return array|null
-     *
      * @psalm-return array{0:string, 1:string|null}|null
      */
-    protected function possiblyGetEmailAndNameFromRecipient(object $recipient)
+    protected function possiblyGetEmailAndNameFromRecipient(object $recipient): ?array
     {
         if (isset($recipient->mailbox, $recipient->host)) {
             /** @var mixed */
