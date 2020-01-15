@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
     /**
      * Example: Get and parse all emails without saving their attachments.
      *

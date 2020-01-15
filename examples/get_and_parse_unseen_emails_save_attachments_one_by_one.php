@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
     /**
      * Example: Get and parse all unseen emails with saving their attachments one by one.
      *
