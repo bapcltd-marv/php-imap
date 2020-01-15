@@ -627,7 +627,7 @@ final class MailboxTest extends TestCase
             ['assertNull', OP_READONLY, 3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['assertNull', OP_READONLY, 12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
 
-            ['expectException', OP_READONLY.OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+            ['expectException', OP_READONLY|OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['expectException', OP_READONLY, -1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['expectException', OP_READONLY, -3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
             ['expectException', OP_READONLY, -12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
