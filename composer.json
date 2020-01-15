@@ -32,7 +32,10 @@
     "require-dev": {
         "ext-fileinfo": "*",
         "friendsofphp/php-cs-fixer": "^2.16",
-        "phpunit/phpunit": "^6.0"
+        "maglnet/composer-require-checker": "^2.0",
+        "phpunit/phpunit": "^7.0",
+        "psalm/plugin-phpunit": "^0.7|^0.8",
+        "vimeo/psalm": "^3.5.1"
     },
     "suggest": {
         "ext-fileinfo": "To facilitate IncomingMailAttachment::getMimeType() auto-detection"
