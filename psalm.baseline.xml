@@ -18,7 +18,7 @@
     <DocblockTypeContradiction occurrences="1">
       <code>\is_resource($this-&gt;imapStream)</code>
     </DocblockTypeContradiction>
-    <PossiblyUnusedMethod occurrences="35">
+    <PossiblyUnusedMethod occurrences="34">
       <code>setOAuthToken</code>
       <code>getOAuthToken</code>
       <code>setConnectionRetry</code>
@@ -48,7 +48,6 @@
       <code>getQuotaLimit</code>
       <code>getQuotaUsage</code>
       <code>getRawMail</code>
-      <code>getImapPath</code>
       <code>getMailMboxFormat</code>
       <code>getMailboxes</code>
       <code>getSubscribedMailboxes</code>
@@ -59,16 +58,11 @@
       <code>!\is_resource($this-&gt;imapStream) || !imap_ping($this-&gt;imapStream)</code>
     </RedundantConditionGivenDocblockType>
   </file>
+  <file src="tests/unit/Fixtures/Mailbox.php">
+    <MissingReturnType occurrences="1">
+      <code>getImapPassword</code>
+    </MissingReturnType>
+  </file>
   <file src="tests/unit/MailboxTest.php">
-    <DeprecatedMethod occurrences="8">
-      <code>assertAttributeEquals</code>
-      <code>assertAttributeEquals</code>
-      <code>assertAttributeEquals</code>
-      <code>assertAttributeEquals</code>
-      <code>assertAttributeEquals</code>
-      <code>assertAttributeEquals</code>
-      <code>assertAttributeEquals</code>
-      <code>assertAttributeEquals</code>
-    </DeprecatedMethod>
   </file>
 </files>
