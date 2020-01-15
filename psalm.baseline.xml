@@ -92,9 +92,6 @@
       <code>subscribeMailbox</code>
       <code>unsubscribeMailbox</code>
     </PossiblyUnusedMethod>
-    <RedundantCondition occurrences="1">
-      <code>null != $params and \count($params) &gt; 0</code>
-    </RedundantCondition>
     <RedundantConditionGivenDocblockType occurrences="2">
       <code>\is_object($item)</code>
       <code>!\is_resource($this-&gt;imapStream) || !imap_ping($this-&gt;imapStream)</code>
