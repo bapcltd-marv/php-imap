@@ -377,7 +377,7 @@ final class MailboxTest extends TestCase
      */
     public function testSetAttachmentsIgnore(bool $paramValue)
     {
-            $this->mailbox->setAttachmentsIgnore($paramValue);
+        $this->mailbox->setAttachmentsIgnore($paramValue);
         $this->assertEquals($this->mailbox->getAttachmentsIgnore(), $paramValue);
     }
 

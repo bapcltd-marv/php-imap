@@ -464,13 +464,13 @@ class Mailbox
      */
     public function encodeStringToUtf7Imap(string $str): string
     {
-            $out = mb_convert_encoding($str, 'UTF7-IMAP', mb_detect_encoding($str, 'UTF-8, ISO-8859-1, ISO-8859-15', true));
+        $out = mb_convert_encoding($str, 'UTF7-IMAP', mb_detect_encoding($str, 'UTF-8, ISO-8859-1, ISO-8859-15', true));
 
-            if (!\is_string($out)) {
-                throw new UnexpectedValueException('mb_convert_encoding($str, \'UTF-8\', {detected}) could not convert $str');
-            }
+        if (!\is_string($out)) {
+            throw new UnexpectedValueException('mb_convert_encoding($str, \'UTF-8\', {detected}) could not convert $str');
+        }
 
-            return $out;
+        return $out;
     }
 
     /**
@@ -482,13 +482,13 @@ class Mailbox
      */
     public function decodeStringFromUtf7ImapToUtf8(string $str): string
     {
-            $out = mb_convert_encoding($str, 'UTF-8', 'UTF7-IMAP');
+        $out = mb_convert_encoding($str, 'UTF-8', 'UTF7-IMAP');
 
-            if (!\is_string($out)) {
-                throw new UnexpectedValueException('mb_convert_encoding($str, \'UTF-8\', \'UTF7-IMAP\') could not convert $str');
-            }
+        if (!\is_string($out)) {
+            throw new UnexpectedValueException('mb_convert_encoding($str, \'UTF-8\', \'UTF7-IMAP\') could not convert $str');
+        }
 
-            return $out;
+        return $out;
     }
 
     /**
