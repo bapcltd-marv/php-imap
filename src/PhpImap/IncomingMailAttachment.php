@@ -46,9 +46,6 @@ class IncomingMailAttachment
     /** @var string|null */
     private $filePath;
 
-    /**
-     * @param string $name
-     */
     public function __get(string $name)
     {
         if ('filePath' !== $name) {
@@ -94,8 +91,6 @@ class IncomingMailAttachment
 
     /**
      * Gets the MIME type.
-     *
-     * @return string
      */
     public function getMimeType(): string
     {
@@ -110,8 +105,6 @@ class IncomingMailAttachment
 
     /**
      * Gets the file content.
-     *
-     * @return string
      */
     public function getContents(): string
     {

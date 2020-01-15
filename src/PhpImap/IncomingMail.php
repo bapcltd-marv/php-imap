@@ -136,8 +136,6 @@ class IncomingMail extends IncomingMailHeader
 
     /**
      * @param string $id The attachment id
-     *
-     * @return bool
      */
     public function removeAttachment(string $id): bool
     {
@@ -167,11 +165,6 @@ class IncomingMail extends IncomingMailHeader
         return $match ? array_combine($matches[2], $matches[1]) : [];
     }
 
-    /**
-     * @param string $baseUri
-     *
-     * @return string
-     */
     public function replaceInternalLinks(string $baseUri): string
     {
         $baseUri = rtrim($baseUri, '\\/').'/';

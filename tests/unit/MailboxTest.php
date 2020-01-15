@@ -170,9 +170,6 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider serverEncodingProvider
      *
-     * @param bool   $bool
-     * @param string $encoding
-     *
      * @return void
      */
     public function testServerEncodingOnlyUseSupportedSettings(bool $bool, string $encoding)
@@ -314,8 +311,6 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider pathDelimiterProvider
      *
-     * @param string $str
-     *
      * @return void
      */
     public function testPathDelimiterIsBeingChecked(string $str)
@@ -426,8 +421,6 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider encodingTestStringsProvider
      *
-     * @param string $str
-     *
      * @return void
      */
     public function testEncodingToUtf7DecodeBackToUtf8(string $str)
@@ -442,8 +435,6 @@ final class MailboxTest extends TestCase
      * Test, that strings encoded to UTF-7 can be decoded back to UTF-8.
      *
      * @dataProvider encodingTestStringsProvider
-     *
-     * @param string $str
      *
      * @return void
      */
@@ -482,8 +473,6 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider datetimeProvider
      *
-     * @param string  $dateToParse
-     *
      * @return void
      */
     public function testParsedDateDifferentTimeZones(string $dateToParse, int $epochToCompare)
@@ -511,8 +500,6 @@ final class MailboxTest extends TestCase
      * Test, different invalid / unparseable datetimes conversions.
      *
      * @dataProvider invalidDatetimeProvider
-     *
-     * @param string $dateToParse
      *
      * @return void
      */
@@ -559,9 +546,6 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider mimeEncodingProvider
      *
-     * @param string $str
-     * @param string $expected
-     *
      * @return void
      */
     public function testMimeEncoding(string $str, string $expected)
@@ -601,9 +585,7 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider timeoutsProvider
      *
-     * @param string $assertMethod
-     * @param int    $timeout
-     * @param int[]  $types
+     * @param int[] $types
      *
      * @psalm-param 'assertNull'|'expectException' $assertMethod
      * @psalm-param list<1|2|3|4> $types
@@ -657,11 +639,6 @@ final class MailboxTest extends TestCase
      *
      * @dataProvider connectionArgsProvider
      *
-     * @param string     $assertMethod
-     * @param int        $option
-     * @param int        $retriesNum
-     * @param array|null $param
-     *
      * @return void
      */
     public function testSetConnectionArgs(string $assertMethod, int $option, int $retriesNum, array $param = null)
@@ -699,10 +676,6 @@ final class MailboxTest extends TestCase
      * Test, that decoding mime strings return unchanged / not broken strings.
      *
      * @dataProvider mimeStrDecodingProvider
-     *
-     * @param string $str
-     * @param string $expectedStr
-     * @param string $serverEncoding
      *
      * @return void
      */

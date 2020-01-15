@@ -87,12 +87,6 @@ class Mailbox
     private $imapStream;
 
     /**
-     * @param string $imapPath
-     * @param string $login
-     * @param string $password
-     * @param string|null $attachmentsDir
-     * @param string $serverEncoding
-     *
      * @throws InvalidParameterException
      */
     public function __construct(string $imapPath, string $login, string $password, string $attachmentsDir = null, string $serverEncoding = 'UTF-8')
@@ -285,8 +279,6 @@ class Mailbox
 
     /**
      * Set $this->attachmentsIgnore param. Allow to ignore attachments when they are not required and boost performance.
-     *
-     * @param bool $attachmentsIgnore
      */
     public function setAttachmentsIgnore(bool $attachmentsIgnore)
     {
@@ -339,10 +331,6 @@ class Mailbox
 
     /**
      * Set custom connection arguments of imap_open method. See http://php.net/imap_open.
-     *
-     * @param int        $options
-     * @param int        $retriesNum
-     * @param array|null $params
      *
      * @throws InvalidParameterException
      */
@@ -408,8 +396,6 @@ class Mailbox
     /**
      * Sets / Changes the attempts / retries to connect.
      *
-     * @param int $maxAttempts
-     *
      * @return void
      */
     public function setConnectionRetry(int $maxAttempts)
@@ -419,8 +405,6 @@ class Mailbox
 
     /**
      * Sets / Changes the delay between each attempt / retry to connect.
-     *
-     * @param int $milliseconds
      *
      * @return void
      */
@@ -493,8 +477,6 @@ class Mailbox
 
     /**
      * Switch mailbox without opening a new connection.
-     *
-     * @param string $imapPath
      *
      * @throws Exception
      */
@@ -570,8 +552,6 @@ class Mailbox
 
     /**
      * Sets 'expunge on disconnect' parameter.
-     *
-     * @param bool $isEnabled
      */
     public function setExpungeOnDisconnect(bool $isEnabled)
     {
@@ -615,8 +595,6 @@ class Mailbox
      *
      * @param string $name Name of mailbox, which you want to delete (eg. 'PhpImap')
      *
-     * @return bool
-     *
      * @see   imap_deletemailbox()
      */
     public function deleteMailbox(string $name): bool
@@ -656,8 +634,6 @@ class Mailbox
      * This function returns an object containing listing the folders.
      * The object has the following properties: messages, recent, unseen, uidnext, and uidvalidity.
      *
-     * @param string $pattern
-     *
      * @return array listing the folders
      */
     public function getListingFolders(string $pattern = '*'): array
@@ -691,8 +667,7 @@ class Mailbox
     /**
      * Save a specific body section to a file.
      *
-     * @param int    $mailId   message number
-     * @param string $filename
+     * @param int $mailId message number
      *
      * @see   imap_savebody()
      */
@@ -910,8 +885,6 @@ class Mailbox
      * returns an array of string formatted with header info,
      * one element per mail message.
      *
-     * @return array
-     *
      * @see    imap_headers()
      */
     public function getMailboxHeaders(): array
@@ -970,8 +943,6 @@ class Mailbox
     /**
      * Get mails count in mail box.
      *
-     * @return int
-     *
      * @see    imap_num_msg()
      */
     public function countMails(): int
@@ -985,8 +956,6 @@ class Mailbox
      *
      * @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
      *
-     * @return array
-     *
      * @see    imap_get_quotaroot()
      */
     protected function getQuota(string $quota_root = 'INBOX'): array
@@ -999,8 +968,6 @@ class Mailbox
      * Return quota limit in KB.
      *
      * @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
-     *
-     * @return int
      */
     public function getQuotaLimit(string $quota_root = 'INBOX'): int
     {
@@ -1049,13 +1016,11 @@ class Mailbox
      *
      * @param string $mailId ID of the message
      *
-     * @return IncomingMailHeader
-     *
      * @throws Exception
      *
      * @todo update type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
      */
-    public function getMailHeader(int $mailId): IncomingMailHeader
+    public function getMailHeader(string $mailId): IncomingMailHeader
     {
         /** @var string|false */
         $headersRaw = $this->imap('fetchheader', [$mailId, (SE_UID == $this->imapSearchOption) ? FT_UID : 0]);
@@ -1191,9 +1156,6 @@ class Mailbox
      *
      * @param \stdClass[] $messageParts
      * @param \stdClass[] $flattenedParts
-     * @param string      $prefix
-     * @param int         $index
-     * @param bool        $fullPrefix
      *
      * @psalm-param array<string, PARTSTRUCTURE> $flattenedParts
      *
@@ -1233,10 +1195,8 @@ class Mailbox
      *
      * @param string $mailId     ID of the mail
      * @param bool   $markAsSeen Mark the email as seen, when set to true
-     *
-     * @return IncomingMail
      */
-    public function getMail(int $mailId, bool $markAsSeen = true): IncomingMail
+    public function getMail(string $mailId, bool $markAsSeen = true): IncomingMail
     {
         $mail = new IncomingMail();
         $mail->setHeader($this->getMailHeader($mailId));
@@ -1257,10 +1217,7 @@ class Mailbox
     }
 
     /**
-     * @param object     $partStructure
      * @param string|int $partNum
-     * @param bool       $markAsSeen
-     * @param bool       $emlParse
      *
      * @psalm-param PARTSTRUCTURE $partStructure
      *
@@ -1445,8 +1402,7 @@ class Mailbox
     /**
      * Decodes a mime string.
      *
-     * @param string $string    MIME string to decode
-     * @param string $toCharset
+     * @param string $string MIME string to decode
      *
      * @return string Converted string if conversion was successful, or the original string if not
      *
@@ -1475,11 +1431,6 @@ class Mailbox
         return $newString;
     }
 
-    /**
-     * @param string $string
-     *
-     * @return bool
-     */
     public function isUrlEncoded(string $string): bool
     {
         $hasInvalidChars = preg_match('#[^%a-zA-Z0-9\-_\.\+]#', $string);
@@ -1488,12 +1439,6 @@ class Mailbox
         return !$hasInvalidChars && $hasEscapedChars;
     }
 
-    /**
-     * @param string $string
-     * @param string $charset
-     *
-     * @return string
-     */
     protected function decodeRFC2231(string $string, string $charset = 'utf-8'): string
     {
         if (preg_match("/^(.*?)'.*?'(.*?)$/", $string, $matches)) {
@@ -1573,8 +1518,6 @@ class Mailbox
 
     /**
      * Gets IMAP path.
-     *
-     * @return string
      */
     public function getImapPath(): string
     {
@@ -1585,8 +1528,6 @@ class Mailbox
      * Get message in MBOX format.
      *
      * @param int $mailId message number
-     *
-     * @return string
      */
     public function getMailMboxFormat(int $mailId): string
     {
@@ -1597,10 +1538,6 @@ class Mailbox
 
     /**
      * Get folders list.
-     *
-     * @param string $search
-     *
-     * @return array
      */
     public function getMailboxes(string $search = '*'): array
     {
@@ -1616,10 +1553,6 @@ class Mailbox
 
     /**
      * Get folders list.
-     *
-     * @param string $search
-     *
-     * @return array
      */
     public function getSubscribedMailboxes(string $search = '*'): array
     {
@@ -1636,8 +1569,6 @@ class Mailbox
     /**
      * Subscribe to a mailbox.
      *
-     * @param string $mailbox
-     *
      * @throws Exception
      */
     public function subscribeMailbox(string $mailbox)
@@ -1647,8 +1578,6 @@ class Mailbox
 
     /**
      * Unsubscribe from a mailbox.
-     *
-     * @param string $mailbox
      *
      * @return void
      *
@@ -1796,11 +1725,7 @@ class Mailbox
     }
 
     /**
-     * @param array $t
-     *
      * @psalm-param object{name:string}[] $t
-     *
-     * @return array
      *
      * @todo revisit implementation pending resolution of https://github.com/vimeo/psalm/issues/2619
      */
@@ -1839,11 +1764,7 @@ class Mailbox
     }
 
     /**
-     * @param array $t
-     *
      * @psalm-param HOSTNAMEANDADDRESS $t
-     *
-     * @return array
      *
      * @psalm-return array{0:string|null, 1:string|null, 2:string}
      */
