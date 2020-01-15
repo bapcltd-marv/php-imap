@@ -15,15 +15,11 @@ final class MailboxTest extends TestCase
 {
     /**
      * Holds a PhpImap\Mailbox instance.
-     *
-     * @var Mailbox|null
      */
     private ?Mailbox $mailbox = null;
 
     /**
      * Holds the imap path.
-     *
-     * @var string
      */
     private string $imapPath = '{imap.example.com:993/imap/ssl/novalidate-cert}INBOX';
 
@@ -38,22 +34,16 @@ final class MailboxTest extends TestCase
 
     /**
      * Holds the imap user password.
-     *
-     * @var string
      */
     private string $password = 'v3rY!53cEt&P4sSWöRd$';
 
     /**
      * Holds the relative name of the directory, where email attachments will be saved.
-     *
-     * @var string
      */
     private string $attachmentsDir = '.';
 
     /**
      * Holds the server encoding setting.
-     *
-     * @var string
      */
     private string $serverEncoding = 'UTF-8';
 

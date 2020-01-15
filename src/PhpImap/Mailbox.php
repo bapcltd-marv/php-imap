@@ -33,43 +33,30 @@ use UnexpectedValueException;
  */
 class Mailbox
 {
-    /** @var string */
     protected string $imapPath;
 
-    /** @var string */
     protected string $imapLogin;
 
-    /** @var string */
     protected string $imapPassword;
 
-    /** @var string|null */
     protected ?string $imapOAuthAccessToken = null;
 
-    /** @var int */
     protected int $imapSearchOption = SE_UID;
 
-    /** @var int */
     protected int $connectionRetry = 0;
 
-    /** @var int */
     protected int $connectionRetryDelay = 100;
 
-    /** @var int */
     protected int $imapOptions = 0;
 
-    /** @var int */
     protected int $imapRetriesNum = 0;
 
-    /** @var array */
     protected array $imapParams = [];
 
-    /** @var string */
     protected string $serverEncoding = 'UTF-8';
 
-    /** @var string|null */
     protected ?string $attachmentsDir = null;
 
-    /** @var bool */
     protected bool $expungeOnDisconnect = true;
 
     /**
@@ -79,10 +66,8 @@ class Mailbox
      */
     protected array $timeouts = [];
 
-    /** @var bool */
     protected bool $attachmentsIgnore = false;
 
-    /** @var string */
     protected string $pathDelimiter = '.';
 
     /** @var resource|null */

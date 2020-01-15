@@ -14,55 +14,38 @@ class IncomingMailHeader
     /** @var string|null $id The IMAP message ID - not the "Message-ID:"-header of the email */
     public ?string $id = null;
 
-    /** @var bool */
     public bool $isDraft = false;
 
-    /** @var string|null */
     public ?string $date = null;
 
-    /** @var string|null */
     public ?string $headersRaw = null;
 
-    /** @var object|null */
     public ?object $headers = null;
 
-    /** @var string|null */
     public ?string $priority = null;
 
-    /** @var string|null */
     public ?string $importance = null;
 
-    /** @var string|null */
     public ?string $sensitivity = null;
 
-    /** @var string|null */
     public ?string $autoSubmitted = null;
 
-    /** @var string|null */
     public ?string $precedence = null;
 
-    /** @var string|null */
     public ?string $failedRecipients = null;
 
-    /** @var string|null */
     public ?string $subject = null;
 
-    /** @var string|null */
     public ?string $fromHost = null;
 
-    /** @var string|null */
     public ?string $fromName = null;
 
-    /** @var string|null */
     public ?string $fromAddress = null;
 
-    /** @var string|null */
     public ?string $senderHost = null;
 
-    /** @var string|null */
     public ?string $senderName = null;
 
-    /** @var string|null */
     public ?string $senderAddress = null;
 
     /**
@@ -96,6 +79,5 @@ class IncomingMailHeader
      */
     public array $replyTo = [];
 
-    /** @var string|null */
     public ?string $messageId = null;
 }

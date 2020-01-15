@@ -23,7 +23,6 @@ class IncomingMail extends IncomingMailHeader
      */
     protected array $attachments = [];
 
-    /** @var bool */
     protected bool $hasAttachments = false;
 
     /**
@@ -33,10 +32,8 @@ class IncomingMail extends IncomingMailHeader
      */
     protected array $dataInfo = [[], []];
 
-    /** @var string|null */
     private ?string $textPlain = null;
 
-    /** @var string|null */
     private ?string $textHtml = null;
 
     public function setHeader(IncomingMailHeader $header): void
