@@ -21,8 +21,6 @@ class DataPartInfo
     const TEXT_HTML = 1;
 
     /**
-     * @var int
-     *
      * @readonly
      */
     public int $id;
@@ -34,7 +32,6 @@ class DataPartInfo
      */
     public $encoding;
 
-    /** @var string|null */
     public ?string $charset = null;
 
     /**
@@ -45,20 +42,15 @@ class DataPartInfo
     public $part;
 
     /**
-     * @var Mailbox
-     *
      * @readonly
      */
     public Mailbox $mail;
 
     /**
-     * @var int
-     *
      * @readonly
      */
     public int $options;
 
-    /** @var string|null */
     protected ?string $data = null;
 
     /**
