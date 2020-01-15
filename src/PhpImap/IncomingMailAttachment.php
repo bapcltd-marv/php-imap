@@ -21,64 +21,64 @@ use UnexpectedValueException;
 class IncomingMailAttachment
 {
     /** @var string|null */
-    public $id;
+    public ?string $id = null;
 
     /** @var string|null */
-    public $contentId;
+    public ?string $contentId = null;
 
     /** @var int|null */
-    public $type;
+    public ?int $type = null;
 
     /** @var int|null */
-    public $encoding;
+    public ?int $encoding = null;
 
     /** @var string|null */
-    public $subtype;
+    public ?string $subtype = null;
 
     /** @var string|null */
-    public $description;
+    public ?string $description = null;
 
     /** @var string|null */
-    public $name;
+    public ?string $name = null;
 
     /** @var int|null */
-    public $sizeInBytes;
+    public ?int $sizeInBytes = null;
 
     /** @var string|null */
-    public $disposition;
+    public ?string $disposition = null;
 
     /** @var string|null */
-    public $charset;
+    public ?string $charset = null;
 
     /** @var bool|null */
-    public $emlOrigin;
+    public ?bool $emlOrigin = null;
 
     /** @var string|null */
-    public $fileInfoRaw;
+    public ?string $fileInfoRaw = null;
 
     /** @var string|null */
-    public $fileInfo;
+    public ?string $fileInfo = null;
 
     /** @var string|null */
-    public $mime;
+    public ?string $mime = null;
 
     /** @var string|null */
-    public $mimeEncoding;
+    public ?string $mimeEncoding = null;
 
     /** @var string|null */
-    public $fileExtension;
+    public ?string $fileExtension = null;
 
     /** @var string|null */
-    private $file_path;
+    private ?string $file_path = null;
 
     /** @var DataPartInfo|null */
-    private $dataInfo;
+    private ?DataPartInfo $dataInfo = null;
 
     /** @var string|null */
-    private $mimeType;
+    private ?string $mimeType = null;
 
     /** @var string|null */
-    private $filePath;
+    private ?string $filePath = null;
 
     /**
      * @return string|false|null
