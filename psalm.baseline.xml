@@ -58,11 +58,6 @@
       <code>!\is_resource($this-&gt;imapStream) || !imap_ping($this-&gt;imapStream)</code>
     </RedundantConditionGivenDocblockType>
   </file>
-  <file src="tests/unit/Fixtures/Mailbox.php">
-    <MissingReturnType occurrences="1">
-      <code>getImapPassword</code>
-    </MissingReturnType>
-  </file>
   <file src="tests/unit/MailboxTest.php">
   </file>
 </files>
