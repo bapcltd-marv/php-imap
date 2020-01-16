@@ -96,9 +96,6 @@
       <code>assertAttributeEquals</code>
       <code>assertAttributeEquals</code>
     </DeprecatedMethod>
-    <RedundantConditionGivenDocblockType occurrences="1">
-      <code>assertInstanceOf</code>
-    </RedundantConditionGivenDocblockType>
     <UndefinedConstant occurrences="5">
       <code>OPENTIMEOUT</code>
       <code>READTIMEOUT</code>
