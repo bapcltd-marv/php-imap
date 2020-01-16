@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * Mailbox - PHPUnit tests.
  *
  * @author Sebastian Kraetzig <sebastian-kraetzig@gmx.de>
  */
+declare(strict_types=1);
 
 namespace PhpImap;
 
