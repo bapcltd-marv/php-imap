@@ -1,15 +1,17 @@
 # PHP IMAP
 
-[![GitHub release](https://img.shields.io/github/release/barbushin/php-imap.svg?style=flat-square)](https://packagist.org/packages/php-imap/php-imap)
+[![GitHub release](https://img.shields.io/github/release/bapcltd/php-imap.svg?style=flat-square)](https://packagist.org/packages/bapcltd/php-imap)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Packagist](https://img.shields.io/packagist/dt/php-imap/php-imap.svg?style=flat-square)](https://packagist.org/packages/php-imap/php-imap)
+[![Packagist](https://img.shields.io/packagist/dt/bapcltd/php-imap.svg?style=flat-square)](https://packagist.org/packages/bapcltd/php-imap)
 [![Build Status](https://travis-ci.org/bapcltd-marv/php-imap.svg?branch=master)](https://travis-ci.org/bapcltd-marv/php-imap)
 [![Supported PHP Version](https://img.shields.io/travis/php-v/bapcltd-marv/php-imap.svg)](README.md)
 [![Maintainability](https://api.codeclimate.com/v1/badges/debb2dab6d8ed688f466/maintainability)](https://codeclimate.com/github/bapcltd-marv/php-imap/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/debb2dab6d8ed688f466/test_coverage)](https://codeclimate.com/github/bapcltd-marv/php-imap/test_coverage)
-[![Type Coverage](https://shepherd.dev/github/barbushin/php-imap/coverage.svg)](https://shepherd.dev/github/barbushin/php-imap)
+[![Type Coverage](https://shepherd.dev/github/bapcltd-marv/php-imap/coverage.svg)](https://shepherd.dev/github/bapcltd-marv/php-imap)
 
 Initially released in December 2012, the PHP IMAP Mailbox is a powerful and open source library to connect to a mailbox by POP3, IMAP and NNTP using the PHP IMAP extension. This library allows you to fetch emails from your email server. Extend the functionality or create powerful web applications to handle your incoming emails.
+
+Forked in 2020, [see original](https://github.com/barbushin/php-imap).
 
 ### Features
 
@@ -22,34 +24,22 @@ Initially released in December 2012, the PHP IMAP Mailbox is a powerful and open
 
 ### Requirements
 
-* PHP 5.6, 7.0, 7.1, 7.2, 7.3 or 7.4
+* PHP 7.4
 * PHP `imap` extension must be present; so make sure this line is active in your php.ini: `extension=php_imap.dll`
 * PHP `mbstring` extension must be present; so make sure this line is active in your php.ini: `extension=php_mbstring.dll`
 * PHP `iconv` extension must be present, if `mbstring` is not available; so make sure this line is active in your php.ini: `extension=php_iconv.dll`
 
 ### Installation by Composer
 
-Install the [latest available release](https://github.com/barbushin/php-imap/releases):
+Install the latest available and may unstable source code from `master`, which is may not properly tested yet:
 
-	$ composer require php-imap/php-imap
-
-Install the latest available and stable source code from `master`, which is may not released / tagged yet:
-
-	$ composer require php-imap/php-imap:dev-master
-
-Install the latest available and may unstable source code from `develop`, which is may not properly tested yet:
-
-	$ composer require php-imap/php-imap:dev-develop
+	$ composer require bapcltd/php-imap:dev-master
 
 ### PHPUnit Tests
 
 Before you can run the PHPUnit tests you may need to run `composer install` to install all (development) dependencies.
 
 You can run all PHPUnit tests by running the following command (inside of the installed `php-imap` directory): `php vendor/bin/phpunit --testdox`
-
-### Integration with frameworks
-
-* Symfony - https://github.com/secit-pl/imap-bundle
 
 ### Getting Started Example
 
@@ -137,5 +127,4 @@ print_r($mails_ids);
 
 ### Recommended
 
-* Google Chrome extension [PHP Console](https://chrome.google.com/webstore/detail/php-console/nfhmhhlpfleoednkpnnnkolmclajemef)
-* Google Chrome extension [JavaScript Errors Notifier](https://chrome.google.com/webstore/detail/javascript-errors-notifie/jafmfknfnkoekkdocjiaipcnmkklaajd)
+* [Original Release](https://github.com/barbushin/php-imap)
