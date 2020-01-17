@@ -59,12 +59,6 @@
       <code>!\is_resource($this-&gt;imapStream) || !imap_ping($this-&gt;imapStream)</code>
     </RedundantConditionGivenDocblockType>
   </file>
-  <file src="tests/unit/IncomingMailTest.php">
-    <RedundantConditionGivenDocblockType occurrences="2">
-      <code>\is_string($attachment-&gt;id)</code>
-      <code>assertTrue</code>
-    </RedundantConditionGivenDocblockType>
-  </file>
   <file src="tests/unit/MailboxTest.php">
     <DeprecatedMethod occurrences="8">
       <code>assertAttributeEquals</code>
