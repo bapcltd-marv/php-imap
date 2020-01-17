@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function in_array;
+use function is_string;
 use ParagonIE\HiddenString\HiddenString;
 use PHPUnit\Framework\TestCase;
 use Throwable;
