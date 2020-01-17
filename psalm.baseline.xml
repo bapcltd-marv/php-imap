@@ -15,22 +15,12 @@
     </PropertyTypeCoercion>
   </file>
   <file src="src/PhpImap/Mailbox.php">
-    <DocblockTypeContradiction occurrences="2">
-      <code>\is_object($item)</code>
+    <DocblockTypeContradiction occurrences="1">
       <code>\is_resource($this-&gt;imapStream)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="6">
-      <code>$str</code>
-      <code>$str</code>
-      <code>$str</code>
+    <InvalidArgument occurrences="1">
       <code>$partStructure-&gt;id</code>
-      <code>$mailboxes</code>
-      <code>$mailboxes</code>
     </InvalidArgument>
-    <MismatchingDocblockParamType occurrences="2">
-      <code>scalar|array|object|resource|null</code>
-      <code>scalar|array|object|resource|null</code>
-    </MismatchingDocblockParamType>
     <MixedArgument occurrences="9">
       <code>$param-&gt;value</code>
       <code>$param-&gt;value</code>
@@ -88,8 +78,7 @@
       <code>subscribeMailbox</code>
       <code>unsubscribeMailbox</code>
     </PossiblyUnusedMethod>
-    <RedundantConditionGivenDocblockType occurrences="2">
-      <code>\is_object($item)</code>
+    <RedundantConditionGivenDocblockType occurrences="1">
       <code>!\is_resource($this-&gt;imapStream) || !imap_ping($this-&gt;imapStream)</code>
     </RedundantConditionGivenDocblockType>
     <UnusedVariable occurrences="1">

@@ -444,8 +444,6 @@ class Mailbox
     /**
      * Returns the provided string in UTF7-IMAP encoded format.
      *
-     * @param scalar|array|object|resource|null $str
-     *
      * @return string $str UTF-7 encoded string
      */
     public function encodeStringToUtf7Imap(string $str): string
@@ -461,8 +459,6 @@ class Mailbox
 
     /**
      * Returns the provided string in UTF-8 encoded format.
-     *
-     * @param scalar|array|object|resource|null $str
      *
      * @return string $str UTF-7 encoded string or same as before, when it's no string
      */
@@ -1525,7 +1521,7 @@ class Mailbox
      */
     public function getMailboxes(string $search = '*'): array
     {
-        /** @psalm-var (scalar|array|object|resource|null)[]|false */
+        /** @psalm-var array<int, scalar|array|object{name?:string}|resource|null>|false */
         $mailboxes = imap_getmailboxes($this->getImapStream(), $this->imapPath, $search);
 
         if (!\is_array($mailboxes)) {
@@ -1540,7 +1536,7 @@ class Mailbox
      */
     public function getSubscribedMailboxes(string $search = '*'): array
     {
-        /** @psalm-var (scalar|array|object|resource|null)[]|false */
+        /** @psalm-var array<int, scalar|array|object{name?:string}|resource|null>|false */
         $mailboxes = (array) imap_getsubscribed($this->getImapStream(), $this->imapPath, $search);
 
         if (!\is_array($mailboxes)) {
@@ -1709,7 +1705,7 @@ class Mailbox
     }
 
     /**
-     * @psalm-param object{name:string}[] $t
+     * @psalm-param array<int, scalar|array|object{name?:string}|resource|null> $t
      *
      * @todo revisit implementation pending resolution of https://github.com/vimeo/psalm/issues/2619
      */
@@ -1718,12 +1714,13 @@ class Mailbox
         $arr = [];
         if ($t) {
             foreach ($t as $index => $item) {
-                /** @var scalar|array|object|resource|null */
-                $item_name = \is_object($item) && isset($item->name) ? $item->name : null;
-
                 if (!\is_object($item)) {
                     throw new UnexpectedValueException('Index '.(string) $index.' of argument 1 passed to '.__METHOD__.'() corresponds to a non-object value, '.\gettype($item).' given!');
-                } elseif (!isset($item->name, $item->attributes, $item->delimiter)) {
+                }
+                /** @var scalar|array|object|resource|null */
+                $item_name = isset($item->name) ? $item->name : null;
+
+                if (!isset($item->name, $item->attributes, $item->delimiter)) {
                     throw new UnexpectedValueException('The object at index '.(string) $index.' of argument 1 passed to '.__METHOD__.'() was missing one or more of the required properties "name", "attributes", "delimiter"!');
                 } elseif (!\is_string($item_name)) {
                     throw new UnexpectedValueException('The object at index '.(string) $index.' of argument 1 passed to '.__METHOD__.'() has a non-string value for the name property!');
