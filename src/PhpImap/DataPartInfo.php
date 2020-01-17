@@ -52,7 +52,7 @@ class DataPartInfo
 	/**
 	 * @param string|int $id
 	 * @param string|int $part
-	 * @param int|mixed  $encoding
+	 * @param int|mixed $encoding
 	 */
 	public function __construct(Mailbox $mail, $id, $part, $encoding, int $options)
 	{
@@ -63,9 +63,9 @@ class DataPartInfo
 		$this->options = $options;
 	}
 
-	public function fetch(): string
+	public function fetch() : string
 	{
-		if (0 == $this->part) {
+		if (0 === $this->part) {
 			/** @var string */
 			$this->data = $this->mail->imap('body', [$this->id, $this->options]);
 		} else {
@@ -105,7 +105,7 @@ class DataPartInfo
 	 */
 	protected function convertEncodingAfterFetch()
 	{
-		if (isset($this->charset) and !empty(trim($this->charset))) {
+		if (isset($this->charset) && ! empty(trim($this->charset))) {
 			$this->data = $this->mail->convertStringEncoding(
 				(string) $this->data, // Data to convert
 				$this->charset, // FROM-Encoding (Charset)

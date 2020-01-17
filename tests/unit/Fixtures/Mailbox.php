@@ -11,7 +11,7 @@ use PhpImap\Mailbox as Base;
 
 class Mailbox extends Base
 {
-	public function getImapPassword(): HiddenString
+	public function getImapPassword() : HiddenString
 	{
 		return $this->imapPassword;
 	}

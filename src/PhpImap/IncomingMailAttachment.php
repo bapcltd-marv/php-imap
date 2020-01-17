@@ -42,7 +42,7 @@ class IncomingMailAttachment
 			trigger_error("Undefined property: IncomingMailAttachment::$name");
 		}
 
-		if (!isset($this->file_path)) {
+		if ( ! isset($this->file_path)) {
 			return false;
 		}
 
@@ -60,7 +60,7 @@ class IncomingMailAttachment
 	 *
 	 * @param string $filePath File path incl. file name and optional extension
 	 */
-	public function setFilePath(string $filePath): void
+	public function setFilePath(string $filePath) : void
 	{
 		$this->file_path = $filePath;
 	}
@@ -70,7 +70,7 @@ class IncomingMailAttachment
 	 *
 	 * @param DataPartInfo $dataInfo Date info (file content)
 	 */
-	public function addDataPartInfo(DataPartInfo $dataInfo): void
+	public function addDataPartInfo(DataPartInfo $dataInfo) : void
 	{
 		$this->dataInfo = $dataInfo;
 	}
@@ -78,9 +78,9 @@ class IncomingMailAttachment
 	/**
 	 * Gets the MIME type.
 	 */
-	public function getMimeType(): string
+	public function getMimeType() : string
 	{
-		if (!$this->mimeType) {
+		if ( ! $this->mimeType) {
 			$finfo = new finfo(FILEINFO_MIME);
 
 			$this->mimeType = $finfo->buffer($this->getContents());
@@ -92,10 +92,10 @@ class IncomingMailAttachment
 	/**
 	 * Gets the file content.
 	 */
-	public function getContents(): string
+	public function getContents() : string
 	{
 		if (null === $this->dataInfo) {
-			throw new UnexpectedValueException(static::class.'::$dataInfo has not been set by calling '.self::class.'::addDataPartInfo()');
+			throw new UnexpectedValueException(static::class . '::$dataInfo has not been set by calling ' . self::class . '::addDataPartInfo()');
 		}
 
 		return $this->dataInfo->fetch();
@@ -106,15 +106,14 @@ class IncomingMailAttachment
 	 *
 	 * @return bool True, if it could save the attachment on the disk
 	 */
-	public function saveToDisk(): bool
+	public function saveToDisk() : bool
 	{
 		if (null === $this->dataInfo) {
 			return false;
 		}
 
 		if (false === file_put_contents($this->filePath, $this->dataInfo->fetch())) {
-			unset($this->filePath);
-			unset($this->file_path);
+			unset($this->filePath, $this->file_path);
 
 			return false;
 		}
