@@ -14,8 +14,8 @@ class IncomingMailTest extends TestCase
         $mail = new IncomingMail();
         $header = new IncomingMailHeader();
 
-        $mail->id = 1;
-        $header->id = 2;
+        $mail->id = '1';
+        $header->id = '2';
 
         $mail->isDraft = true;
         $header->isDraft = false;
