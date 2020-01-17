@@ -10,8 +10,8 @@ use PhpImap\Mailbox as Base;
 
 class Mailbox extends Base
 {
-    public function getImapPassword(): string
-    {
-        return $this->imapPassword;
-    }
+	public function getImapPassword(): string
+	{
+		return $this->imapPassword;
+	}
 }
