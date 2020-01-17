@@ -13,7 +13,7 @@ script:
   - vendor/bin/phpunit --coverage-clover=clover.xml
   - vendor/bin/composer-require-checker check ./composer.json
   - vendor/bin/psalm --show-info=false --shepherd
-  - vendor/bin/php-cs-fixer fix --allow-risky=yes --no-interaction --dry-run --diff -v
+  - vendor/bin/php-cs-fixer fix --allow-risky=yes --no-interaction --dry-run --diff-format=udiff -v
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover

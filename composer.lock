@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f33d351571af6236bed45916c024d4e6",
+    "content-hash": "a2d1c61875e42b0ecf64651cb9d56015",
     "packages": [
         {
             "name": "paragonie/constant_time_encoding",
@@ -2683,6 +2683,53 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2016-10-03T07:35:21+00:00"
+        },
+        {
+            "name": "signpostmarv/php-cs-fixer-config",
+            "version": "v0.16.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SignpostMarv/PHP-CS-Fixer-Config.git",
+                "reference": "d736e99b7dbfbf04718b369bc3ee4616f39f0aa3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SignpostMarv/PHP-CS-Fixer-Config/zipball/d736e99b7dbfbf04718b369bc3ee4616f39f0aa3",
+                "reference": "d736e99b7dbfbf04718b369bc3ee4616f39f0aa3",
+                "shasum": ""
+            },
+            "require": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "php": "^7.4"
+            },
+            "conflict": {
+                "vimeo/psalm": "<3.8"
+            },
+            "require-dev": {
+                "maglnet/composer-require-checker": "^2.0",
+                "povils/phpmnd": "^2.2",
+                "roave/security-advisories": "dev-master",
+                "sebastian/phpcpd": "^4.1",
+                "vimeo/psalm": "^3.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SignpostMarv\\CS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "SignpostMarv",
+                    "email": "me@signpostmarv.name"
+                }
+            ],
+            "description": "PHP-CS-Fixer Config",
+            "time": "2020-01-13T22:29:20+00:00"
         },
         {
             "name": "symfony/console",
