@@ -1,26 +1,16 @@
 <?php
-
+/**
+* PHP-CS-Fixer Config.
+*
+* @author SignpostMarv
+*/
 declare(strict_types=1);
 
-return PhpCsFixer\Config::create()
-    ->setRules([
-        '@Symfony' => true,
-        '@Symfony:risky' => true,
-        'array_syntax' => [
-            'syntax' => 'short',
-        ],
-        'ordered_imports' => true,
-        'phpdoc_to_comment' => false,
-        'no_superfluous_phpdoc_tags' => true,
-        'declare_strict_types' => true,
-        'void_return' => true,
-    ])
-    ->setRiskyAllowed(true)
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->in(__DIR__.'/src')
-            ->in(__DIR__.'/tests')
-            ->in(__DIR__.'/examples')
-            ->append([__FILE__])
-    )
-;
+namespace SignpostMarv\CS;
+
+return ConfigUsedWithStaticAnalysis::createWithPaths(...[
+	__FILE__,
+	(__DIR__ . '/src/'),
+	(__DIR__ . '/tests/'),
+	(__DIR__ . '/examples/'),
+]);
