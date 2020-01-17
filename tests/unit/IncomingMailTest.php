@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class IncomingMailTest extends TestCase
 {
-    public function testSetHeader()
+    public function testSetHeader(): void
     {
         $mail = new IncomingMail();
         $header = new IncomingMailHeader();
@@ -38,7 +38,7 @@ class IncomingMailTest extends TestCase
         }
     }
 
-    public function testDataPartInfo()
+    public function testDataPartInfo(): void
     {
         $mail = new IncomingMail();
         $mailbox = new Mailbox('', '', '');
@@ -55,7 +55,7 @@ class IncomingMailTest extends TestCase
         $this->assertTrue($mail->__isset('textPlain'));
     }
 
-    public function testAttachments()
+    public function testAttachments(): void
     {
         $mail = new IncomingMail();
 

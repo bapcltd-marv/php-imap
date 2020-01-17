@@ -197,7 +197,7 @@ final class MailboxTest extends TestCase
         $this->assertEquals($mailbox->getImapSearchOption(), 2);
 
         $this->expectException(InvalidParameterException::class);
-        $this->mailbox->setImapSearchOption(self::ANYTHING);
+        $mailbox->setImapSearchOption(self::ANYTHING);
 
         $mailbox->setImapSearchOption(SE_UID);
         $this->assertEquals($mailbox->getImapSearchOption(), 1);

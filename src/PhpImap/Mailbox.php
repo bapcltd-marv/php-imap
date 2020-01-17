@@ -1293,6 +1293,7 @@ class Mailbox
      *
      * @psalm-param array<string, string> $params
      * @psalm-param PARTSTRUCTURE $partStructure
+     * @psalm-param PARTSTRUCTURE $partStructure
      *
      * @return IncomingMailAttachment $attachment
      *
