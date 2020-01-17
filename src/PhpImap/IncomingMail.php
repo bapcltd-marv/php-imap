@@ -11,6 +11,7 @@ use function count;
 use function get_object_vars;
 use InvalidArgumentException;
 use function is_string;
+use function mb_strstr;
 use function preg_match_all;
 use function rtrim;
 use function str_replace;

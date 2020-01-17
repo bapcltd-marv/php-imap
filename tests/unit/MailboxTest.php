@@ -12,6 +12,7 @@ use DateTime;
 use Exception;
 use function in_array;
 use function mb_list_encodings;
+use function mb_strtoupper;
 use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\InvalidParameterException;
 use PHPUnit\Framework\TestCase;
