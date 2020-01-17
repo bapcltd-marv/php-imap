@@ -19,17 +19,20 @@ use UnexpectedValueException;
  *
  * @author Barbushin Sergey http://linkedin.com/in/barbushin
  *
+ * @psalm-type PARTSTRUCTURE_PARAM = object{attribute:string, value?:string}
+ *
  * @psalm-type PARTSTRUCTURE = object{
  *  id?:string,
  *  encoding:int|mixed,
  *  partStructure:object[],
- *  parameters:object{attribute:string, value?:string}[],
+ *  parameters:PARTSTRUCTURE_PARAM[],
  *  dparameters:object{attribute:string, value:string}[],
  *  parts:array<int, object{disposition?:string}>,
  *  type:int,
  *  subtype:string
  * }
- * @psalm-type HOSTNAMEANDADDRESS = non-empty-array<int, object{host?:string, personal?:string, mailbox:string}>
+ * @psalm-type HOSTNAMEANDADDRESS_ENTRY = object{host?:string, personal?:string, mailbox:string}
+ * @psalm-type HOSTNAMEANDADDRESS = array{0:HOSTNAMEANDADDRESS_ENTRY, 1?:HOSTNAMEANDADDRESS_ENTRY}
  */
 class Mailbox
 {
@@ -356,7 +359,7 @@ class Mailbox
         if (\is_array($params) and \count($params) > 0) {
             $supported_params = ['DISABLE_AUTHENTICATOR'];
 
-            foreach ($params as $key => $value) {
+            foreach (array_keys($params) as $key) {
                 if (!\in_array($key, $supported_params, true)) {
                     throw new InvalidParameterException('Invalid array key of params provided for setConnectionArgs()! Only DISABLE_AUTHENTICATOR is currently valid.');
                 }
@@ -1181,6 +1184,7 @@ class Mailbox
         $mail = new IncomingMail();
         $mail->setHeader($this->getMailHeader($mailId));
 
+        /** @psalm-var PARTSTRUCTURE */
         $mailStructure = $this->imap('fetchstructure', [$mailId, (SE_UID == $this->imapSearchOption) ? FT_UID : 0]);
 
         if (empty($mailStructure->parts)) {
@@ -1223,8 +1227,9 @@ class Mailbox
         if (!empty($partStructure->parameters)) {
             foreach ($partStructure->parameters as $param) {
                 $params[strtolower($param->attribute)] = '';
-                if (isset($param->value) && '' !== trim($param->value)) {
-                    $params[strtolower($param->attribute)] = $this->decodeMimeStr($param->value);
+                $value = isset($param->value) ? $param->value : null;
+                if (isset($value) && '' !== trim($value)) {
+                    $params[strtolower($param->attribute)] = $this->decodeMimeStr($value);
                 }
             }
         }
@@ -1751,11 +1756,19 @@ class Mailbox
      */
     protected function possiblyGetHostNameAndAddress(array $t): array
     {
-        $out = [];
-        /** @var string|null */
-        $out[] = isset($t[0]->host) ? $t[0]->host : (isset($t[1]->host) ? $t[1]->host : null);
-        /** @var string|null */
-        $out[] = (isset($t[0]->personal) and !empty(trim($t[0]->personal))) ? $this->decodeMimeStr($t[0]->personal, $this->getServerEncoding()) : ((isset($t[1]->personal) and (!empty(trim($t[1]->personal)))) ? $this->decodeMimeStr($t[1]->personal, $this->getServerEncoding()) : null);
+        $out = [
+            isset($t[0]->host) ? $t[0]->host : (isset($t[1], $t[1]->host) ? $t[1]->host : null),
+            1 => null,
+        ];
+        foreach ([0, 1] as $index) {
+            $maybe = isset($t[$index], $t[$index]->personal) ? $t[$index]->personal : null;
+            if (\is_string($maybe) && '' !== trim($maybe)) {
+                $out[1] = $this->decodeMimeStr($maybe, $this->getServerEncoding());
+
+                break;
+            }
+        }
+
         /** @var string */
         $out[] = strtolower($t[0]->mailbox.'@'.(string) $out[0]);
 
