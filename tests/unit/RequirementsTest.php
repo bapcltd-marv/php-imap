@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function extension_loaded;
 use PHPUnit\Framework\TestCase;
 
 final class RequirementsTest extends TestCase
@@ -13,7 +14,7 @@ final class RequirementsTest extends TestCase
 	 *
 	 * @psalm-return array<string, array{0:string}>
 	 */
-	public function extensionProvider(): array
+	public function extensionProvider() : array
 	{
 		return [
 			'imap' => ['imap'],
@@ -27,8 +28,8 @@ final class RequirementsTest extends TestCase
 	 *
 	 * @dataProvider extensionProvider
 	 */
-	public function testRequiredExtensionsAreEnabled(string $extension): void
+	public function test_required_extensions_are_enabled(string $extension) : void
 	{
-		$this->assertTrue(\extension_loaded($extension));
+		static::assertTrue(extension_loaded($extension));
 	}
 }
