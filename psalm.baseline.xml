@@ -21,11 +21,6 @@
     <InvalidArgument occurrences="1">
       <code>$partStructure-&gt;id</code>
     </InvalidArgument>
-    <MixedArgument occurrences="3">
-      <code>$params['filename']</code>
-      <code>$params['name']</code>
-      <code>$params['filename']</code>
-    </MixedArgument>
     <PossiblyUnusedMethod occurrences="35">
       <code>setOAuthToken</code>
       <code>getOAuthToken</code>
