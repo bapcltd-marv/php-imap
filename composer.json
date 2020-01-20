@@ -27,6 +27,7 @@
         "sort-packages": true
     },
 	"conflict": {
+        "php-imap/php-imap": "*",
 		"vimeo/psalm": "<3.8.3"
 	},
     "require": {
