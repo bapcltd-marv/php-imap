@@ -469,11 +469,9 @@ class Mailbox
 	 *  Nmsgs - number of mails in the mailbox
 	 *  Recent - number of recent mails in the mailbox
 	 *
-	 * @return object
-	 *
 	 * @see	imap_check
 	 */
-	public function checkMailbox()
+	public function checkMailbox() : object
 	{
 		return Imap::check($this->getImapStream());
 	}
