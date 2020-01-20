@@ -181,7 +181,7 @@ final class MailboxTest extends TestCase
 	 * 1 => SE_UID
 	 * 2 => SE_FREE.
 	 */
-	public function test_imap_search_option_has_aDefault() : void
+	public function test_imap_search_option_has_a_default() : void
 	{
 		static::assertSame($this->getMailbox()->getImapSearchOption(), 1);
 	}
@@ -216,7 +216,7 @@ final class MailboxTest extends TestCase
 	/**
 	 * Test, that the path delimiter has a default value.
 	 */
-	public function test_path_delimiter_has_aDefault() : void
+	public function test_path_delimiter_has_a_default() : void
 	{
 		static::assertNotEmpty($this->getMailbox()->getPathDelimiter());
 	}

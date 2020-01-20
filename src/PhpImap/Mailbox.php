@@ -1117,18 +1117,18 @@ class Mailbox
 		$partStructure_id = ($partStructure->ifid && isset($partStructure->id)) ? $partStructure->id : null;
 
 		$attachment = new IncomingMailAttachment();
-		$attachment->id = sha1($fileName . (isset($partStructure_id) ? $partStructure_id : ''));
+		$attachment->id = sha1($fileName . ($partStructure_id ?? ''));
 		$attachment->contentId = isset($partStructure_id) ? trim($partStructure_id, ' <>') : null;
 		$attachment->name = $fileName;
 		$attachment->disposition = (isset($partStructure->disposition) && is_string($partStructure->disposition)) ? $partStructure->disposition : null;
 
 		/** @var scalar|array|object|resource|null */
-		$charset = isset($params['charset']) ? $params['charset'] : null;
+		$charset = $params['charset'] ?? null;
 
-		if (isset($charset) && !\is_string($charset)) {
-			throw new InvalidArgumentException('Argument 2 passed to '.__METHOD__.'() must specify charset as a string when specified!');
+		if (isset($charset) && ! is_string($charset)) {
+			throw new InvalidArgumentException('Argument 2 passed to ' . __METHOD__ . '() must specify charset as a string when specified!');
 		}
-		$attachment->charset = (isset($charset) && !empty(trim($charset))) ? $charset : null;
+		$attachment->charset = (isset($charset) && ! empty(trim($charset))) ? $charset : null;
 		$attachment->emlOrigin = $emlOrigin;
 
 		$attachment->addDataPartInfo($dataInfo);
