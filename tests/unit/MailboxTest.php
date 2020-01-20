@@ -7,6 +7,7 @@ declare(strict_types=1);
  *
  * @author Sebastian Kraetzig <sebastian-kraetzig@gmx.de>
  */
+use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\InvalidParameterException;
 use PhpImap\Mailbox;
 use PHPUnit\Framework\TestCase;
@@ -62,7 +63,7 @@ final class MailboxTest extends TestCase
      */
     public function setUp()
     {
-        $this->mailbox = new Mailbox($this->imapPath, $this->login, $this->password, $this->attachmentsDir, $this->serverEncoding);
+        $this->mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, $this->serverEncoding);
     }
 
     /**
@@ -85,7 +86,7 @@ final class MailboxTest extends TestCase
     {
         $imapPath = ' {imap.example.com:993/imap/ssl}INBOX     ';
         $login = '    php-imap@example.com';
-        $password = '  v3rY!53cEt&P4sSWöRd$';
+        $password = new HiddenString('  v3rY!53cEt&P4sSWöRd$', true, true);
         // directory names can contain spaces before AND after on Linux/Unix systems. Windows trims these spaces automatically.
         $attachmentsDir = '.';
         $serverEncoding = 'UTF-8  ';
@@ -94,7 +95,6 @@ final class MailboxTest extends TestCase
 
         $this->assertAttributeEquals('{imap.example.com:993/imap/ssl}INBOX', 'imapPath', $mailbox);
         $this->assertAttributeEquals('php-imap@example.com', 'imapLogin', $mailbox);
-        $this->assertAttributeEquals('  v3rY!53cEt&P4sSWöRd$', 'imapPassword', $mailbox);
         $this->assertAttributeEquals(realpath('.'), 'attachmentsDir', $mailbox);
         $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
     }
@@ -119,7 +119,7 @@ final class MailboxTest extends TestCase
     public function testServerEncodingHasDefaultSetting()
     {
         // Default character encoding should be set
-        $mailbox = new Mailbox($this->imapPath, $this->login, $this->password, $this->attachmentsDir);
+        $mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir);
         $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
     }
 
@@ -131,10 +131,10 @@ final class MailboxTest extends TestCase
     public function testServerEncodingUppersSetting()
     {
         // Server encoding should be always upper formatted
-        $mailbox = new Mailbox($this->imapPath, $this->login, $this->password, $this->attachmentsDir, 'utf-8');
+        $mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, 'utf-8');
         $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
 
-        $mailbox = new Mailbox($this->imapPath, $this->login, $this->password, $this->attachmentsDir, 'UTF7-IMAP');
+        $mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, 'UTF7-IMAP');
         $mailbox->setServerEncoding('uTf-8');
         $this->assertAttributeEquals('UTF-8', 'serverEncoding', $mailbox);
     }
