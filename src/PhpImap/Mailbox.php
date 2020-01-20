@@ -1170,8 +1170,13 @@ class Mailbox
 		}
 
 		$newString = '';
-		/** @var list<object{charset?:string, text?:string}> */
+		/** @var list<object{charset?:string, text?:string}>|false */
 		$elements = imap_mime_header_decode($string);
+
+		if (false === $elements) {
+			return $newString;
+		}
+
 		foreach ($elements as $element) {
 			if (isset($element->text)) {
 				$fromCharset = ! isset($element->charset) ? 'iso-8859-1' : $element->charset;
