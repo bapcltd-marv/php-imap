@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use ParagonIE\HiddenString\HiddenString;
 use PHPUnit\Framework\TestCase;
 
 class IncomingMailTest extends TestCase
@@ -42,7 +43,7 @@ class IncomingMailTest extends TestCase
 	public function test_data_part_info() : void
 	{
 		$mail = new IncomingMail();
-		$mailbox = new Mailbox('', '', '');
+		$mailbox = new Mailbox('', '', new HiddenString('', true, true));
 
 		$data_part = new Fixtures\DataPartInfo($mailbox, 1, ENCOTHER, 'UTF-8', 0);
 		$data_part->setData('foo');

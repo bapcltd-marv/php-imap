@@ -8,13 +8,14 @@ declare(strict_types=1);
 	 * @author Sebastian Krätzig <info@ts3-tools.info>
 	 */
 	require_once __DIR__ . '/../vendor/autoload.php';
+	use ParagonIE\HiddenString\HiddenString;
 	use PhpImap\Exceptions\ConnectionException;
 	use PhpImap\Mailbox;
 
 	$mailbox = new Mailbox(
 		'{imap.gmail.com:993/imap/ssl}INBOX', // IMAP server and mailbox folder
 		'some@gmail.com', // Username for the before configured mailbox
-		'*********' // Password for the before configured username
+		new HiddenString('*********') // Password for the before configured username
 	);
 
 	try {
