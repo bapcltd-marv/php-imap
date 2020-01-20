@@ -18,9 +18,6 @@
     <DocblockTypeContradiction occurrences="1">
       <code>\is_resource($this-&gt;imapStream)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="1">
-      <code>$partStructure-&gt;id</code>
-    </InvalidArgument>
     <PossiblyUnusedMethod occurrences="35">
       <code>setOAuthToken</code>
       <code>getOAuthToken</code>
@@ -73,12 +70,5 @@
       <code>assertAttributeEquals</code>
       <code>assertAttributeEquals</code>
     </DeprecatedMethod>
-    <UndefinedConstant occurrences="5">
-      <code>OPENTIMEOUT</code>
-      <code>READTIMEOUT</code>
-      <code>WRITETIMEOUT</code>
-      <code>CLOSETIMEOUT</code>
-      <code>WRITETIMEOUT</code>
-    </UndefinedConstant>
   </file>
 </files>
