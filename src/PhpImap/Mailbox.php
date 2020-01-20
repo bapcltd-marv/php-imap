@@ -9,6 +9,7 @@ use Exception;
 use function iconv;
 use InvalidArgumentException;
 use function mb_list_encodings;
+use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\ConnectionException;
 use PhpImap\Exceptions\InvalidParameterException;
 use stdClass;
@@ -40,7 +41,7 @@ class Mailbox
 
     protected string $imapLogin;
 
-    protected string $imapPassword;
+    protected HiddenString $imapPassword;
 
     protected ?string $imapOAuthAccessToken = null;
 
@@ -82,7 +83,7 @@ class Mailbox
     /**
      * @throws InvalidParameterException
      */
-    public function __construct(string $imapPath, string $login, string $password, string $attachmentsDir = null, string $serverEncoding = 'UTF-8')
+    public function __construct(string $imapPath, string $login, HiddenString $password, string $attachmentsDir = null, string $serverEncoding = 'UTF-8')
     {
         $this->imapPath = trim($imapPath);
         $this->imapLogin = trim($login);
@@ -482,7 +483,7 @@ class Mailbox
             $this->imap('timeout', [$type, $timeout], false);
         }
 
-        $imapStream = @imap_open($this->imapPath, $this->imapLogin, $this->imapPassword, $this->imapOptions, $this->imapRetriesNum, $this->imapParams);
+        $imapStream = @imap_open($this->imapPath, $this->imapLogin, $this->imapPassword->getString(), $this->imapOptions, $this->imapRetriesNum, $this->imapParams);
 
         if (!$imapStream) {
             $lastError = imap_last_error();
