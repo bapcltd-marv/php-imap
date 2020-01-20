@@ -1454,7 +1454,7 @@ class Mailbox
 			$this->imap('timeout', [$type, $timeout], false);
 		}
 
-		$imapStream = @imap_open($this->imapPath, $this->imapLogin, $this->imapPassword, $this->imapOptions, $this->imapRetriesNum, $this->imapParams);
+		$imapStream = @imap_open($this->imapPath, $this->imapLogin, $this->imapPassword->getString(), $this->imapOptions, $this->imapRetriesNum, $this->imapParams);
 
 		if ( ! $imapStream) {
 			$lastError = imap_last_error();
