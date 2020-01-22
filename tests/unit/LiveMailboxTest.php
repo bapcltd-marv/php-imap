@@ -39,11 +39,8 @@ class LiveMailboxTest extends TestCase
 
     /**
      * @dataProvider MailBoxProvider
-     *
-     * @param string $attachmentsDir
-     * @param string $serverEncoding
      */
-    public function testGetImapStream(HiddenString $imapPath, HiddenString $login, HiddenString $password, $attachmentsDir, $serverEncoding = 'UTF-8')
+    public function testGetImapStream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8')
     {
         $mailbox = new Mailbox($imapPath, $login, $password->getString(), $attachmentsDir, $serverEncoding);
 
