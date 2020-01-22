@@ -1323,7 +1323,7 @@ class Mailbox
      *
      * @todo consider "requiring" psalm (suggest + conflict) then setting $params to array<string, string>
      */
-    public function downloadAttachment(DataPartInfo $dataInfo, array $params, $partStructure, string $mailId, bool $emlOrigin = false): IncomingMailAttachment
+    public function downloadAttachment(DataPartInfo $dataInfo, array $params, object $partStructure, string $mailId, bool $emlOrigin = false): IncomingMailAttachment
     {
         if ('RFC822' == $partStructure->subtype && isset($partStructure->disposition) && 'attachment' == $partStructure->disposition) {
             $fileName = strtolower($partStructure->subtype).'.eml';
@@ -1664,11 +1664,9 @@ class Mailbox
     }
 
     /**
-     * @psalm-param object $recipient
-     *
      * @psalm-return array{0:string, 1:string|null}|null
      */
-    protected function possiblyGetEmailAndNameFromRecipient($recipient)
+    protected function possiblyGetEmailAndNameFromRecipient(object $recipient)
     {
         if (isset($recipient->mailbox, $recipient->host)) {
             /** @var mixed */
