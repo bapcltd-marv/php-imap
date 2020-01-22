@@ -633,6 +633,59 @@ final class MailboxTest extends TestCase
 		static::assertSame($mailbox->decodeMimeStr($str, $mailbox->getServerEncoding()), $expectedStr);
 	}
 
+	/**
+	 * @return array
+	 *
+	 * @psalm-return list<array{0:string, 1:string, 2:class-string<\Exception>, 3:string}>
+	 */
+	public function attachmentDirFailureProvider()
+	{
+		return [
+			[
+				__DIR__,
+				'',
+				InvalidParameterException::class,
+				'setAttachmentsDir() expects a string as first parameter!',
+			],
+			[
+				__DIR__,
+				' ',
+				InvalidParameterException::class,
+				'setAttachmentsDir() expects a string as first parameter!',
+			],
+			[
+				__DIR__,
+				__FILE__,
+				InvalidParameterException::class,
+				'Directory "' . __FILE__ . '" not found',
+			],
+		];
+	}
+
+	/**
+	 * Test that setting the attachments directory fails when expected.
+	 *
+	 * @dataProvider attachmentDirFailureProvider
+	 *
+	 * @param string $initialDir
+	 * @param string $attachmentsDir
+	 * @param string $expectedException
+	 * @param string $expectedExceptionMessage
+	 *
+	 * @psalm-param class-string<\Throwable> $expectedException
+	 */
+	public function test_attachment_dir_failure($initialDir, $attachmentsDir, $expectedException, $expectedExceptionMessage) : void
+	{
+		$mailbox = new Mailbox('', '', new HiddenString(''), $initialDir);
+
+		static::assertSame(trim($initialDir), $mailbox->getAttachmentsDir());
+
+		$this->expectException($expectedException);
+		$this->expectExceptionMessage($expectedExceptionMessage);
+
+		$mailbox->setAttachmentsDir($attachmentsDir);
+	}
+
 	protected function getMailbox() : Mailbox
 	{
 		/** @var Mailbox */
