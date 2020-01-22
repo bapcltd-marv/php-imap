@@ -569,8 +569,6 @@ class Mailbox
      *  Nmsgs - number of mails in the mailbox
      *  Recent - number of recent mails in the mailbox
      *
-     * @return stdClass
-     *
      * @see    imap_check
      */
     public function checkMailbox(): stdClass
@@ -620,8 +618,6 @@ class Mailbox
      *
      * This function returns an object containing status information.
      * The object has the following properties: messages, recent, unseen, uidnext, and uidvalidity.
-     *
-     * @return stdClass
      */
     public function statusMailbox(): stdClass
     {
