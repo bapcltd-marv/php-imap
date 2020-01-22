@@ -569,11 +569,13 @@ class Mailbox
      *  Nmsgs - number of mails in the mailbox
      *  Recent - number of recent mails in the mailbox
      *
+     * @return stdClass|false
+     *
      * @see    imap_check
      */
-    public function checkMailbox(): stdClass
+    public function checkMailbox()
     {
-        /** @var stdClass */
+        /** @var stdClass|false */
         return $this->imap('check');
     }
 
