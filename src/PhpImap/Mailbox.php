@@ -573,7 +573,7 @@ class Mailbox
      *
      * @see    imap_check
      */
-    public function checkMailbox(): object
+    public function checkMailbox(): stdClass
     {
         /** @var stdClass */
         return $this->imap('check');
@@ -623,7 +623,7 @@ class Mailbox
      *
      * @return stdClass
      */
-    public function statusMailbox(): object
+    public function statusMailbox(): stdClass
     {
         /** @var stdClass */
         return $this->imap('status', [$this->imapPath, SA_ALL]);
@@ -889,13 +889,13 @@ class Mailbox
      *  Deleted - number of deleted messages
      *  Size - mailbox size
      *
-     * @return object Object with info
+     * @return stdClass Object with info
      *
      * @see    mailboxmsginfo
      */
-    public function getMailboxInfo(): object
+    public function getMailboxInfo(): stdClass
     {
-        /** @var object */
+        /** @var stdClass */
         return $this->imap('mailboxmsginfo');
     }
 
@@ -1209,7 +1209,7 @@ class Mailbox
      *
      * @todo refactor type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
      */
-    protected function initMailPart(IncomingMail $mail, object $partStructure, $partNum, bool $markAsSeen = true, bool $emlParse = false)
+    protected function initMailPart(IncomingMail $mail, $partStructure, $partNum, bool $markAsSeen = true, bool $emlParse = false)
     {
         if (!isset($mail->id)) {
             throw new InvalidArgumentException('Argument 1 passeed to '.__METHOD__.'() did not have the id property set!');
@@ -1333,7 +1333,7 @@ class Mailbox
      *
      * @todo consider "requiring" psalm (suggest + conflict) then setting $params to array<string, string>
      */
-    public function downloadAttachment(DataPartInfo $dataInfo, array $params, object $partStructure, string $mailId, bool $emlOrigin = false): IncomingMailAttachment
+    public function downloadAttachment(DataPartInfo $dataInfo, array $params, $partStructure, string $mailId, bool $emlOrigin = false): IncomingMailAttachment
     {
         if ('RFC822' == $partStructure->subtype && isset($partStructure->disposition) && 'attachment' == $partStructure->disposition) {
             $fileName = strtolower($partStructure->subtype).'.eml';
@@ -1676,11 +1676,13 @@ class Mailbox
     }
 
     /**
+     * @psalm-param object $recipient
+     *
      * @return array|null
      *
      * @psalm-return array{0:string, 1:string|null}|null
      */
-    protected function possiblyGetEmailAndNameFromRecipient(object $recipient)
+    protected function possiblyGetEmailAndNameFromRecipient($recipient)
     {
         if (isset($recipient->mailbox, $recipient->host)) {
             /** @var mixed */
