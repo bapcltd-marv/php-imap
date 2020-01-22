@@ -21,17 +21,9 @@ class LiveMailboxTest extends TestCase
      * @return array
      *
      * @psalm-return array{0:HiddenString, 1:HiddenString, 2:HiddenString, 3:string, 4?:string}[]
-     *
-     * @todo drop php 5.6, add paragonie/hidden-string to require-dev
      */
     public function MailBoxProvider()
     {
-        if (!class_exists(HiddenString::class)) {
-            $this->markTestSkipped('paragonie/hidden-string not installed!');
-
-            return [];
-        }
-
         $sets = [];
 
         $imapPath = getenv('PHPIMAP_IMAP_PATH');

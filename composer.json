@@ -32,6 +32,7 @@
     "require-dev": {
         "ext-fileinfo": "*",
         "friendsofphp/php-cs-fixer": "^2.16",
+        "paragonie/hidden-string": "^1.0",
         "phpunit/phpunit": "^6.0"
     },
     "suggest": {
