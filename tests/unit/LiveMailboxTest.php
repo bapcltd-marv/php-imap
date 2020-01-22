@@ -44,7 +44,7 @@ class LiveMailboxTest extends TestCase
     {
         $mailbox = new Mailbox($imapPath, $login, $password->getString(), $attachmentsDir, $serverEncoding);
 
-        /** @var Exception|null */
+        /** @var Throwable|null */
         $exception = null;
 
         try {
@@ -109,7 +109,7 @@ class LiveMailboxTest extends TestCase
 
                 $this->assertSame($check->Nmsgs, $mailbox->countMails(), 'Mailbox::checkMailbox()->Nmsgs did not match Mailbox::countMails()!');
             }
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $exception = $ex;
         } finally {
             $mailbox->disconnect();

@@ -726,7 +726,7 @@ final class MailboxTest extends TestCase
      * @param string $expectedException
      * @param string $expectedExceptionMessage
      *
-     * @psalm-param class-string<\Exception> $expectedException
+     * @psalm-param class-string<\Throwable> $expectedException
      */
     public function testAttachmentDirFailure($initialDir, $attachmentsDir, $expectedException, $expectedExceptionMessage)
     {
