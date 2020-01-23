@@ -18,18 +18,15 @@
     <DocblockTypeContradiction occurrences="1">
       <code>is_resource($this-&gt;imapStream)</code>
     </DocblockTypeContradiction>
-    <PossiblyUnusedMethod occurrences="34">
+    <PossiblyUnusedMethod occurrences="29">
       <code>setOAuthToken</code>
       <code>getOAuthToken</code>
       <code>setConnectionRetry</code>
       <code>setConnectionRetryDelay</code>
-      <code>switchMailbox</code>
       <code>setExpungeOnDisconnect</code>
-      <code>checkMailbox</code>
       <code>createMailbox</code>
       <code>deleteMailbox</code>
       <code>renameMailbox</code>
-      <code>statusMailbox</code>
       <code>getListingFolders</code>
       <code>saveMail</code>
       <code>deleteMail</code>
@@ -44,12 +41,10 @@
       <code>getMailboxHeaders</code>
       <code>getMailboxInfo</code>
       <code>sortMails</code>
-      <code>countMails</code>
       <code>getQuotaLimit</code>
       <code>getQuotaUsage</code>
       <code>getRawMail</code>
       <code>getMailMboxFormat</code>
-      <code>getMailboxes</code>
       <code>getSubscribedMailboxes</code>
       <code>subscribeMailbox</code>
       <code>unsubscribeMailbox</code>
@@ -57,7 +52,5 @@
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>! is_resource($this-&gt;imapStream) || ! imap_ping($this-&gt;imapStream)</code>
     </RedundantConditionGivenDocblockType>
-  </file>
-  <file src="tests/unit/MailboxTest.php">
   </file>
 </files>
