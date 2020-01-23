@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/bapcltd-marv/php-imap.svg?branch=master)](https://travis-ci.org/bapcltd-marv/php-imap)
 [![Supported PHP Version](https://img.shields.io/travis/php-v/bapcltd-marv/php-imap.svg)](README.md)
 [![Maintainability](https://api.codeclimate.com/v1/badges/debb2dab6d8ed688f466/maintainability)](https://codeclimate.com/github/bapcltd-marv/php-imap/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/debb2dab6d8ed688f466/test_coverage)](https://codeclimate.com/github/bapcltd-marv/php-imap/test_coverage)
+[![Test Coverage](https://coveralls.io/repos/github/bapcltd-marv/php-imap/badge.svg?branch=master)](https://coveralls.io/github/bapcltd-marv/php-imap?branch=master)
 [![Type Coverage](https://shepherd.dev/github/bapcltd-marv/php-imap/coverage.svg)](https://shepherd.dev/github/bapcltd-marv/php-imap)
 
 Initially released in December 2012, the PHP IMAP Mailbox is a powerful and open source library to connect to a mailbox by POP3, IMAP and NNTP using the PHP IMAP extension. This library allows you to fetch emails from your email server. Extend the functionality or create powerful web applications to handle your incoming emails.
