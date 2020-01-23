@@ -673,7 +673,7 @@ final class MailboxTest extends TestCase
 	 */
 	public function test_attachment_dir_failure($initialDir, $attachmentsDir, $expectedException, $expectedExceptionMessage) : void
 	{
-		$mailbox = new Mailbox('', '', new HiddenString(''), $initialDir);
+		$mailbox = new Mailbox('', '', new HiddenString('', true, true), $initialDir);
 
 		static::assertSame(trim($initialDir), $mailbox->getAttachmentsDir());
 

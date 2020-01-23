@@ -16,7 +16,7 @@
 	$mailbox = new Mailbox(
 		'{imap.gmail.com:993/imap/ssl}INBOX', // IMAP server and mailbox folder
 		'some@gmail.com', // Username for the before configured mailbox
-		new HiddenString('*********') // Password for the before configured username
+		new HiddenString('*********', true, true) // Password for the before configured username
 	);
 
 	try {

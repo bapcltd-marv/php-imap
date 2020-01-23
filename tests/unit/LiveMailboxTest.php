@@ -32,7 +32,7 @@ class LiveMailboxTest extends TestCase
 		$password = getenv('PHPIMAP_PASSWORD');
 
 		if (is_string($imapPath) && is_string($login) && is_string($password)) {
-			$sets['CI ENV'] = [new HiddenString($imapPath), new HiddenString($login), new HiddenString($password, true, true), sys_get_temp_dir()];
+			$sets['CI ENV'] = [new HiddenString($imapPath, true, true), new HiddenString($login, true, true), new HiddenString($password, true, true), sys_get_temp_dir()];
 		}
 
 		return $sets;

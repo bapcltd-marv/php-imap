@@ -16,7 +16,7 @@
 	$mailbox = new Mailbox(
 		'{imap.gmail.com:993/imap/ssl}INBOX', // IMAP server and mailbox folder
 		'some@gmail.com', // Username for the before configured mailbox
-		new HiddenString('*********'), // Password for the before configured username
+		new HiddenString('*********', true, true), // Password for the before configured username
 		null, // Directory, where attachments will be saved (optional)
 		'US-ASCII' // Server encoding (optional)
 	);
@@ -25,7 +25,7 @@
 	$mailbox = new Mailbox(
 		'{imap.gmail.com:993/imap/ssl}INBOX', // IMAP server and mailbox folder
 		'some@gmail.com', // Username for the before configured mailbox
-		new HiddenString('*********') // Password for the before configured username
+		new HiddenString('*********', true, true) // Password for the before configured username
 	);
 
 	// If you haven't defined the server encoding (charset) in 'new Mailbox()', you can change it any time
