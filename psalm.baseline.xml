@@ -25,8 +25,6 @@
     <DocblockTypeContradiction occurrences="2">
       <code>\in_array($imapSearchOption, $supported_options, true)</code>
       <code>\in_array($key, $supported_params, true)</code>
-      <code>\in_array($imapSearchOption, $supported_options, true)</code>
-      <code>\in_array($key, $supported_params, true)</code>
     </DocblockTypeContradiction>
     <PossiblyUnusedMethod occurrences="27">
       <code>setOAuthToken</code>
