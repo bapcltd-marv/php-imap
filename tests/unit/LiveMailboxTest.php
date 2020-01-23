@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * Live Mailbox - PHPUnit tests.
  *
@@ -9,6 +6,8 @@ declare(strict_types=1);
  *
  * @author BAPCLTD-Marv
  */
+declare(strict_types=1);
+
 use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Mailbox;
 use PHPUnit\Framework\TestCase;
