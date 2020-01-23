@@ -8,9 +8,11 @@
  */
 declare(strict_types=1);
 
+namespace PhpImap;
+
 use ParagonIE\HiddenString\HiddenString;
-use PhpImap\Mailbox;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class LiveMailboxTest extends TestCase
 {
