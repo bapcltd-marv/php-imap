@@ -43,7 +43,7 @@
         "maglnet/composer-require-checker": "^2.0",
         "phpunit/phpunit": "^8.5",
         "psalm/plugin-phpunit": "^0.8.1",
-        "signpostmarv/php-cs-fixer-config": "^0.16.2",
+        "signpostmarv/php-cs-fixer-config": "^0.16.3",
         "vimeo/psalm": "^3.8"
     },
     "suggest": {
