@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function constant;
 use DateTime;
 use Exception;
 use function in_array;
