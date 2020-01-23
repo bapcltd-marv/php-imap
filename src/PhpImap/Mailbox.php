@@ -51,6 +51,7 @@ class Mailbox
 	 * Allow to ignore attachments when they are not required and boost performance.
 	 */
 	public bool $attachmentsIgnore = false;
+
 	protected string $imapPath;
 
 	protected string $imapLogin;
