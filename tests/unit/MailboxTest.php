@@ -631,11 +631,9 @@ final class MailboxTest extends TestCase
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @psalm-return list<array{0:string, 1:string, 2:class-string<\Exception>, 3:string}>
 	 */
-	public function attachmentDirFailureProvider()
+	public function attachmentDirFailureProvider() : array
 	{
 		return [
 			[

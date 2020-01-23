@@ -19,11 +19,9 @@ class LiveMailboxTest extends TestCase
 	/**
 	 * Provides constructor arguments for a live mailbox.
 	 *
-	 * @return array
-	 *
 	 * @psalm-return array{0:HiddenString, 1:HiddenString, 2:HiddenString, 3:string, 4?:string}[]
 	 */
-	public function MailBoxProvider()
+	public function MailBoxProvider() : array
 	{
 		$sets = [];
 
