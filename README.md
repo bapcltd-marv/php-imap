@@ -1,6 +1,6 @@
 # PHP IMAP
 
-[![GitHub release](https://img.shields.io/github/release/bapcltd/php-imap.svg?style=flat-square)](https://packagist.org/packages/bapcltd/php-imap)
+[![Release](https://img.shields.io/packagist/v/bapcltd/php-imap.svg?style=flat-square)](https://packagist.org/packages/bapcltd/php-imap)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Packagist](https://img.shields.io/packagist/dt/bapcltd/php-imap.svg?style=flat-square)](https://packagist.org/packages/bapcltd/php-imap)
 [![Build Status](https://travis-ci.org/bapcltd-marv/php-imap.svg?branch=master)](https://travis-ci.org/bapcltd-marv/php-imap)
