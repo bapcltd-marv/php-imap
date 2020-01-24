@@ -548,16 +548,18 @@ class Mailbox
 	 * @param string $criteria See http://php.net/imap_search for a complete list of available criteria
 	 * @param bool $disableServerEncoding Disables server encoding while searching for mails (can be useful on Exchange servers)
 	 *
-	 * @return string[] mailsIds (or empty array)
+	 * @return int[] mailsIds (or empty array)
+	 *
+	 * @psalm-return list<int>
 	 */
 	public function searchMailbox(string $criteria = 'ALL', bool $disableServerEncoding = false) : array
 	{
 		if ($disableServerEncoding) {
-			/** @var string[] */
+			/** @psalm-var list<int> */
 			return $this->imap('search', [$criteria, $this->imapSearchOption]) ?: [];
 		}
 
-		/** @var string[] */
+		/** @psalm-var list<int> */
 		return $this->imap('search', [$criteria, $this->imapSearchOption, $this->getServerEncoding()]) ?: [];
 	}
 
@@ -566,7 +568,9 @@ class Mailbox
 	 *
 	 * @see Mailbox::searchMailboxFromWithOrWithoutDisablingServerEncoding()
 	 *
-	 * @return list<int>
+	 * @return int[]
+	 *
+	 * @psalm-return list<int>
 	 */
 	public function searchMailboxFrom(string $criteria, string $sender, string ...$senders) : array
 	{
@@ -578,7 +582,9 @@ class Mailbox
 	 *
 	 * @see Mailbox::searchMailboxFromWithOrWithoutDisablingServerEncoding()
 	 *
-	 * @return list<int>
+	 * @return int[]
+	 *
+	 * @psalm-return list<int>
 	 */
 	public function searchMailboxFromDisableServerEncoding(string $criteria, string $sender, string ...$senders) : array
 	{
@@ -594,7 +600,7 @@ class Mailbox
 	 */
 	public function saveMail(int $mailId, string $filename = 'email.eml') : void
 	{
-		$this->imap('savebody', [$filename, $mailId, '', (SE_UID === $this->imapSearchOption) ? FT_UID : 0]);
+		$this->imap('savebody', [$filename, (string) $mailId, '', (SE_UID === $this->imapSearchOption) ? FT_UID : 0]);
 	}
 
 	/**
@@ -606,18 +612,18 @@ class Mailbox
 	 */
 	public function deleteMail(int $mailId) : void
 	{
-		$this->imap('delete', [$mailId . ':' . $mailId, (SE_UID === $this->imapSearchOption) ? FT_UID : 0]);
+		$this->imap('delete', [(string) $mailId . ':' . $mailId, (SE_UID === $this->imapSearchOption) ? FT_UID : 0]);
 	}
 
 	/**
 	 * Moves mails listed in mailId into new mailbox.
 	 *
-	 * @param string $mailId a range or message number
+	 * @param string|int $mailId a range or message number
 	 * @param string $mailBox Mailbox name
 	 *
 	 * @see imap_mail_move()
 	 */
-	public function moveMail(string $mailId, string $mailBox) : void
+	public function moveMail($mailId, string $mailBox) : void
 	{
 		$this->imap('mail_move', [$mailId, $mailBox, CP_UID]) && $this->expungeDeletedMails();
 	}
@@ -625,12 +631,12 @@ class Mailbox
 	/**
 	 * Copies mails listed in mailId into new mailbox.
 	 *
-	 * @param string $mailId a range or message number
+	 * @param string|int $mailId a range or message number
 	 * @param string $mailBox Mailbox name
 	 *
 	 * @see   imap_mail_copy()
 	 */
-	public function copyMail(string $mailId, string $mailBox) : void
+	public function copyMail($mailId, string $mailBox) : void
 	{
 		$this->imap('mail_copy', [$mailId, $mailBox, CP_UID]) && $this->expungeDeletedMails();
 	}
@@ -648,7 +654,7 @@ class Mailbox
 	/**
 	 * Add the flag \Seen to a mail.
 	 */
-	public function markMailAsRead(string $mailId) : void
+	public function markMailAsRead(int $mailId) : void
 	{
 		$this->setFlag([$mailId], '\\Seen');
 	}
@@ -656,7 +662,7 @@ class Mailbox
 	/**
 	 * Remove the flag \Seen from a mail.
 	 */
-	public function markMailAsUnread(string $mailId) : void
+	public function markMailAsUnread(int $mailId) : void
 	{
 		$this->clearFlag([$mailId], '\\Seen');
 	}
@@ -664,13 +670,17 @@ class Mailbox
 	/**
 	 * Add the flag \Flagged to a mail.
 	 */
-	public function markMailAsImportant(string $mailId) : void
+	public function markMailAsImportant(int $mailId) : void
 	{
 		$this->setFlag([$mailId], '\\Flagged');
 	}
 
 	/**
 	 * Add the flag \Seen to a mails.
+	 *
+	 * @param int[] $mailId
+	 *
+	 * @psalm-param list<int> $mailId
 	 */
 	public function markMailsAsRead(array $mailId) : void
 	{
@@ -679,6 +689,10 @@ class Mailbox
 
 	/**
 	 * Remove the flag \Seen from some mails.
+	 *
+	 * @param int[] $mailId
+	 *
+	 * @psalm-param list<int> $mailId
 	 */
 	public function markMailsAsUnread(array $mailId) : void
 	{
@@ -687,6 +701,10 @@ class Mailbox
 
 	/**
 	 * Add the flag \Flagged to some mails.
+	 *
+	 * @param int[] $mailId
+	 *
+	 * @psalm-param list<int> $mailId
 	 */
 	public function markMailsAsImportant(array $mailId) : void
 	{
@@ -902,13 +920,13 @@ class Mailbox
 	/**
 	 * Get mail header.
 	 *
-	 * @param string $mailId ID of the message
+	 * @param int $mailId ID of the message
 	 *
 	 * @throws Exception
 	 *
 	 * @todo update type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
 	 */
-	public function getMailHeader(string $mailId) : IncomingMailHeader
+	public function getMailHeader(int $mailId) : IncomingMailHeader
 	{
 		/** @var string|false */
 		$headersRaw = $this->imap('fetchheader', [$mailId, (SE_UID === $this->imapSearchOption) ? FT_UID : 0]);
@@ -1081,10 +1099,10 @@ class Mailbox
 	/**
 	 * Get mail data.
 	 *
-	 * @param string $mailId ID of the mail
+	 * @param int $mailId ID of the mail
 	 * @param bool $markAsSeen Mark the email as seen, when set to true
 	 */
-	public function getMail(string $mailId, bool $markAsSeen = true) : IncomingMail
+	public function getMail(int $mailId, bool $markAsSeen = true) : IncomingMail
 	{
 		$mail = new IncomingMail();
 		$mail->setHeader($this->getMailHeader($mailId));
@@ -1110,7 +1128,7 @@ class Mailbox
 	 *
 	 * @param array $params Array of params of mail
 	 * @param object $partStructure Part of mail
-	 * @param string $mailId ID of mail
+	 * @param int $mailId ID of mail
 	 * @param bool $emlOrigin True, if it indicates, that the attachment comes from an EML (mail) file
 	 *
 	 * @psalm-param array<string, string> $params
@@ -1120,7 +1138,7 @@ class Mailbox
 	 *
 	 * @todo consider "requiring" psalm (suggest + conflict) then setting $params to array<string, string>
 	 */
-	public function downloadAttachment(DataPartInfo $dataInfo, array $params, object $partStructure, string $mailId, bool $emlOrigin = false) : IncomingMailAttachment
+	public function downloadAttachment(DataPartInfo $dataInfo, array $params, object $partStructure, int $mailId, bool $emlOrigin = false) : IncomingMailAttachment
 	{
 		if ('RFC822' === $partStructure->subtype && isset($partStructure->disposition) && 'attachment' === $partStructure->disposition) {
 			$fileName = mb_strtolower($partStructure->subtype) . '.eml';
@@ -1790,7 +1808,9 @@ class Mailbox
 	 *
 	 * This function wraps Mailbox::searchMailbox() to overcome a shortcoming in ext-imap
 	 *
-	 * @return list<int>
+	 * @return int[]
+	 *
+	 * @psalm-return list<int>
 	 */
 	protected function searchMailboxFromWithOrWithoutDisablingServerEncoding(string $criteria, bool $disableServerEncoding, string $sender, string ...$senders) : array
 	{
