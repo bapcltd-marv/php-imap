@@ -516,12 +516,10 @@ class Mailbox
 	 *
 	 * This function returns an object containing status information.
 	 * The object has the following properties: messages, recent, unseen, uidnext, and uidvalidity.
-	 *
-	 * @return stdClass
 	 */
 	public function statusMailbox() : object
 	{
-		/** @var stdClass */
+		/** @var object */
 		return $this->imap('status', [$this->imapPath, SA_ALL]);
 	}
 
@@ -1060,12 +1058,12 @@ class Mailbox
 	/**
 	 * taken from https://www.electrictoolbox.com/php-imap-message-parts/.
 	 *
-	 * @param \stdClass[] $messageParts
-	 * @param \stdClass[] $flattenedParts
+	 * @param stdClass[] $messageParts
+	 * @param stdClass[] $flattenedParts
 	 *
 	 * @psalm-param array<string, PARTSTRUCTURE> $flattenedParts
 	 *
-	 * @return \stdClass[]
+	 * @return stdClass[]
 	 *
 	 * @psalm-return array<string, PARTSTRUCTURE>
 	 */
@@ -1074,17 +1072,17 @@ class Mailbox
 		foreach ($messageParts as $part) {
 			$flattenedParts[$prefix . $index] = $part;
 			if (isset($part->parts)) {
-				/** @var \stdClass[] */
+				/** @var stdClass[] */
 				$part_parts = $part->parts;
 
 				if (2 === $part->type) {
-					/** @var array<string, \stdClass> */
+					/** @var array<string, stdClass> */
 					$flattenedParts = $this->flattenParts($part_parts, $flattenedParts, $prefix . $index . '.', 0, false);
 				} elseif ($fullPrefix) {
-					/** @var array<string, \stdClass> */
+					/** @var array<string, stdClass> */
 					$flattenedParts = $this->flattenParts($part_parts, $flattenedParts, $prefix . $index . '.');
 				} else {
-					/** @var array<string, \stdClass> */
+					/** @var array<string, stdClass> */
 					$flattenedParts = $this->flattenParts($part_parts, $flattenedParts, $prefix);
 				}
 				unset($flattenedParts[$prefix . $index]->parts);
@@ -1092,7 +1090,7 @@ class Mailbox
 			++$index;
 		}
 
-		/** @var array<string, \stdClass> */
+		/** @var array<string, stdClass> */
 		return $flattenedParts;
 	}
 
@@ -1113,7 +1111,7 @@ class Mailbox
 		if (empty($mailStructure->parts)) {
 			$this->initMailPart($mail, $mailStructure, 0, $markAsSeen);
 		} else {
-			/** @var array<string, \stdClass> */
+			/** @var array<string, stdClass> */
 			$parts = $mailStructure->parts;
 			foreach ($this->flattenParts($parts) as $partNum => $partStructure) {
 				$this->initMailPart($mail, $partStructure, $partNum, $markAsSeen);
