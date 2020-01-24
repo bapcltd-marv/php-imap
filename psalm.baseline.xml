@@ -18,7 +18,7 @@
     <DocblockTypeContradiction occurrences="1">
       <code>is_resource($this-&gt;imapStream)</code>
     </DocblockTypeContradiction>
-    <PossiblyUnusedMethod occurrences="29">
+    <PossiblyUnusedMethod occurrences="31">
       <code>setOAuthToken</code>
       <code>getOAuthToken</code>
       <code>setConnectionRetry</code>
@@ -28,6 +28,8 @@
       <code>deleteMailbox</code>
       <code>renameMailbox</code>
       <code>getListingFolders</code>
+      <code>searchMailboxFrom</code>
+      <code>searchMailboxFromDisableServerEncoding</code>
       <code>saveMail</code>
       <code>deleteMail</code>
       <code>moveMail</code>
