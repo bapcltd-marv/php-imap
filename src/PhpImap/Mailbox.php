@@ -299,9 +299,9 @@ class Mailbox
 	/**
 	* Set custom connection arguments of imap_open method. See http://php.net/imap_open.
 	*
-	* @param string[] $params
+	* @param string[]|null $params
 	*
-	* @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty> $params
+	* @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>|null $params
 	*
 	* @throws InvalidParameterException
 	*/
@@ -725,6 +725,8 @@ class Mailbox
 	*
 	* @param array $mailsIds Array of mail IDs
 	* @param string $flag Which you can set are \Seen, \Answered, \Flagged, \Deleted, and \Draft as defined by RFC2060
+	*
+	* @psalm-param list<int> $mailsIds
 	*/
 	public function setFlag(array $mailsIds, string $flag) : void
 	{
@@ -763,6 +765,10 @@ class Mailbox
 	*  deleted - this mail is flagged for deletion
 	*  seen - this mail is flagged as already read
 	*  draft - this mail is flagged as being a draft
+	*
+	* @param int[] $mailsIds
+	*
+	* @psalm-param list<int> $mailsIds
 	*
 	* @return array $mailsIds Array of mail IDs
 	*
@@ -1203,7 +1209,7 @@ class Mailbox
 				'/_+/' => '_',
 				'/(^_)|(_$)/' => '',
 			];
-			$fileSysName = preg_replace('~[\\\\/]~', '', $mailId . '_' . $attachment->id . '_' . preg_replace(array_keys($replace), $replace, $fileName));
+			$fileSysName = preg_replace('~[\\\\/]~', '', (string) $mailId . '_' . $attachment->id . '_' . preg_replace(array_keys($replace), $replace, $fileName));
 			$filePath = $attachmentsDir . DIRECTORY_SEPARATOR . $fileSysName;
 
 			if (mb_strlen($filePath) > 255) {
