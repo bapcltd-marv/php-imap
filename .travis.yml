@@ -10,6 +10,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
+  - vendor/bin/parallel-lint .php_cs.dist src tests examples
   - vendor/bin/phpunit --coverage-clover=clover.xml
   - vendor/bin/php-coveralls
   - vendor/bin/composer-require-checker check ./composer.json
