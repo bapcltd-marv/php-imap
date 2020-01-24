@@ -124,7 +124,7 @@ class IncomingMail extends IncomingMailHeader
 	 *
 	 * @return bool true or false
 	 */
-	public function hasAttachments()
+	public function hasAttachments() : bool
 	{
 		return $this->hasAttachments;
 	}
@@ -132,7 +132,7 @@ class IncomingMail extends IncomingMailHeader
 	/**
 	 * @return IncomingMailAttachment[]
 	 */
-	public function getAttachments()
+	public function getAttachments() : array
 	{
 		return $this->attachments;
 	}

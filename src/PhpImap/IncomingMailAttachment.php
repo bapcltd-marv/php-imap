@@ -36,6 +36,9 @@ class IncomingMailAttachment
 
 	private ?string $filePath = null;
 
+	/**
+	 * @return string|false|null
+	 */
 	public function __get(string $name)
 	{
 		if ('filePath' !== $name) {

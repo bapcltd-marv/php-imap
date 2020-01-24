@@ -76,10 +76,7 @@ class DataPartInfo
 		return $this->decodeAfterFetch();
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function decodeAfterFetch()
+	protected function decodeAfterFetch() : string
 	{
 		switch ($this->encoding) {
 			case ENC8BIT:
@@ -100,10 +97,7 @@ class DataPartInfo
 		return $this->convertEncodingAfterFetch();
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function convertEncodingAfterFetch()
+	protected function convertEncodingAfterFetch() : string
 	{
 		if (isset($this->charset) && ! empty(trim($this->charset))) {
 			$this->data = $this->mail->convertStringEncoding(

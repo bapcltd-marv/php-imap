@@ -133,7 +133,7 @@ final class MailboxTest extends TestCase
 	 *
 	 * @return array<string, array{0:bool, 1:string}>
 	 */
-	public function serverEncodingProvider()
+	public function serverEncodingProvider() : array
 	{
 		return [
 			// Supported encodings
