@@ -585,7 +585,7 @@ final class MailboxTest extends TestCase
 	*
 	* @dataProvider connectionArgsProvider
 	*
-	* @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty> $param
+	* @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>|null $param
 	*/
 	public function test_set_connection_args(string $assertMethod, int $option, int $retriesNum, array $param = null) : void
 	{
