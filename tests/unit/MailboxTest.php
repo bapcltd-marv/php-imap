@@ -551,11 +551,11 @@ final class MailboxTest extends TestCase
 	/**
 	 * Provides test data for testing connection args.
 	 *
-	 * @psalm-return list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array}>
+	 * @psalm-return list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>}>
 	 */
 	public function connectionArgsProvider() : array
 	{
-		/** @psalm-var list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array}> */
+		/** @psalm-var list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>}> */
 		return [
 			['assertNull', OP_READONLY, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
 			['assertNull', OP_READONLY, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
@@ -584,6 +584,8 @@ final class MailboxTest extends TestCase
 	 * Test, that only supported and valid connection args can be set.
 	 *
 	 * @dataProvider connectionArgsProvider
+	 *
+	 * @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty> $param
 	 */
 	public function test_set_connection_args(string $assertMethod, int $option, int $retriesNum, array $param = null) : void
 	{

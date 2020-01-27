@@ -15,11 +15,9 @@ class DataPartInfo
 	const TEXT_HTML = 1;
 
 	/**
-	 * @var string|int
-	 *
 	 * @readonly
 	 */
-	public $id;
+	public int $id;
 
 	/**
 	 * @var int|mixed
@@ -31,7 +29,7 @@ class DataPartInfo
 	public ?string $charset = null;
 
 	/**
-	 * @var string|int
+	 * @var 0|string
 	 *
 	 * @readonly
 	 */
@@ -50,11 +48,10 @@ class DataPartInfo
 	protected ?string $data = null;
 
 	/**
-	 * @param string|int $id
-	 * @param string|int $part
+	 * @param 0|string $part
 	 * @param int|mixed $encoding
 	 */
-	public function __construct(Mailbox $mail, $id, $part, $encoding, int $options)
+	public function __construct(Mailbox $mail, int $id, $part, $encoding, int $options)
 	{
 		$this->mail = $mail;
 		$this->id = $id;
@@ -66,11 +63,9 @@ class DataPartInfo
 	public function fetch() : string
 	{
 		if (0 === $this->part) {
-			/** @var string */
-			$this->data = $this->mail->imap('body', [$this->id, $this->options]);
+			$this->data = Imap::body($this->mail->getImapStream(), $this->id, $this->options);
 		} else {
-			/** @var string */
-			$this->data = $this->mail->imap('fetchbody', [$this->id, $this->part, $this->options]);
+			$this->data = Imap::fetchbody($this->mail->getImapStream(), $this->id, $this->part, $this->options);
 		}
 
 		return $this->decodeAfterFetch();

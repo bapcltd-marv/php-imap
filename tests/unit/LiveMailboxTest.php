@@ -69,8 +69,6 @@ class LiveMailboxTest extends TestCase
 
 				$check = $mailbox->checkMailbox();
 
-				static::assertIsObject($check);
-
 				foreach ([
 					'Date',
 					'Driver',
