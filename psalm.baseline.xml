@@ -5,6 +5,16 @@
       <code>$mailbox</code>
     </UnusedVariable>
   </file>
+  <file src="src/PhpImap/Imap.php">
+    <DocblockTypeContradiction occurrences="1">
+      <code>is_resource($maybe)</code>
+    </DocblockTypeContradiction>
+    <InvalidArgument occurrences="1"/>
+    <PossiblyNullArgument occurrences="2">
+      <code>null === $search_criteria ? null : self::encodeStringToUtf7Imap($search_criteria)</code>
+      <code>null === $charset ? null : self::encodeStringToUtf7Imap($charset)</code>
+    </PossiblyNullArgument>
+  </file>
   <file src="src/PhpImap/IncomingMail.php">
     <PossiblyUnusedMethod occurrences="2">
       <code>replaceInternalLinks</code>
