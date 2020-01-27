@@ -58,4 +58,9 @@
       <code>! is_resource($this-&gt;imapStream) || ! imap_ping($this-&gt;imapStream)</code>
     </RedundantConditionGivenDocblockType>
   </file>
+  <file src="tests/unit/MailboxTest.php">
+    <InvalidArgument occurrences="1">
+      <code>self::ANYTHING</code>
+    </InvalidArgument>
+  </file>
 </files>
