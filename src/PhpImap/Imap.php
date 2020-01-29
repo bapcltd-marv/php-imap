@@ -642,6 +642,14 @@ final class Imap
 	}
 
 	/**
+	* @param resource|false $imap_stream
+	*/
+	public static function ping($imap_stream) : bool
+	{
+		return is_resource($imap_stream) && imap_ping($imap_stream);
+	}
+
+	/**
 	* @param false|resource $imap_stream
 	*/
 	public static function renamemailbox(

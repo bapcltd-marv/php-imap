@@ -1743,7 +1743,7 @@ class Mailbox
 	 */
 	protected function pingOrDisconnect() : void
 	{
-		if ($this->imapStream && ( ! is_resource($this->imapStream) || ! imap_ping($this->imapStream))) {
+		if ($this->imapStream && ! Imap::ping($this->imapStream)) {
 			$this->disconnect();
 			$this->imapStream = null;
 		}
