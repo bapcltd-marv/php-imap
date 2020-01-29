@@ -631,6 +631,12 @@ final class Imap
 		$result = imap_open($mailbox, $username, $password->getString(), $options, $n_retries, $params);
 
 		if ( ! $result) {
+			$lastError = imap_last_error();
+
+			if ('' !== trim($lastError)) {
+				throw new UnexpectedValueException('IMAP error:' . $lastError);
+			}
+
 			throw new UnexpectedValueException(
 				'Could not open mailbox!',
 				0,
