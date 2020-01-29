@@ -997,7 +997,10 @@ final class Imap
 		return $maybe;
 	}
 
-	private static function HandleErrors(array $errors, string $method) : UnexpectedValueException
+	/**
+	 * @param array|false $errors
+	 */
+	private static function HandleErrors($errors, string $method) : UnexpectedValueException
 	{
 		if ($errors) {
 			return new UnexpectedValueException('IMAP method ' . $method . '() failed with error: ' . implode('. ', $errors));
