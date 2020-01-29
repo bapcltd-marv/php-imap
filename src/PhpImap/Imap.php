@@ -840,9 +840,9 @@ final class Imap
 
 		if ( ! $result) {
 			throw new UnexpectedValueException(
-				'Could not reopen mailbox!',
+				'Could not search mailbox!',
 				0,
-				self::HandleErrors(imap_errors(), 'imap_reopen')
+				self::HandleErrors(imap_errors(), 'imap_search')
 			);
 		}
 
