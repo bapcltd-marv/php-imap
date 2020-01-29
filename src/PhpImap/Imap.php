@@ -439,6 +439,70 @@ final class Imap
 	}
 
 	/**
+	* @param resource|false $imap_stream
+	*
+	* @return object[]
+	*
+	* @psalm-return list<object>
+	*/
+	public static function getmailboxes(
+		$imap_stream,
+		string $ref,
+		string $pattern
+	) : array {
+		imap_errors(); // flush errors
+
+		$result = imap_getmailboxes(
+			self::EnsureResource($imap_stream, __METHOD__, 1),
+			$ref,
+			$pattern
+		);
+
+		if (false === $result) {
+			throw new UnexpectedValueException(
+				'Call to imap_getmailboxes() with supplied arguments returned false, not array!',
+				0,
+				self::HandleErrors(imap_errors(), 'imap_headers')
+			);
+		}
+
+		/** @psalm-var list<object> */
+		return $result;
+	}
+
+	/**
+	* @param resource|false $imap_stream
+	*
+	* @return object[]
+	*
+	* @psalm-return list<object>
+	*/
+	public static function getsubscribed(
+		$imap_stream,
+		string $ref,
+		string $pattern
+	) : array {
+		imap_errors(); // flush errors
+
+		$result = imap_getsubscribed(
+			self::EnsureResource($imap_stream, __METHOD__, 1),
+			$ref,
+			$pattern
+		);
+
+		if (false === $result) {
+			throw new UnexpectedValueException(
+				'Call to imap_getsubscribed() with supplied arguments returned false, not array!',
+				0,
+				self::HandleErrors(imap_errors(), 'imap_headers')
+			);
+		}
+
+		/** @psalm-var list<object> */
+		return $result;
+	}
+
+	/**
 	* @param false|resource $imap_stream
 	*/
 	public static function headers($imap_stream) : array
