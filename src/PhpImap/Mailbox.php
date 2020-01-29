@@ -532,7 +532,7 @@ class Mailbox
 	 */
 	public function getListingFolders(string $pattern = '*') : array
 	{
-		return Imap::list($this->getImapStream(), $this->imapPath, $pattern);
+		return Imap::listOfMailboxes($this->getImapStream(), $this->imapPath, $pattern);
 	}
 
 	/**

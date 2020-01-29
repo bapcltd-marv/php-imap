@@ -467,7 +467,7 @@ final class Imap
 	*
 	* @psalm-return list<string>
 	*/
-	public static function list($imap_stream, string $ref, string $pattern) : array
+	public static function listOfMailboxes($imap_stream, string $ref, string $pattern) : array
 	{
 		imap_errors(); // flush errors
 
