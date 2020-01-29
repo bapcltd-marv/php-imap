@@ -329,11 +329,12 @@ final class Imap
 
 	/**
 	* @param false|resource $imap_stream
+	* @param string|int $section
 	*/
 	public static function fetchbody(
 		$imap_stream,
 		int $msg_number,
-		string $section,
+		$section,
 		int $options = 0
 	) : string {
 		imap_errors(); // flush errors
@@ -341,7 +342,7 @@ final class Imap
 		$result = imap_fetchbody(
 			self::EnsureResource($imap_stream, __METHOD__, 1),
 			$msg_number,
-			self::encodeStringToUtf7Imap($section),
+			self::encodeStringToUtf7Imap((string) $section),
 			$options
 		);
 
