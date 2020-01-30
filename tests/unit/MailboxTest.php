@@ -129,6 +129,8 @@ final class MailboxTest extends TestCase
 	{
 		$this->mailbox->setServerEncoding($encoding);
 
+		$encoding = mb_strtoupper(trim($encoding));
+
 		static::assertSame($this->mailbox->getServerEncoding(), $encoding);
 	}
 
