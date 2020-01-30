@@ -17,6 +17,7 @@ use ParagonIE\HiddenString\HiddenString;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 use const TYPETEXT;
+use function usleep;
 
 /**
 * @psalm-type MAILBOX_ARGS = array{
@@ -290,6 +291,8 @@ class LiveMailboxTest extends TestCase
 
 			return;
 		}
+
+		usleep(100);
 
 		static::assertIsString($envelope['subject'] ?? null);
 
