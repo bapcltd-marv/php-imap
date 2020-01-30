@@ -3,6 +3,10 @@ php:
   - 7.4.0
   - 7.4
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 before_script:
   - composer install --no-interaction
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
