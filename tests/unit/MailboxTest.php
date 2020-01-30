@@ -127,11 +127,13 @@ final class MailboxTest extends TestCase
 	*/
 	public function test_set_and_get_server_encoding(string $encoding) : void
 	{
-		$this->mailbox->setServerEncoding($encoding);
+		$mailbox = $this->getMailbox();
+
+		$mailbox->setServerEncoding($encoding);
 
 		$encoding = mb_strtoupper(trim($encoding));
 
-		static::assertSame($this->mailbox->getServerEncoding(), $encoding);
+		static::assertSame($mailbox->getServerEncoding(), $encoding);
 	}
 
 	/**
