@@ -55,7 +55,6 @@ use const TYPETEXT;
 * }>
 *
 * @todo see @todo of Imap::mail_compose()
-* @todo drop php 5.6, remove paragonie/random_compat
 */
 class LiveMailboxTest extends TestCase
 {
