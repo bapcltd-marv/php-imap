@@ -146,13 +146,13 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @psalm-return list<array{0:COMPOSE_ENVELOPE, 1:COMPOSE_BODY, 2:string}>
+	* @psalm-return Generator<int, array{0:COMPOSE_ENVELOPE, 1:COMPOSE_BODY, 2:string}, mixed, void>
 	*/
 	public function ComposeProvider() : array
 	{
 		$random_subject = 'test: ' . bin2hex(random_bytes(16));
 
-		return [
+		yield
 			[
 				['subject' => $random_subject],
 				[
@@ -168,8 +168,11 @@ class LiveMailboxTest extends TestCase
 					"\r\n" .
 					'test' . "\r\n"
 				),
-			],
-			[
+		];
+
+		$random_subject = 'test: ' . bin2hex(random_bytes(16));
+
+		yield [
 				['subject' => $random_subject],
 				[
 					[
@@ -196,7 +199,6 @@ class LiveMailboxTest extends TestCase
 						file_get_contents(__DIR__ . '/../../.gitignore')
 					) . "\r\n"
 				),
-			],
 		];
 	}
 
