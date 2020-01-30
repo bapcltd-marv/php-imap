@@ -20,6 +20,7 @@ matrix:
 cache:
   directories:
     - ./vendor
+    - $HOME/.composer/cache
 
 before_script:
   - if [[ "$coverage" = "no" ]]; then phpenv config-rm xdebug.ini; fi
