@@ -38,7 +38,6 @@ use const TYPETEXT;
  * }>
  *
  * @todo see @todo of Imap::mail_compose()
- * @todo drop php 5.6, remove paragonie/random_compat
  */
 class LiveMailboxTest extends TestCase
 {
@@ -51,12 +50,6 @@ class LiveMailboxTest extends TestCase
      */
     public function MailBoxProvider(): array
     {
-        if (!\class_exists(HiddenString::class)) {
-            $this->markTestSkipped('paragonie/hidden-string not installed!');
-
-            return [];
-        }
-
         $sets = [];
 
         $imapPath = \getenv('PHPIMAP_IMAP_PATH');
@@ -74,9 +67,6 @@ class LiveMailboxTest extends TestCase
      * @dataProvider MailBoxProvider
      *
      * @group live
-     *
-     * @param string $attachmentsDir
-     * @param string $serverEncoding
      *
      * @return void
      */
@@ -169,7 +159,7 @@ class LiveMailboxTest extends TestCase
     /**
      * @psalm-return Generator<int, array{0:COMPOSE_ENVELOPE, 1:COMPOSE_BODY, 2:string}, mixed, void>
      */
-    public function ComposeProvider()
+    public function ComposeProvider(): Generator
     {
         $random_subject = 'test: '.\bin2hex(\random_bytes(16));
 
@@ -279,7 +269,7 @@ class LiveMailboxTest extends TestCase
      *	4:bool
      * }, mixed, void>
      */
-    public function AppendProvider()
+    public function AppendProvider(): Generator
     {
         foreach ($this->MailBoxProvider() as $mailbox_args) {
             foreach ($this->ComposeProvider() as $compose_args) {
