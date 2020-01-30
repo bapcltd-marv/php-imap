@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function bin2hex;
 use function count;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
@@ -20,6 +21,7 @@ use function mb_list_encodings;
 use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\ConnectionException;
 use PhpImap\Exceptions\InvalidParameterException;
+use function random_bytes;
 use stdClass;
 use Throwable;
 use UnexpectedValueException;
@@ -1157,7 +1159,7 @@ class Mailbox
 	*
 	* @param array $params Array of params of mail
 	* @param object $partStructure Part of mail
-	* @param int $mailId ID of mail
+	* @param int $_mailId ID of mail
 	* @param bool $emlOrigin True, if it indicates, that the attachment comes from an EML (mail) file
 	*
 	* @psalm-param array<string, string> $params
@@ -1167,7 +1169,7 @@ class Mailbox
 	*
 	* @todo consider "requiring" psalm (suggest + conflict) then setting $params to array<string, string>
 	*/
-	public function downloadAttachment(DataPartInfo $dataInfo, array $params, object $partStructure, int $mailId, bool $emlOrigin = false) : IncomingMailAttachment
+	public function downloadAttachment(DataPartInfo $dataInfo, array $params, object $partStructure, int $_mailId, bool $emlOrigin = false) : IncomingMailAttachment
 	{
 		if ('RFC822' === $partStructure->subtype && isset($partStructure->disposition) && 'attachment' === $partStructure->disposition) {
 			$fileName = mb_strtolower($partStructure->subtype) . '.eml';
@@ -1203,13 +1205,7 @@ class Mailbox
 		$attachmentsDir = $this->getAttachmentsDir();
 
 		if (null !== $attachmentsDir) {
-			$replace = [
-				'/\s/' => '_',
-				'/[^\w\.]/iu' => '',
-				'/_+/' => '_',
-				'/(^_)|(_$)/' => '',
-			];
-			$fileSysName = preg_replace('~[\\\\/]~', '', (string) $mailId . '_' . $attachment->id . '_' . preg_replace(array_keys($replace), $replace, $fileName));
+			$fileSysName = bin2hex(random_bytes(16)) . '.bin';
 			$filePath = $attachmentsDir . DIRECTORY_SEPARATOR . $fileSysName;
 
 			if (mb_strlen($filePath) > 255) {
