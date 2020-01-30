@@ -195,10 +195,10 @@ class LiveMailboxTest extends TestCase
 	{
 		foreach ($this->MailBoxProvider() as $mailbox_args) {
 			foreach ($this->ComposeProvider() as $compose_args) {
-				[$envelope, $body] = $compose_args;
+				[$envelope, $body, $expected_compose_result] = $compose_args;
 
-				yield [$mailbox_args, $envelope, $body, false];
-				yield [$mailbox_args, $envelope, $body, true];
+				yield [$mailbox_args, $envelope, $body, $expected_compose_result, false];
+				yield [$mailbox_args, $envelope, $body, $expected_compose_result, true];
 			}
 		}
 	}
@@ -217,6 +217,7 @@ class LiveMailboxTest extends TestCase
 		array $mailbox_args,
 		array $envelope,
 		array $body,
+		string $expected_compose_result,
 		bool $pre_compose
 	) : void {
 		if ( ! isset($envelope['subject'])) {
@@ -251,6 +252,8 @@ class LiveMailboxTest extends TestCase
 			)
 		);
 
+		$count = $mailbox->countMails();
+
 		$message = [$envelope, $body];
 
 		if ($pre_compose) {
@@ -258,6 +261,16 @@ class LiveMailboxTest extends TestCase
 		}
 
 		$mailbox->appendMessageToMailbox($message);
+
+		static::assertSame(
+			$count + 1,
+			$mailbox->countMails(),
+			(
+				'If the message count did not increase' .
+				' then either the message was not appended,' .
+				' or a mesage was removed while the test was running.'
+			)
+		);
 
 		$search = $mailbox->searchMailbox($search_criteria);
 
@@ -271,11 +284,56 @@ class LiveMailboxTest extends TestCase
 			)
 		);
 
+		static::assertSame(
+			$search,
+			$mailbox->sortMails(SORTARRIVAL, true, $search_criteria)
+		);
+
+		static::assertSame(
+			$search,
+			$mailbox->sortMails(SORTARRIVAL, false, $search_criteria)
+		);
+
+		static::assertSame(
+			$search,
+			$mailbox->sortMails(SORTARRIVAL, false, $search_criteria, 'UTF-8')
+		);
+
+		static::assertTrue(in_array(
+			$search[0],
+			$mailbox->sortMails(SORTARRIVAL, false, null),
+			true
+		));
+
+		static::assertSame(
+			$expected_compose_result,
+			$mailbox->getMailMboxFormat($search[0])
+		);
+
+		static::assertSame(
+			$expected_compose_result,
+			$mailbox->getRawMail($search[0])
+		);
+
 		$mail = $mailbox->getMail($search[0], false);
 
 		static::assertSame(
 			$envelope['subject'],
 			$mail->subject,
+			(
+				'If a retrieved mail did not have a matching subject' .
+				' despite being found via search,' .
+				' then something has gone wrong.'
+			)
+		);
+
+		$info = $mailbox->getMailsInfo($search);
+
+		static::assertCount(1, $info);
+
+		static::assertSame(
+			$envelope['subject'],
+			$info[0]->subject,
 			(
 				'If a retrieved mail did not have a matching subject' .
 				' despite being found via search,' .
