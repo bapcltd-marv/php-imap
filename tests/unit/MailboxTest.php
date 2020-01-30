@@ -93,15 +93,25 @@ final class MailboxTest extends TestCase
 	}
 
 	/**
-	* Test, that the server encoding can be set.
+	* @psalm-return list<array{0:string}>
 	*/
-	public function test_set_and_get_server_encoding() : void
+	public function SetAndGetServerEncodingProvider() : array
 	{
-		$mailbox = $this->getMailbox();
+		return [
+			['UTF-8'],
+		];
+	}
 
-		$mailbox->setServerEncoding('UTF-8');
+	/**
+	* Test, that the server encoding can be set.
+	*
+	* @dataProvider SetAndGetServerEncodingProvider
+	*/
+	public function test_set_and_get_server_encoding(string $encoding) : void
+	{
+		$this->mailbox->setServerEncoding($encoding);
 
-		static::assertSame($mailbox->getServerEncoding(), 'UTF-8');
+		static::assertSame($this->mailbox->getServerEncoding(), $encoding);
 	}
 
 	/**
