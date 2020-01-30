@@ -572,9 +572,6 @@ class LiveMailboxTest extends TestCase
 	*
 	* @depends test_append
 	*
-	* @param string $expected_compose_result
-	* @param bool $pre_compose
-	*
 	* @psalm-param MAILBOX_ARGS $mailbox_args
 	* @psalm-param COMPOSE_ENVELOPE $envelope
 	* @psalm-param COMPOSE_BODY $body
@@ -583,8 +580,8 @@ class LiveMailboxTest extends TestCase
 		array $mailbox_args,
 		array $envelope,
 		array $body,
-		$expected_compose_result,
-		$pre_compose
+		string $expected_compose_result,
+		bool $pre_compose
 	) : void {
 		if ( ! isset($envelope['subject'])) {
 			static::markTestSkipped(
