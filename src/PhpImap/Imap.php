@@ -1205,7 +1205,7 @@ final class Imap
 			return sprintf('%1$s:%1$s', $msg_number);
 		} elseif (
 			$allow_sequence &&
-			1 !== preg_match('/^\d(?:(?:,\d+)+|:\d+)$/', $msg_number)
+			1 !== preg_match('/^\d+(?:(?:,\d+)+|:\d+)$/', $msg_number)
 		) {
 			throw new InvalidArgumentException(
 				'Argument ' .
