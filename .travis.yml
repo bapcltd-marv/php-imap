@@ -15,11 +15,12 @@ before_script:
 
 script:
   - vendor/bin/parallel-lint .php_cs.dist src tests examples
-  - vendor/bin/phpunit --coverage-clover=clover.xml --stop-on-failure --exclude-group=live
+  - vendor/bin/phpunit --coverage-php=coverage/not-live.cov --stop-on-failure --exclude-group=live
   - vendor/bin/php-coveralls
   - vendor/bin/composer-require-checker check ./composer.json
   - vendor/bin/psalm --show-info=false --shepherd
   - vendor/bin/php-cs-fixer fix --allow-risky=yes --no-interaction --dry-run --diff-format=udiff -v
+  - vendor/bin/phpcov merge ./coverage/ --clover clover.xml
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover
