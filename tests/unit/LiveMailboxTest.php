@@ -310,15 +310,94 @@ class LiveMailboxTest extends TestCase
 
 		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
 
+		$search = $mailbox->searchMailbox($search_criteria);
+
 		static::assertCount(
 			0,
-			$mailbox->searchMailbox($search_criteria),
+			$search,
 			(
 				'If a subject was found,' .
 				' then the message is insufficiently unique to assert that' .
 				' a newly-appended message was actually created.'
 			)
 		);
+
+		$message = [$envelope, $body];
+
+		if ($pre_compose) {
+			$message = Imap::mail_compose($envelope, $body);
+		}
+
+		$mailbox->appendMessageToMailbox($message);
+
+		$search = $mailbox->searchMailbox($search_criteria);
+
+		static::assertCount(
+			1,
+			$search,
+			(
+				'If a subject was not found, ' .
+				' then Mailbox::appendMessageToMailbox() failed' .
+				' despite not throwing an exception.'
+			)
+		);
+
+		$mailbox->deleteMail($search[0]);
+
+		$mailbox->expungeDeletedMails();
+
+		static::assertCount(
+			0,
+			$mailbox->searchMailbox($search_criteria),
+			(
+				'If a subject was found,' .
+				' then the message is was not expunged as requested.'
+			)
+		);
+	}
+
+	/**
+	* @dataProvider AppendProvider
+	*
+	* @depends test_append
+	*
+	* @param string $expected_compose_result
+	* @param bool $pre_compose
+	*
+	* @psalm-param MAILBOX_ARGS $mailbox_args
+	* @psalm-param COMPOSE_ENVELOPE $envelope
+	* @psalm-param COMPOSE_BODY $body
+	*/
+	public function test_append_nudges_mailbox_count(
+		array $mailbox_args,
+		array $envelope,
+		array $body,
+		$expected_compose_result,
+		$pre_compose
+	) {
+		if ( ! isset($envelope['subject'])) {
+			static::markTestSkipped(
+				'Cannot search for message by subject, no subject specified!'
+			);
+
+			return;
+		}
+
+		usleep(random_int(100, 1000));
+
+		static::assertIsString($envelope['subject'] ?? null);
+
+		[$path, $username, $password, $attachments_dir] = $mailbox_args;
+
+		$mailbox = new Mailbox(
+			$path->getString(),
+			$username->getString(),
+			$password->getString(),
+			$attachments_dir,
+			$mailbox_args[4] ?? 'UTF-8'
+		);
+
+		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
 
 		$count = $mailbox->countMails();
 
@@ -328,7 +407,31 @@ class LiveMailboxTest extends TestCase
 			$message = Imap::mail_compose($envelope, $body);
 		}
 
+		$search = $mailbox->searchMailbox($search_criteria);
+
+		static::assertCount(
+			0,
+			$search,
+			(
+				'If a subject was found,' .
+				' then the message is insufficiently unique to assert that' .
+				' a newly-appended message was actually created.'
+			)
+		);
+
 		$mailbox->appendMessageToMailbox($message);
+
+		$search = $mailbox->searchMailbox($search_criteria);
+
+		static::assertCount(
+			1,
+			$search,
+			(
+				'If a subject was not found, ' .
+				' then Mailbox::appendMessageToMailbox() failed' .
+				' despite not throwing an exception.'
+			)
+		);
 
 		static::assertSame(
 			$count + 1,
@@ -339,6 +442,85 @@ class LiveMailboxTest extends TestCase
 				' or a mesage was removed while the test was running.'
 			)
 		);
+
+		$mailbox->deleteMail($search[0]);
+
+		$mailbox->expungeDeletedMails();
+
+		static::assertCount(
+			0,
+			$mailbox->searchMailbox($search_criteria),
+			(
+				'If a subject was found,' .
+				' then the message is was not expunged as requested.'
+			)
+		);
+	}
+
+	/**
+	* @dataProvider AppendProvider
+	*
+	* @depends test_append
+	*
+	* @param string $expected_compose_result
+	* @param bool $pre_compose
+	*
+	* @psalm-param MAILBOX_ARGS $mailbox_args
+	* @psalm-param COMPOSE_ENVELOPE $envelope
+	* @psalm-param COMPOSE_BODY $body
+	*/
+	public function test_append_single_search_matches_sort(
+		array $mailbox_args,
+		array $envelope,
+		array $body,
+		$expected_compose_result,
+		$pre_compose
+	) {
+		if ( ! isset($envelope['subject'])) {
+			static::markTestSkipped(
+				'Cannot search for message by subject, no subject specified!'
+			);
+
+			return;
+		}
+
+		usleep(random_int(100, 1000));
+
+		static::assertIsString($envelope['subject'] ?? null);
+
+		[$path, $username, $password, $attachments_dir] = $mailbox_args;
+
+		$mailbox = new Mailbox(
+			$path->getString(),
+			$username->getString(),
+			$password->getString(),
+			$attachments_dir,
+			$mailbox_args[4] ?? 'UTF-8'
+		);
+
+		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
+
+		$count = $mailbox->countMails();
+
+		$message = [$envelope, $body];
+
+		if ($pre_compose) {
+			$message = Imap::mail_compose($envelope, $body);
+		}
+
+		$search = $mailbox->searchMailbox($search_criteria);
+
+		static::assertCount(
+			0,
+			$search,
+			(
+				'If a subject was found,' .
+				' then the message is insufficiently unique to assert that' .
+				' a newly-appended message was actually created.'
+			)
+		);
+
+		$mailbox->appendMessageToMailbox($message);
 
 		$search = $mailbox->searchMailbox($search_criteria);
 
@@ -372,6 +554,97 @@ class LiveMailboxTest extends TestCase
 			$mailbox->sortMails(SORTARRIVAL, false, null),
 			true
 		));
+
+		$mailbox->deleteMail($search[0]);
+
+		$mailbox->expungeDeletedMails();
+
+		static::assertCount(
+			0,
+			$mailbox->searchMailbox($search_criteria),
+			(
+				'If a subject was found,' .
+				' then the message is was not expunged as requested.'
+			)
+		);
+	}
+
+	/**
+	* @dataProvider AppendProvider
+	*
+	* @depends test_append
+	*
+	* @param string $expected_compose_result
+	* @param bool $pre_compose
+	*
+	* @psalm-param MAILBOX_ARGS $mailbox_args
+	* @psalm-param COMPOSE_ENVELOPE $envelope
+	* @psalm-param COMPOSE_BODY $body
+	*/
+	public function test_append_retrieval_matches_expected(
+		array $mailbox_args,
+		array $envelope,
+		array $body,
+		$expected_compose_result,
+		$pre_compose
+	) {
+		if ( ! isset($envelope['subject'])) {
+			static::markTestSkipped(
+				'Cannot search for message by subject, no subject specified!'
+			);
+
+			return;
+		}
+
+		usleep(random_int(100, 1000));
+
+		static::assertIsString($envelope['subject'] ?? null);
+
+		[$path, $username, $password, $attachments_dir] = $mailbox_args;
+
+		$mailbox = new Mailbox(
+			$path->getString(),
+			$username->getString(),
+			$password->getString(),
+			$attachments_dir,
+			$mailbox_args[4] ?? 'UTF-8'
+		);
+
+		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
+
+		$count = $mailbox->countMails();
+
+		$message = [$envelope, $body];
+
+		if ($pre_compose) {
+			$message = Imap::mail_compose($envelope, $body);
+		}
+
+		$search = $mailbox->searchMailbox($search_criteria);
+
+		static::assertCount(
+			0,
+			$search,
+			(
+				'If a subject was found,' .
+				' then the message is insufficiently unique to assert that' .
+				' a newly-appended message was actually created.'
+			)
+		);
+
+		$mailbox->appendMessageToMailbox($message);
+
+		$search = $mailbox->searchMailbox($search_criteria);
+
+		static::assertCount(
+			1,
+			$search,
+			(
+				'If a subject was not found, ' .
+				' then Mailbox::appendMessageToMailbox() failed' .
+				' despite not throwing an exception.'
+			)
+		);
 
 		static::assertSame(
 			$expected_compose_result,
