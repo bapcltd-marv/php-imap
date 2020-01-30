@@ -15,7 +15,7 @@ before_script:
 
 script:
   - vendor/bin/parallel-lint .php_cs.dist src tests examples
-  - vendor/bin/phpunit --coverage-clover=clover.xml
+  - vendor/bin/phpunit --coverage-clover=clover.xml --stop-on-failure
   - vendor/bin/php-coveralls
   - vendor/bin/composer-require-checker check ./composer.json
   - vendor/bin/psalm --show-info=false --shepherd
