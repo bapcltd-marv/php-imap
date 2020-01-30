@@ -289,7 +289,7 @@ class LiveMailboxTest extends TestCase
 		array $mailbox_args,
 		array $envelope,
 		array $body,
-		string $expected_compose_result,
+		string $_expected_compose_result,
 		bool $pre_compose
 	) : void {
 		if ( ! isset($envelope['subject'])) {
@@ -367,9 +367,6 @@ class LiveMailboxTest extends TestCase
 	*
 	* @depends test_append
 	*
-	* @param string $expected_compose_result
-	* @param bool $pre_compose
-	*
 	* @psalm-param MAILBOX_ARGS $mailbox_args
 	* @psalm-param COMPOSE_ENVELOPE $envelope
 	* @psalm-param COMPOSE_BODY $body
@@ -378,9 +375,9 @@ class LiveMailboxTest extends TestCase
 		array $mailbox_args,
 		array $envelope,
 		array $body,
-		$expected_compose_result,
-		$pre_compose
-	) {
+		string $_expected_compose_result,
+		bool $pre_compose
+	) : void {
 		if ( ! isset($envelope['subject'])) {
 			static::markTestSkipped(
 				'Cannot search for message by subject, no subject specified!'
@@ -398,7 +395,7 @@ class LiveMailboxTest extends TestCase
 		$mailbox = new Mailbox(
 			$path->getString(),
 			$username->getString(),
-			$password->getString(),
+			$password,
 			$attachments_dir,
 			$mailbox_args[4] ?? 'UTF-8'
 		);
@@ -468,9 +465,6 @@ class LiveMailboxTest extends TestCase
 	*
 	* @depends test_append
 	*
-	* @param string $expected_compose_result
-	* @param bool $pre_compose
-	*
 	* @psalm-param MAILBOX_ARGS $mailbox_args
 	* @psalm-param COMPOSE_ENVELOPE $envelope
 	* @psalm-param COMPOSE_BODY $body
@@ -479,9 +473,9 @@ class LiveMailboxTest extends TestCase
 		array $mailbox_args,
 		array $envelope,
 		array $body,
-		$expected_compose_result,
-		$pre_compose
-	) {
+		string $_expected_compose_result,
+		bool $pre_compose
+	) : void {
 		if ( ! isset($envelope['subject'])) {
 			static::markTestSkipped(
 				'Cannot search for message by subject, no subject specified!'
@@ -499,14 +493,12 @@ class LiveMailboxTest extends TestCase
 		$mailbox = new Mailbox(
 			$path->getString(),
 			$username->getString(),
-			$password->getString(),
+			$password,
 			$attachments_dir,
 			$mailbox_args[4] ?? 'UTF-8'
 		);
 
 		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
-
-		$count = $mailbox->countMails();
 
 		$message = [$envelope, $body];
 
@@ -593,7 +585,7 @@ class LiveMailboxTest extends TestCase
 		array $body,
 		$expected_compose_result,
 		$pre_compose
-	) {
+	) : void {
 		if ( ! isset($envelope['subject'])) {
 			static::markTestSkipped(
 				'Cannot search for message by subject, no subject specified!'
@@ -611,14 +603,12 @@ class LiveMailboxTest extends TestCase
 		$mailbox = new Mailbox(
 			$path->getString(),
 			$username->getString(),
-			$password->getString(),
+			$password,
 			$attachments_dir,
 			$mailbox_args[4] ?? 'UTF-8'
 		);
 
 		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
-
-		$count = $mailbox->countMails();
 
 		$message = [$envelope, $body];
 
