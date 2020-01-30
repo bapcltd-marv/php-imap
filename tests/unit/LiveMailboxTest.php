@@ -413,6 +413,11 @@ class LiveMailboxTest extends TestCase
 			$attachments = $mail->getAttachments();
 
 			static::assertCount(1, $attachments);
+
+			static::assertSame(
+				file_get_contents(__DIR__ . '/../../.gitignore'),
+				current($attachments)->getContents()
+			);
 		}
 
 		$mailbox->deleteMail($search[0]);
