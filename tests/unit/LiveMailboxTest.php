@@ -69,6 +69,8 @@ class LiveMailboxTest extends TestCase
 
 	/**
 	* @dataProvider MailBoxProvider
+	*
+	* @group live
 	*/
 	public function test_get_imap_stream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8') : void
 	{
@@ -278,6 +280,8 @@ class LiveMailboxTest extends TestCase
 	/**
 	* @dataProvider AppendProvider
 	*
+	* @group live
+	*
 	* @depends test_get_imap_stream
 	* @depends test_mail_compose
 	*
@@ -364,6 +368,8 @@ class LiveMailboxTest extends TestCase
 
 	/**
 	* @dataProvider AppendProvider
+	*
+	* @group live
 	*
 	* @depends test_append
 	*
@@ -462,6 +468,8 @@ class LiveMailboxTest extends TestCase
 
 	/**
 	* @dataProvider AppendProvider
+	*
+	* @group live
 	*
 	* @depends test_append
 	*
@@ -569,6 +577,8 @@ class LiveMailboxTest extends TestCase
 
 	/**
 	* @dataProvider AppendProvider
+	*
+	* @group live
 	*
 	* @depends test_append
 	*
