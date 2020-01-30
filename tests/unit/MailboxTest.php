@@ -21,11 +21,6 @@ final class MailboxTest extends TestCase
 	const ANYTHING = 0;
 
 	/**
-	* Holds a PhpImap\Mailbox instance.
-	*/
-	private ?Mailbox $mailbox = null;
-
-	/**
 	* Holds the imap path.
 	*/
 	private string $imapPath = '{imap.example.com:993/imap/ssl/novalidate-cert}INBOX';
@@ -53,22 +48,6 @@ final class MailboxTest extends TestCase
 	* Holds the server encoding setting.
 	*/
 	private string $serverEncoding = 'UTF-8';
-
-	/**
-	* Run before each test is started.
-	*/
-	public function setUp() : void
-	{
-		$this->mailbox = new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, $this->serverEncoding);
-	}
-
-	/**
-	* Test, that the constructor returns an instance of PhpImap\Mailbox::class.
-	*/
-	public function test_constructor() : void
-	{
-		static::assertInstanceOf(Mailbox::class, $this->mailbox);
-	}
 
 	/**
 	* Test, that the constructor trims possible variables
@@ -697,14 +676,9 @@ final class MailboxTest extends TestCase
 	*
 	* @dataProvider attachmentDirFailureProvider
 	*
-	* @param string $initialDir
-	* @param string $attachmentsDir
-	* @param string $expectedException
-	* @param string $expectedExceptionMessage
-	*
 	* @psalm-param class-string<\Throwable> $expectedException
 	*/
-	public function test_attachment_dir_failure($initialDir, $attachmentsDir, $expectedException, $expectedExceptionMessage) : void
+	public function test_attachment_dir_failure(string $initialDir, string $attachmentsDir, string $expectedException, string $expectedExceptionMessage) : void
 	{
 		$mailbox = new Mailbox('', '', new HiddenString('', true, true), $initialDir);
 
@@ -718,7 +692,6 @@ final class MailboxTest extends TestCase
 
 	protected function getMailbox() : Mailbox
 	{
-		/** @var Mailbox */
-		return $this->mailbox;
+		return new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, $this->serverEncoding);
 	}
 }
