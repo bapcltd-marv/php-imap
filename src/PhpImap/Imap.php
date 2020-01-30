@@ -69,6 +69,49 @@ final class Imap
 	];
 
 	/**
+	* @param resource|false $imap_stream
+	*
+	* @return true
+	*
+	* @see imap_append()
+	*/
+	public static function append(
+		$imap_stream,
+		string $mailbox,
+		string $message,
+		string $options = null,
+		string $internal_date = null
+	) : bool {
+		imap_errors(); // flush errors
+
+		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+
+		if (null !== $options && null !== $internal_date) {
+			$result = imap_append(
+				$imap_stream,
+				$mailbox,
+				$message,
+				$options,
+				$internal_date
+			);
+		} elseif (null !== $options) {
+			$result = imap_append($imap_stream, $mailbox, $message, $options);
+		} else {
+			$result = imap_append($imap_stream, $mailbox, $message);
+		}
+
+		if (false === $result) {
+			throw new UnexpectedValueException(
+				'Could not append message to mailbox!',
+				0,
+				self::HandleErrors(imap_errors(), 'imap_append')
+			);
+		}
+
+		return $result;
+	}
+
+	/**
 	* @param false|resource $imap_stream
 	*/
 	public static function body(
@@ -556,6 +599,29 @@ final class Imap
 			},
 			$result
 		));
+	}
+
+	/**
+	* @param mixed[] An associative array of headers fields
+	* @param mixed[] An indexed array of bodies
+	*
+	* @psalm-param array{
+	*	subject?:string
+	* } $envelope An associative array of headers fields (docblock is not complete)
+	* @psalm-param list<array{
+	*	type?:int,
+	*	encoding?:int,
+	*	charset?:string,
+	*	subtype?:string,
+	*	description?:string,
+	*	disposition?:array{filename:string}
+	* }> $body An indexed array of bodies (docblock is not complete)
+	*
+	* @todo flesh out array shape pending resolution of https://github.com/vimeo/psalm/issues/1518
+	*/
+	public static function mail_compose(array $envelope, array $body) : string
+	{
+		return imap_mail_compose($envelope, $body);
 	}
 
 	/**
