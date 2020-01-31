@@ -446,12 +446,12 @@ class Mailbox
 	*
 	* @throws Exception
 	*/
-	public function switchMailbox(string $imapPath) : void
+	public function switchMailbox(string $imapPath, bool $absolute = true) : void
 	{
 		if (mb_strpos($imapPath, '}') > 0) {
 			$this->imapPath = $imapPath;
 		} else {
-			$this->imapPath = $this->getCombinedPath($imapPath, true);
+			$this->imapPath = $this->getCombinedPath($imapPath, $absolute);
 		}
 
 		Imap::reopen($this->getImapStream(), $this->imapPath);
@@ -511,9 +511,9 @@ class Mailbox
 	*
 	* @see imap_deletemailbox()
 	*/
-	public function deleteMailbox(string $name) : bool
+	public function deleteMailbox(string $name, bool $absolute = false) : bool
 	{
-		return Imap::deletemailbox($this->getImapStream(), $this->getCombinedPath($name));
+		return Imap::deletemailbox($this->getImapStream(), $this->getCombinedPath($name, $absolute));
 	}
 
 	/**
