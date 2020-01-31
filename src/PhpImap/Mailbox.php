@@ -460,7 +460,6 @@ class Mailbox
     /**
      * Switch mailbox without opening a new connection.
      *
-     *
      * @throws Exception
      */
     public function switchMailbox(string $imapPath, bool $absolute = true)
@@ -706,7 +705,6 @@ class Mailbox
 
     /**
      * Deletes all the mails marked for deletion by imap_delete(), imap_mail_move(), or imap_setflag_full().
-     *
      *
      * @see imap_expunge()
      */
@@ -1412,7 +1410,6 @@ class Mailbox
     /**
      * Subscribe to a mailbox.
      *
-     *
      * @throws Exception
      */
     public function subscribeMailbox(string $mailbox)
@@ -1425,7 +1422,6 @@ class Mailbox
 
     /**
      * Unsubscribe from a mailbox.
-     *
      *
      * @throws Exception
      */
@@ -1487,7 +1483,6 @@ class Mailbox
 
     /**
      * Authenticates the IMAP client with the OAuth access token.
-     *
      *
      * @throws Exception If any error occured
      */
