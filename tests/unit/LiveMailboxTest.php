@@ -273,7 +273,6 @@ class LiveMailboxTest extends TestCase
 			foreach ($this->ComposeProvider() as $compose_args) {
 				[$envelope, $body, $expected_compose_result] = $compose_args;
 
-				yield [$mailbox_args, $envelope, $body, $expected_compose_result, false];
 				yield [$mailbox_args, $envelope, $body, $expected_compose_result, true];
 			}
 		}
