@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function count;
 use DateTime;
+use const DIRECTORY_SEPARATOR;
 use Exception;
 use InvalidArgumentException;
 use PhpImap\Exceptions\ConnectionException;
@@ -12,8 +14,6 @@ use PhpImap\Exceptions\InvalidParameterException;
 use stdClass;
 use Throwable;
 use UnexpectedValueException;
-use const DIRECTORY_SEPARATOR;
-use function count;
 
 /**
  * @see https://github.com/barbushin/php-imap
