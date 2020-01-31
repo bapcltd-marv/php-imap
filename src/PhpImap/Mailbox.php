@@ -18,6 +18,7 @@ use function is_object;
 use function is_resource;
 use function is_string;
 use function mb_list_encodings;
+use function mb_strtolower;
 use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\ConnectionException;
 use PhpImap\Exceptions\InvalidParameterException;
@@ -598,6 +599,36 @@ class Mailbox
 	public function searchMailboxFromDisableServerEncoding(string $criteria, string $sender, string ...$senders) : array
 	{
 		return $this->searchMailboxFromWithOrWithoutDisablingServerEncoding($criteria, true, $sender, ...$senders);
+	}
+
+	/**
+	* Search the mailbox using multiple criteria merging the results.
+	*
+	* @param string $single_criteria
+	* @param string ...$criteria
+	*
+	* @return int[]
+	*
+	* @psalm-return list<int>
+	*/
+	public function searchMailboxMergeResults($single_criteria, ...$criteria)
+	{
+		return $this->searchMailboxMergeResultsWithOrWithoutDisablingServerEncoding(false, $single_criteria, ...$criteria);
+	}
+
+	/**
+	* Search the mailbox using multiple criteria merging the results.
+	*
+	* @param string $single_criteria
+	* @param string ...$criteria
+	*
+	* @return int[]
+	*
+	* @psalm-return list<int>
+	*/
+	public function searchMailboxMergeResultsDisableServerEncoding($single_criteria, ...$criteria)
+	{
+		return $this->searchMailboxMergeResultsWithOrWithoutDisablingServerEncoding(false, $single_criteria, ...$criteria);
 	}
 
 	/**
@@ -1797,13 +1828,45 @@ class Mailbox
 	{
 		array_unshift($senders, $sender);
 
-		/** @psalm-var list<string> */
-		$senders = array_values(array_unique(array_map('mb_strtolower', $senders)));
+		$senders = array_values(array_unique(array_map(
+			/**
+			 * @param string $sender
+			 *
+			 * @return string
+			 */
+			static function ($sender) use ($criteria) {
+				return $criteria . ' FROM ' . mb_strtolower($sender);
+			},
+			$senders
+		)));
+
+		return $this->searchMailboxMergeResultsWithOrWithoutDisablingServerEncoding(
+			$disableServerEncoding,
+			...$senders
+		);
+	}
+
+	/**
+	* Search the mailbox using different criteria, then merge the results.
+	*
+	* @param bool $disableServerEncoding
+	* @param string $single_criteria
+	* @param string ...$criteria
+	*
+	* @return int[]
+	*
+	* @psalm-return list<int>
+	*/
+	protected function searchMailboxMergeResultsWithOrWithoutDisablingServerEncoding($disableServerEncoding, $single_criteria, ...$criteria)
+	{
+		array_unshift($criteria, $single_criteria);
+
+		$criteria = array_values(array_unique($criteria));
 
 		$out = [];
 
-		foreach ($senders as $sender) {
-			$out = array_merge($out, $this->searchMailbox($criteria . ' FROM ' . $sender, $disableServerEncoding));
+		foreach ($criteria as $criterion) {
+			$out = array_merge($out, $this->searchMailbox($criterion, $disableServerEncoding));
 		}
 
 		/** @psalm-var list<int> */

@@ -37,6 +37,8 @@
       <code>getListingFolders</code>
       <code>searchMailboxFrom</code>
       <code>searchMailboxFromDisableServerEncoding</code>
+      <code>searchMailboxMergeResults</code>
+      <code>searchMailboxMergeResultsDisableServerEncoding</code>
       <code>saveMail</code>
       <code>moveMail</code>
       <code>copyMail</code>
