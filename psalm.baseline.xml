@@ -31,8 +31,6 @@
       <code>setConnectionRetry</code>
       <code>setConnectionRetryDelay</code>
       <code>setExpungeOnDisconnect</code>
-      <code>createMailbox</code>
-      <code>deleteMailbox</code>
       <code>renameMailbox</code>
       <code>getListingFolders</code>
       <code>searchMailboxFrom</code>
