@@ -1,26 +1,38 @@
 language: php
-php:
-  - 7.4.0
-  - 7.4
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.4.0
+      dist: bionic
+      env:
+        - analysis=no
+        - coverage=no
+    - php: 7.4
+      dist: bionic
+      env:
+        - analysis=yes
+        - coverage=yes
 
 cache:
   directories:
-    - $HOME/.composer/cache
+    - ./vendor
 
 before_script:
+  - if [[ "$coverage" = "no" ]]; then phpenv config-rm xdebug.ini; fi
   - composer install --no-interaction --prefer-dist
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+  - if [[ "$coverage" = "yes" ]]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
+  - if [[ "$coverage" = "yes" ]]; then chmod +x ./cc-test-reporter; fi
+  - if [[ "$coverage" = "yes" ]]; then ./cc-test-reporter before-build; fi
 
 script:
   - vendor/bin/parallel-lint .php_cs.dist src tests examples
-  - vendor/bin/phpunit --coverage-php=coverage/not-live.cov --stop-on-failure --exclude-group=live
-  - vendor/bin/php-coveralls
-  - vendor/bin/composer-require-checker check ./composer.json
-  - vendor/bin/psalm --show-info=false --shepherd
-  - vendor/bin/php-cs-fixer fix --allow-risky=yes --no-interaction --dry-run --diff-format=udiff -v
-  - vendor/bin/phpcov merge ./coverage/ --clover clover.xml
+  - if [[ "$coverage" = "no" ]]; then vendor/bin/phpunit --stop-on-failure --exclude-group=live; fi
+  - if [[ "$coverage" = "yes" ]]; then vendor/bin/phpunit --coverage-clover=clover.xml --stop-on-failure; fi
+  - if [[ "$analysis" = "yes" ]]; then vendor/bin/composer-require-checker check ./composer.json; fi
+  - if [[ "$analysis" = "yes" ]]; then vendor/bin/psalm --show-info=false --shepherd; fi
+  - if [[ "$analysis" = "yes" ]]; then vendor/bin/php-cs-fixer fix --allow-risky=yes --no-interaction --dry-run --diff-format=udiff -v; fi
 
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover
+  - if [[ "$coverage" = "yes" ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover; fi
+  - if [[ "$coverage" = "yes" ]]; then vendor/bin/php-coveralls; fi
