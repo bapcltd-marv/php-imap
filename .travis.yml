@@ -7,13 +7,19 @@ language: php
 matrix:
   fast_finish: true
   include:
-    - php: 7.0
+    - php: 7.0.0
       dist: xenial
       env:
         - analysis=no
         - coverage=no
         - phpunitflags="--stop-on-failure --exclude-group=live"
         - lint="php-cs-fixer"
+    - php: 7.0
+      dist: xenial
+      env:
+        - analysis=no
+        - coverage=no
+        - phpunitflags="--stop-on-failure --exclude-group=live"
     - php: 7.1
       dist: xenial
       env:
