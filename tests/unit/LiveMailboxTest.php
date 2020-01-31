@@ -10,12 +10,12 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
-use function date;
 use Exception;
 use Generator;
 use ParagonIE\HiddenString\HiddenString;
 use PHPUnit\Framework\TestCase;
 use const TYPETEXT;
+use function date;
 
 /**
  * @psalm-type MAILBOX_ARGS = array{
@@ -67,8 +67,6 @@ class LiveMailboxTest extends TestCase
      * @dataProvider MailBoxProvider
      *
      * @group live
-     *
-     * @return void
      */
     public function testGetImapStream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8')
     {
@@ -252,8 +250,6 @@ class LiveMailboxTest extends TestCase
      *
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
-     *
-     * @return void
      */
     public function test_mail_compose(array $envelope, array $body, string $expected_result)
     {
@@ -297,8 +293,6 @@ class LiveMailboxTest extends TestCase
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
-     *
-     * @return void
      */
     public function test_append(
         array $mailbox_args,
@@ -388,8 +382,6 @@ class LiveMailboxTest extends TestCase
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
-     *
-     * @return void
      */
     public function test_append_nudges_mailbox_count(
         array $mailbox_args,
@@ -491,8 +483,6 @@ class LiveMailboxTest extends TestCase
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
-     *
-     * @return void
      */
     public function test_append_single_search_matches_sort(
         array $mailbox_args,
@@ -603,8 +593,6 @@ class LiveMailboxTest extends TestCase
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
-     *
-     * @return void
      */
     public function test_append_retrieval_matches_expected(
         array $mailbox_args,
