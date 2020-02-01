@@ -9,7 +9,6 @@
     <DocblockTypeContradiction occurrences="1">
       <code>is_resource($maybe)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="1"/>
   </file>
   <file src="src/PhpImap/IncomingMail.php">
     <PossiblyUnusedMethod occurrences="2">
