@@ -10,14 +10,27 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function array_values;
+use function base64_encode;
+use function bin2hex;
 use function count;
+use function current;
 use function date;
+use function file_get_contents;
 use Generator;
+use function getenv;
 use function in_array;
 use function is_string;
+use function min;
 use ParagonIE\HiddenString\HiddenString;
 use PHPUnit\Framework\TestCase;
+use function preg_match;
+use function property_exists;
 use function random_bytes;
+use function shuffle;
+use function sprintf;
+use function strtotime;
+use function sys_get_temp_dir;
 use Throwable;
 use const TYPETEXT;
 

@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function imap_base64;
+use function imap_binary;
+use function imap_utf8;
+use function preg_replace;
+use function quoted_printable_decode;
+use function trim;
+
 /**
 * @see https://github.com/barbushin/php-imap
 *

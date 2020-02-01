@@ -8,10 +8,11 @@
 	declare(strict_types=1);
 
 	require_once __DIR__ . '/../vendor/autoload.php';
-
+	use function count;
 	use ParagonIE\HiddenString\HiddenString;
 	use PhpImap\Exceptions\ConnectionException;
 	use PhpImap\Mailbox;
+	use function time;
 
 	$mailbox = new Mailbox(
 		'{imap.gmail.com:993/imap/ssl}INBOX', // IMAP server and mailbox folder

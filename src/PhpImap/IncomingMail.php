@@ -4,9 +4,18 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function array_combine;
+use function base64_encode;
+use function basename;
 use function count;
+use function get_object_vars;
 use InvalidArgumentException;
 use function is_string;
+use function preg_match_all;
+use function rtrim;
+use function str_replace;
+use function trigger_error;
+use function trim;
 
 /**
 * The PhpImap IncomingMail class.

@@ -12,9 +12,12 @@ use function constant;
 use DateTime;
 use Exception;
 use function in_array;
+use function mb_list_encodings;
 use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\InvalidParameterException;
 use PHPUnit\Framework\TestCase;
+use function realpath;
+use function trim;
 
 final class MailboxTest extends TestCase
 {

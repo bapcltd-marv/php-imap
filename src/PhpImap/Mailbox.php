@@ -4,28 +4,56 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function array_fill_keys;
+use function array_intersect;
+use function array_keys;
+use function array_map;
+use function array_merge;
+use function array_unique;
+use function array_unshift;
+use function array_values;
+use function base64_encode;
 use function bin2hex;
 use function count;
+use function date;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
 use Exception;
+use function fwrite;
 use function gettype;
 use function iconv;
+use function imap_fetchheader;
+use function imap_mime_header_decode;
+use function imap_ping;
+use function imap_rfc822_parse_headers;
+use function implode;
 use function in_array;
 use InvalidArgumentException;
 use function is_array;
+use function is_dir;
 use function is_object;
 use function is_resource;
 use function is_string;
+use function mb_convert_encoding;
+use function mb_detect_encoding;
 use function mb_list_encodings;
 use function mb_strtolower;
 use ParagonIE\HiddenString\HiddenString;
+use function pathinfo;
 use PhpImap\Exceptions\ConnectionException;
 use PhpImap\Exceptions\InvalidParameterException;
+use function preg_match;
 use function random_bytes;
+use function realpath;
+use function rtrim;
+use function sha1;
 use stdClass;
+use function strtotime;
 use Throwable;
+use function trim;
 use UnexpectedValueException;
+use function urldecode;
+use function usleep;
 
 /**
 * @see https://github.com/barbushin/php-imap
