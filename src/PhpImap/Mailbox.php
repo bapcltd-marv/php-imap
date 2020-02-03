@@ -482,7 +482,7 @@ class Mailbox
 	*  Nmsgs - number of mails in the mailbox
 	*  Recent - number of recent mails in the mailbox
 	*
-	* @see	imap_check
+	* @see imap_check
 	*/
 	public function checkMailbox() : object
 	{
@@ -494,7 +494,7 @@ class Mailbox
 	*
 	* @param string $name Name of new mailbox (eg. 'PhpImap')
 	*
-	* @see   imap_createmailbox()
+	* @see imap_createmailbox()
 	*/
 	public function createMailbox(string $name) : void
 	{
@@ -506,7 +506,7 @@ class Mailbox
 	*
 	* @param string $name Name of mailbox, which you want to delete (eg. 'PhpImap')
 	*
-	* @see   imap_deletemailbox()
+	* @see imap_deletemailbox()
 	*/
 	public function deleteMailbox(string $name) : bool
 	{
@@ -603,7 +603,7 @@ class Mailbox
 	*
 	* @param int $mailId message number
 	*
-	* @see   imap_savebody()
+	* @see imap_savebody()
 	*/
 	public function saveMail(int $mailId, string $filename = 'email.eml') : void
 	{
@@ -615,7 +615,7 @@ class Mailbox
 	*
 	* @param int $mailId message number
 	*
-	* @see   imap_delete()
+	* @see imap_delete()
 	*/
 	public function deleteMail(int $mailId) : void
 	{
@@ -642,7 +642,7 @@ class Mailbox
 	* @param string|int $mailId a range or message number
 	* @param string $mailBox Mailbox name
 	*
-	* @see   imap_mail_copy()
+	* @see imap_mail_copy()
 	*/
 	public function copyMail($mailId, string $mailBox) : void
 	{
@@ -816,7 +816,7 @@ class Mailbox
 	* returns an array of string formatted with header info,
 	* one element per mail message.
 	*
-	* @see	imap_headers()
+	* @see imap_headers()
 	*/
 	public function getMailboxHeaders() : array
 	{
@@ -838,7 +838,7 @@ class Mailbox
 	*
 	* @return object Object with info
 	*
-	* @see	mailboxmsginfo
+	* @see mailboxmsginfo
 	*/
 	public function getMailboxInfo() : object
 	{
@@ -885,7 +885,7 @@ class Mailbox
 	/**
 	* Get mails count in mail box.
 	*
-	* @see	imap_num_msg()
+	* @see imap_num_msg()
 	*/
 	public function countMails() : int
 	{
@@ -1501,7 +1501,7 @@ class Mailbox
 	*
 	* @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
 	*
-	* @see	imap_get_quotaroot()
+	* @see imap_get_quotaroot()
 	*/
 	protected function getQuota(string $quota_root = 'INBOX') : array
 	{
