@@ -76,8 +76,8 @@ final class MailboxTest extends TestCase
 	*/
 	public function test_constructor_trims_possible_variables() : void
 	{
-		$imapPath = ' {imap.example.com:993/imap/ssl}INBOX	 ';
-		$login = '	php-imap@example.com';
+		$imapPath = ' {imap.example.com:993/imap/ssl}INBOX     ';
+		$login = '    php-imap@example.com';
 		$password = new HiddenString('  v3rY!53cEt&P4sSWöRd$', true, true);
 		// directory names can contain spaces before AND after on Linux/Unix systems. Windows trims these spaces automatically.
 		$attachmentsDir = '.';
