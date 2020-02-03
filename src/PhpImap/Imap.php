@@ -31,14 +31,14 @@ use UnexpectedValueException;
 /**
 * @psalm-type PARTSTRUCTURE_PARAM = object{attribute:string, value?:string}
 * @psalm-type PARTSTRUCTURE = object{
-*  id?:string,
-*  encoding:int|mixed,
-*  partStructure:object[],
-*  parameters:PARTSTRUCTURE_PARAM[],
-*  dparameters:object{attribute:string, value:string}[],
-*  parts:array<int, object{disposition?:string}>,
-*  type:int,
-*  subtype:string
+*	id?:string,
+*	encoding:int|mixed,
+*	partStructure:object[],
+*	parameters:PARTSTRUCTURE_PARAM[],
+*	dparameters:object{attribute:string, value:string}[],
+*	parts:array<int, object{disposition?:string}>,
+*	type:int,
+*	subtype:string
 * }
 */
 final class Imap

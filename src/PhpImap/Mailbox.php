@@ -32,14 +32,14 @@ use UnexpectedValueException;
 * @psalm-type PARTSTRUCTURE_PARAM = object{attribute:string, value?:string}
 *
 * @psalm-type PARTSTRUCTURE = object{
-*  id?:string,
-*  encoding:int|mixed,
-*  partStructure:object[],
-*  parameters:PARTSTRUCTURE_PARAM[],
-*  dparameters:object{attribute:string, value:string}[],
-*  parts:array<int, object{disposition?:string}>,
-*  type:int,
-*  subtype:string
+*	id?:string,
+*	encoding:int|mixed,
+*	partStructure:object[],
+*	parameters:PARTSTRUCTURE_PARAM[],
+*	dparameters:object{attribute:string, value:string}[],
+*	parts:array<int, object{disposition?:string}>,
+*	type:int,
+*	subtype:string
 * }
 * @psalm-type HOSTNAMEANDADDRESS_ENTRY = object{host?:string, personal?:string, mailbox:string}
 * @psalm-type HOSTNAMEANDADDRESS = array{0:HOSTNAMEANDADDRESS_ENTRY, 1?:HOSTNAMEANDADDRESS_ENTRY}
