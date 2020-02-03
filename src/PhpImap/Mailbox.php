@@ -25,43 +25,43 @@ use Throwable;
 use UnexpectedValueException;
 
 /**
- * @see https://github.com/barbushin/php-imap
- *
- * @author Barbushin Sergey http://linkedin.com/in/barbushin
- *
- * @psalm-type PARTSTRUCTURE_PARAM = object{attribute:string, value?:string}
- *
- * @psalm-type PARTSTRUCTURE = object{
- *  id?:string,
- *  encoding:int|mixed,
- *  partStructure:object[],
- *  parameters:PARTSTRUCTURE_PARAM[],
- *  dparameters:object{attribute:string, value:string}[],
- *  parts:array<int, object{disposition?:string}>,
- *  type:int,
- *  subtype:string
- * }
- * @psalm-type HOSTNAMEANDADDRESS_ENTRY = object{host?:string, personal?:string, mailbox:string}
- * @psalm-type HOSTNAMEANDADDRESS = array{0:HOSTNAMEANDADDRESS_ENTRY, 1?:HOSTNAMEANDADDRESS_ENTRY}
- * @psalm-type COMPOSE_ENVELOPE = array{
- *	subject?:string
- * }
- * @psalm-type COMPOSE_BODY = list<array{
- *	type?:int,
- *	encoding?:int,
- *	charset?:string,
- *	subtype?:string,
- *	description?:string,
- *	disposition?:array{filename:string}
- * }>
+* @see https://github.com/barbushin/php-imap
+*
+* @author Barbushin Sergey http://linkedin.com/in/barbushin
+*
+* @psalm-type PARTSTRUCTURE_PARAM = object{attribute:string, value?:string}
+*
+* @psalm-type PARTSTRUCTURE = object{
+*  id?:string,
+*  encoding:int|mixed,
+*  partStructure:object[],
+*  parameters:PARTSTRUCTURE_PARAM[],
+*  dparameters:object{attribute:string, value:string}[],
+*  parts:array<int, object{disposition?:string}>,
+*  type:int,
+*  subtype:string
+* }
+* @psalm-type HOSTNAMEANDADDRESS_ENTRY = object{host?:string, personal?:string, mailbox:string}
+* @psalm-type HOSTNAMEANDADDRESS = array{0:HOSTNAMEANDADDRESS_ENTRY, 1?:HOSTNAMEANDADDRESS_ENTRY}
+* @psalm-type COMPOSE_ENVELOPE = array{
+*	subject?:string
+* }
+* @psalm-type COMPOSE_BODY = list<array{
+*	type?:int,
+*	encoding?:int,
+*	charset?:string,
+*	subtype?:string,
+*	description?:string,
+*	disposition?:array{filename:string}
+* }>
 *
 * @todo see @todo of Imap::mail_compose()
- */
+*/
 class Mailbox
 {
 	/**
-	 * Allow to ignore attachments when they are not required and boost performance.
-	 */
+	* Allow to ignore attachments when they are not required and boost performance.
+	*/
 	public bool $attachmentsIgnore = false;
 
 	protected string $imapPath;
@@ -92,10 +92,10 @@ class Mailbox
 	protected bool $expungeOnDisconnect = true;
 
 	/**
-	 * @var int[]
-	 *
-	 * @psalm-var array{1?:int, 2?:int, 3?:int, 4?:int}
-	 */
+	* @var int[]
+	*
+	* @psalm-var array{1?:int, 2?:int, 3?:int, 4?:int}
+	*/
 	protected array $timeouts = [];
 
 	protected string $pathDelimiter = '.';
@@ -104,8 +104,8 @@ class Mailbox
 	private $imapStream;
 
 	/**
-	 * @throws InvalidParameterException
-	 */
+	* @throws InvalidParameterException
+	*/
 	public function __construct(string $imapPath, string $login, HiddenString $password, string $attachmentsDir = null, string $serverEncoding = 'UTF-8')
 	{
 		$this->imapPath = trim($imapPath);
@@ -118,21 +118,21 @@ class Mailbox
 	}
 
 	/**
-	 * Disconnects from the IMAP server / mailbox.
-	 */
+	* Disconnects from the IMAP server / mailbox.
+	*/
 	public function __destruct()
 	{
 		$this->disconnect();
 	}
 
 	/**
-	 * Sets / Changes the OAuth Token for the authentication.
-	 *
-	 * @param string $access_token OAuth token from your application (eg. Google Mail)
-	 *
-	 * @throws InvalidArgumentException If no access token is provided
-	 * @throws Exception If OAuth authentication was unsuccessful
-	 */
+	* Sets / Changes the OAuth Token for the authentication.
+	*
+	* @param string $access_token OAuth token from your application (eg. Google Mail)
+	*
+	* @throws InvalidArgumentException If no access token is provided
+	* @throws Exception If OAuth authentication was unsuccessful
+	*/
 	public function setOAuthToken(string $access_token) : void
 	{
 		if (empty(trim($access_token))) {
@@ -149,22 +149,22 @@ class Mailbox
 	}
 
 	/**
-	 * Gets the OAuth Token for the authentication.
-	 *
-	 * @return string|null $access_token OAuth Access Token
-	 */
+	* Gets the OAuth Token for the authentication.
+	*
+	* @return string|null $access_token OAuth Access Token
+	*/
 	public function getOAuthToken() : ?string
 	{
 		return $this->imapOAuthAccessToken;
 	}
 
 	/**
-	 * Sets / Changes the path delimiter character (Supported values: '.', '/').
-	 *
-	 * @param string $delimiter Path delimiter
-	 *
-	 * @throws InvalidParameterException
-	 */
+	* Sets / Changes the path delimiter character (Supported values: '.', '/').
+	*
+	* @param string $delimiter Path delimiter
+	*
+	* @throws InvalidParameterException
+	*/
 	public function setPathDelimiter(string $delimiter) : void
 	{
 		if ( ! $this->validatePathDelimiter($delimiter)) {
@@ -175,22 +175,22 @@ class Mailbox
 	}
 
 	/**
-	 * Returns the current set path delimiter character.
-	 *
-	 * @return string Path delimiter
-	 */
+	* Returns the current set path delimiter character.
+	*
+	* @return string Path delimiter
+	*/
 	public function getPathDelimiter() : string
 	{
 		return $this->pathDelimiter;
 	}
 
 	/**
-	 * Validates the given path delimiter character.
-	 *
-	 * @param string $delimiter Path delimiter
-	 *
-	 * @return bool true (supported) or false (unsupported)
-	 */
+	* Validates the given path delimiter character.
+	*
+	* @param string $delimiter Path delimiter
+	*
+	* @return bool true (supported) or false (unsupported)
+	*/
 	public function validatePathDelimiter(string $delimiter) : bool
 	{
 		$supported_delimiters = ['.', '/'];
@@ -203,22 +203,22 @@ class Mailbox
 	}
 
 	/**
-	 * Returns the current set server encoding.
-	 *
-	 * @return string Server encoding (eg. 'UTF-8')
-	 */
+	* Returns the current set server encoding.
+	*
+	* @return string Server encoding (eg. 'UTF-8')
+	*/
 	public function getServerEncoding() : string
 	{
 		return $this->serverEncoding;
 	}
 
 	/**
-	 * Sets / Changes the server encoding.
-	 *
-	 * @param string $serverEncoding Server encoding (eg. 'UTF-8')
-	 *
-	 * @throws InvalidParameterException
-	 */
+	* Sets / Changes the server encoding.
+	*
+	* @param string $serverEncoding Server encoding (eg. 'UTF-8')
+	*
+	* @throws InvalidParameterException
+	*/
 	public function setServerEncoding(string $serverEncoding) : void
 	{
 		$serverEncoding = mb_strtoupper(trim($serverEncoding));
@@ -233,24 +233,24 @@ class Mailbox
 	}
 
 	/**
-	 * Returns the current set IMAP search option.
-	 *
-	 * @return int IMAP search option (eg. 'SE_UID')
-	 */
+	* Returns the current set IMAP search option.
+	*
+	* @return int IMAP search option (eg. 'SE_UID')
+	*/
 	public function getImapSearchOption() : int
 	{
 		return $this->imapSearchOption;
 	}
 
 	/**
-	 * Sets / Changes the IMAP search option.
-	 *
-	 * @param int $imapSearchOption IMAP search option (eg. 'SE_UID')
-	 *
-	 * @psalm-param 1|2 $imapSearchOption
-	 *
-	 * @throws InvalidParameterException
-	 */
+	* Sets / Changes the IMAP search option.
+	*
+	* @param int $imapSearchOption IMAP search option (eg. 'SE_UID')
+	*
+	* @psalm-param 1|2 $imapSearchOption
+	*
+	* @throws InvalidParameterException
+	*/
 	public function setImapSearchOption(int $imapSearchOption) : void
 	{
 		$supported_options = [SE_FREE, SE_UID];
@@ -263,15 +263,15 @@ class Mailbox
 	}
 
 	/**
-	 * Sets the timeout of all or one specific type.
-	 *
-	 * @param int $timeout Timeout in seconds
-	 * @param array $types One of the following: IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT
-	 *
-	 * @psalm-param list<1|2|3|4> $types
-	 *
-	 * @throws InvalidParameterException
-	 */
+	* Sets the timeout of all or one specific type.
+	*
+	* @param int $timeout Timeout in seconds
+	* @param array $types One of the following: IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT
+	*
+	* @psalm-param list<1|2|3|4> $types
+	*
+	* @throws InvalidParameterException
+	*/
 	public function setTimeouts(int $timeout, array $types = [IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT]) : void
 	{
 		$supported_types = [IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT];
@@ -287,24 +287,24 @@ class Mailbox
 	}
 
 	/**
-	 * Returns the IMAP login (usually an email address).
-	 *
-	 * @return string IMAP login
-	 */
+	* Returns the IMAP login (usually an email address).
+	*
+	* @return string IMAP login
+	*/
 	public function getLogin() : string
 	{
 		return $this->imapLogin;
 	}
 
 	/**
-	 * Set custom connection arguments of imap_open method. See http://php.net/imap_open.
-	 *
-	 * @param string[] $params
-	 *
-	 * @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty> $params
-	 *
-	 * @throws InvalidParameterException
-	 */
+	* Set custom connection arguments of imap_open method. See http://php.net/imap_open.
+	*
+	* @param string[] $params
+	*
+	* @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty> $params
+	*
+	* @throws InvalidParameterException
+	*/
 	public function setConnectionArgs(int $options = 0, int $retriesNum = 0, array $params = null) : void
 	{
 		if (0 !== $options) {
@@ -336,13 +336,13 @@ class Mailbox
 	}
 
 	/**
-	 * Set custom folder for attachments in case you want to have tree of folders for each email
-	 * i.e. a/1 b/1 c/1 where a,b,c - senders, i.e. john@smith.com.
-	 *
-	 * @param string $attachmentsDir Folder where to save attachments
-	 *
-	 * @throws InvalidParameterException
-	 */
+	* Set custom folder for attachments in case you want to have tree of folders for each email
+	* i.e. a/1 b/1 c/1 where a,b,c - senders, i.e. john@smith.com.
+	*
+	* @param string $attachmentsDir Folder where to save attachments
+	*
+	* @throws InvalidParameterException
+	*/
 	public function setAttachmentsDir(string $attachmentsDir) : void
 	{
 		if (empty(trim($attachmentsDir))) {
@@ -355,38 +355,38 @@ class Mailbox
 	}
 
 	/**
-	 * Get current saving folder for attachments.
-	 *
-	 * @return string|null Attachments dir
-	 */
+	* Get current saving folder for attachments.
+	*
+	* @return string|null Attachments dir
+	*/
 	public function getAttachmentsDir() : ?string
 	{
 		return $this->attachmentsDir;
 	}
 
 	/**
-	 * Sets / Changes the attempts / retries to connect.
-	 */
+	* Sets / Changes the attempts / retries to connect.
+	*/
 	public function setConnectionRetry(int $maxAttempts) : void
 	{
 		$this->connectionRetry = $maxAttempts;
 	}
 
 	/**
-	 * Sets / Changes the delay between each attempt / retry to connect.
-	 */
+	* Sets / Changes the delay between each attempt / retry to connect.
+	*/
 	public function setConnectionRetryDelay(int $milliseconds) : void
 	{
 		$this->connectionRetryDelay = $milliseconds;
 	}
 
 	/**
-	 * Get IMAP mailbox connection stream.
-	 *
-	 * @param bool $forceConnection Initialize connection if it's not initialized
-	 *
-	 * @return resource
-	 */
+	* Get IMAP mailbox connection stream.
+	*
+	* @param bool $forceConnection Initialize connection if it's not initialized
+	*
+	* @return resource
+	*/
 	public function getImapStream(bool $forceConnection = true)
 	{
 		if ($forceConnection) {
@@ -407,10 +407,10 @@ class Mailbox
 	}
 
 	/**
-	 * Returns the provided string in UTF7-IMAP encoded format.
-	 *
-	 * @return string $str UTF-7 encoded string
-	 */
+	* Returns the provided string in UTF7-IMAP encoded format.
+	*
+	* @return string $str UTF-7 encoded string
+	*/
 	public function encodeStringToUtf7Imap(string $str) : string
 	{
 		$out = mb_convert_encoding($str, 'UTF7-IMAP', mb_detect_encoding($str, 'UTF-8, ISO-8859-1, ISO-8859-15', true));
@@ -423,10 +423,10 @@ class Mailbox
 	}
 
 	/**
-	 * Returns the provided string in UTF-8 encoded format.
-	 *
-	 * @return string $str UTF-7 encoded string or same as before, when it's no string
-	 */
+	* Returns the provided string in UTF-8 encoded format.
+	*
+	* @return string $str UTF-7 encoded string or same as before, when it's no string
+	*/
 	public function decodeStringFromUtf7ImapToUtf8(string $str) : string
 	{
 		$out = mb_convert_encoding($str, 'UTF-8', 'UTF7-IMAP');
@@ -439,10 +439,10 @@ class Mailbox
 	}
 
 	/**
-	 * Switch mailbox without opening a new connection.
-	 *
-	 * @throws Exception
-	 */
+	* Switch mailbox without opening a new connection.
+	*
+	* @throws Exception
+	*/
 	public function switchMailbox(string $imapPath) : void
 	{
 		if (mb_strpos($imapPath, '}') > 0) {
@@ -455,8 +455,8 @@ class Mailbox
 	}
 
 	/**
-	 * Disconnects from IMAP server / mailbox.
-	 */
+	* Disconnects from IMAP server / mailbox.
+	*/
 	public function disconnect() : void
 	{
 		if ($this->hasImapStream()) {
@@ -465,100 +465,100 @@ class Mailbox
 	}
 
 	/**
-	 * Sets 'expunge on disconnect' parameter.
-	 */
+	* Sets 'expunge on disconnect' parameter.
+	*/
 	public function setExpungeOnDisconnect(bool $isEnabled) : void
 	{
 		$this->expungeOnDisconnect = $isEnabled;
 	}
 
 	/**
-	 * Get information about the current mailbox.
-	 *
-	 * Returns the information in an object with following properties:
-	 *  Date - current system time formatted according to RFC2822
-	 *  Driver - protocol used to access this mailbox: POP3, IMAP, NNTP
-	 *  Mailbox - the mailbox name
-	 *  Nmsgs - number of mails in the mailbox
-	 *  Recent - number of recent mails in the mailbox
-	 *
-	 * @see	imap_check
-	 */
+	* Get information about the current mailbox.
+	*
+	* Returns the information in an object with following properties:
+	*  Date - current system time formatted according to RFC2822
+	*  Driver - protocol used to access this mailbox: POP3, IMAP, NNTP
+	*  Mailbox - the mailbox name
+	*  Nmsgs - number of mails in the mailbox
+	*  Recent - number of recent mails in the mailbox
+	*
+	* @see	imap_check
+	*/
 	public function checkMailbox() : object
 	{
 		return Imap::check($this->getImapStream());
 	}
 
 	/**
-	 * Creates a new mailbox.
-	 *
-	 * @param string $name Name of new mailbox (eg. 'PhpImap')
-	 *
-	 * @see   imap_createmailbox()
-	 */
+	* Creates a new mailbox.
+	*
+	* @param string $name Name of new mailbox (eg. 'PhpImap')
+	*
+	* @see   imap_createmailbox()
+	*/
 	public function createMailbox(string $name) : void
 	{
 		Imap::createmailbox($this->getImapStream(), $this->getCombinedPath($name));
 	}
 
 	/**
-	 * Deletes a specific mailbox.
-	 *
-	 * @param string $name Name of mailbox, which you want to delete (eg. 'PhpImap')
-	 *
-	 * @see   imap_deletemailbox()
-	 */
+	* Deletes a specific mailbox.
+	*
+	* @param string $name Name of mailbox, which you want to delete (eg. 'PhpImap')
+	*
+	* @see   imap_deletemailbox()
+	*/
 	public function deleteMailbox(string $name) : bool
 	{
 		return Imap::deletemailbox($this->getImapStream(), $this->getCombinedPath($name));
 	}
 
 	/**
-	 * Rename an existing mailbox from $oldName to $newName.
-	 *
-	 * @param string $oldName Current name of mailbox, which you want to rename (eg. 'PhpImap')
-	 * @param string $newName New name of mailbox, to which you want to rename it (eg. 'PhpImapTests')
-	 */
+	* Rename an existing mailbox from $oldName to $newName.
+	*
+	* @param string $oldName Current name of mailbox, which you want to rename (eg. 'PhpImap')
+	* @param string $newName New name of mailbox, to which you want to rename it (eg. 'PhpImapTests')
+	*/
 	public function renameMailbox(string $oldName, string $newName) : void
 	{
 		Imap::renamemailbox($this->getImapStream(), $this->getCombinedPath($oldName), $this->getCombinedPath($newName));
 	}
 
 	/**
-	 * Gets status information about the given mailbox.
-	 *
-	 * This function returns an object containing status information.
-	 * The object has the following properties: messages, recent, unseen, uidnext, and uidvalidity.
-	 */
+	* Gets status information about the given mailbox.
+	*
+	* This function returns an object containing status information.
+	* The object has the following properties: messages, recent, unseen, uidnext, and uidvalidity.
+	*/
 	public function statusMailbox() : object
 	{
 		return Imap::status($this->getImapStream(), $this->imapPath, SA_ALL);
 	}
 
 	/**
-	 * Gets listing the folders.
-	 *
-	 * This function returns an object containing listing the folders.
-	 * The object has the following properties: messages, recent, unseen, uidnext, and uidvalidity.
-	 *
-	 * @return array listing the folders
-	 */
+	* Gets listing the folders.
+	*
+	* This function returns an object containing listing the folders.
+	* The object has the following properties: messages, recent, unseen, uidnext, and uidvalidity.
+	*
+	* @return array listing the folders
+	*/
 	public function getListingFolders(string $pattern = '*') : array
 	{
 		return Imap::listOfMailboxes($this->getImapStream(), $this->imapPath, $pattern);
 	}
 
 	/**
-	 * This function uses imap_search() to perform a search on the mailbox currently opened in the given IMAP stream.
-	 * For example, to match all unanswered mails sent by Mom, you'd use: "UNANSWERED FROM mom".
-	 *
-	 * @param string $criteria See http://php.net/imap_search for a complete list of available criteria
-	 * @param bool $disableServerEncoding Disables server encoding while searching for mails (can be useful on Exchange servers)
-	 *
-	 * @return int[] mailsIds (or empty array)
-	 *
-	 * @psalm-return list<int>
-	 */
+	* This function uses imap_search() to perform a search on the mailbox currently opened in the given IMAP stream.
+	* For example, to match all unanswered mails sent by Mom, you'd use: "UNANSWERED FROM mom".
+	*
+	* @param string $criteria See http://php.net/imap_search for a complete list of available criteria
+	* @param bool $disableServerEncoding Disables server encoding while searching for mails (can be useful on Exchange servers)
+	*
+	* @return int[] mailsIds (or empty array)
+	*
+	* @psalm-return list<int>
+	*/
 	public function searchMailbox(string $criteria = 'ALL', bool $disableServerEncoding = false) : array
 	{
 		if ($disableServerEncoding) {
@@ -571,65 +571,65 @@ class Mailbox
 	}
 
 	/**
-	 * Search the mailbox for emails from multiple, specific senders.
-	 *
-	 * @see Mailbox::searchMailboxFromWithOrWithoutDisablingServerEncoding()
-	 *
-	 * @return int[]
-	 *
-	 * @psalm-return list<int>
-	 */
+	* Search the mailbox for emails from multiple, specific senders.
+	*
+	* @see Mailbox::searchMailboxFromWithOrWithoutDisablingServerEncoding()
+	*
+	* @return int[]
+	*
+	* @psalm-return list<int>
+	*/
 	public function searchMailboxFrom(string $criteria, string $sender, string ...$senders) : array
 	{
 		return $this->searchMailboxFromWithOrWithoutDisablingServerEncoding($criteria, false, $sender, ...$senders);
 	}
 
 	/**
-	 * Search the mailbox for emails from multiple, specific senders whilst not using server encoding.
-	 *
-	 * @see Mailbox::searchMailboxFromWithOrWithoutDisablingServerEncoding()
-	 *
-	 * @return int[]
-	 *
-	 * @psalm-return list<int>
-	 */
+	* Search the mailbox for emails from multiple, specific senders whilst not using server encoding.
+	*
+	* @see Mailbox::searchMailboxFromWithOrWithoutDisablingServerEncoding()
+	*
+	* @return int[]
+	*
+	* @psalm-return list<int>
+	*/
 	public function searchMailboxFromDisableServerEncoding(string $criteria, string $sender, string ...$senders) : array
 	{
 		return $this->searchMailboxFromWithOrWithoutDisablingServerEncoding($criteria, true, $sender, ...$senders);
 	}
 
 	/**
-	 * Save a specific body section to a file.
-	 *
-	 * @param int $mailId message number
-	 *
-	 * @see   imap_savebody()
-	 */
+	* Save a specific body section to a file.
+	*
+	* @param int $mailId message number
+	*
+	* @see   imap_savebody()
+	*/
 	public function saveMail(int $mailId, string $filename = 'email.eml') : void
 	{
 		Imap::savebody($this->getImapStream(), $filename, $mailId, '', (SE_UID === $this->imapSearchOption) ? FT_UID : 0);
 	}
 
 	/**
-	 * Marks mails listed in mailId for deletion.
-	 *
-	 * @param int $mailId message number
-	 *
-	 * @see   imap_delete()
-	 */
+	* Marks mails listed in mailId for deletion.
+	*
+	* @param int $mailId message number
+	*
+	* @see   imap_delete()
+	*/
 	public function deleteMail(int $mailId) : void
 	{
 		Imap::delete($this->getImapStream(), $mailId, (SE_UID === $this->imapSearchOption) ? FT_UID : 0);
 	}
 
 	/**
-	 * Moves mails listed in mailId into new mailbox.
-	 *
-	 * @param string|int $mailId a range or message number
-	 * @param string $mailBox Mailbox name
-	 *
-	 * @see imap_mail_move()
-	 */
+	* Moves mails listed in mailId into new mailbox.
+	*
+	* @param string|int $mailId a range or message number
+	* @param string $mailBox Mailbox name
+	*
+	* @see imap_mail_move()
+	*/
 	public function moveMail($mailId, string $mailBox) : void
 	{
 		Imap::mail_move($this->getImapStream(), $mailId, $mailBox, CP_UID);
@@ -637,13 +637,13 @@ class Mailbox
 	}
 
 	/**
-	 * Copies mails listed in mailId into new mailbox.
-	 *
-	 * @param string|int $mailId a range or message number
-	 * @param string $mailBox Mailbox name
-	 *
-	 * @see   imap_mail_copy()
-	 */
+	* Copies mails listed in mailId into new mailbox.
+	*
+	* @param string|int $mailId a range or message number
+	* @param string $mailBox Mailbox name
+	*
+	* @see   imap_mail_copy()
+	*/
 	public function copyMail($mailId, string $mailBox) : void
 	{
 		Imap::mail_copy($this->getImapStream(), $mailId, $mailBox, CP_UID);
@@ -651,125 +651,125 @@ class Mailbox
 	}
 
 	/**
-	 * Deletes all the mails marked for deletion by imap_delete(), imap_mail_move(), or imap_setflag_full().
-	 *
-	 * @see imap_expunge()
-	 */
+	* Deletes all the mails marked for deletion by imap_delete(), imap_mail_move(), or imap_setflag_full().
+	*
+	* @see imap_expunge()
+	*/
 	public function expungeDeletedMails() : void
 	{
 		Imap::expunge($this->getImapStream());
 	}
 
 	/**
-	 * Add the flag \Seen to a mail.
-	 */
+	* Add the flag \Seen to a mail.
+	*/
 	public function markMailAsRead(int $mailId) : void
 	{
 		$this->setFlag([$mailId], '\\Seen');
 	}
 
 	/**
-	 * Remove the flag \Seen from a mail.
-	 */
+	* Remove the flag \Seen from a mail.
+	*/
 	public function markMailAsUnread(int $mailId) : void
 	{
 		$this->clearFlag([$mailId], '\\Seen');
 	}
 
 	/**
-	 * Add the flag \Flagged to a mail.
-	 */
+	* Add the flag \Flagged to a mail.
+	*/
 	public function markMailAsImportant(int $mailId) : void
 	{
 		$this->setFlag([$mailId], '\\Flagged');
 	}
 
 	/**
-	 * Add the flag \Seen to a mails.
-	 *
-	 * @param int[] $mailId
-	 *
-	 * @psalm-param list<int> $mailId
-	 */
+	* Add the flag \Seen to a mails.
+	*
+	* @param int[] $mailId
+	*
+	* @psalm-param list<int> $mailId
+	*/
 	public function markMailsAsRead(array $mailId) : void
 	{
 		$this->setFlag($mailId, '\\Seen');
 	}
 
 	/**
-	 * Remove the flag \Seen from some mails.
-	 *
-	 * @param int[] $mailId
-	 *
-	 * @psalm-param list<int> $mailId
-	 */
+	* Remove the flag \Seen from some mails.
+	*
+	* @param int[] $mailId
+	*
+	* @psalm-param list<int> $mailId
+	*/
 	public function markMailsAsUnread(array $mailId) : void
 	{
 		$this->clearFlag($mailId, '\\Seen');
 	}
 
 	/**
-	 * Add the flag \Flagged to some mails.
-	 *
-	 * @param int[] $mailId
-	 *
-	 * @psalm-param list<int> $mailId
-	 */
+	* Add the flag \Flagged to some mails.
+	*
+	* @param int[] $mailId
+	*
+	* @psalm-param list<int> $mailId
+	*/
 	public function markMailsAsImportant(array $mailId) : void
 	{
 		$this->setFlag($mailId, '\\Flagged');
 	}
 
 	/**
-	 * Causes a store to add the specified flag to the flags set for the mails in the specified sequence.
-	 *
-	 * @param array $mailsIds Array of mail IDs
-	 * @param string $flag Which you can set are \Seen, \Answered, \Flagged, \Deleted, and \Draft as defined by RFC2060
-	 */
+	* Causes a store to add the specified flag to the flags set for the mails in the specified sequence.
+	*
+	* @param array $mailsIds Array of mail IDs
+	* @param string $flag Which you can set are \Seen, \Answered, \Flagged, \Deleted, and \Draft as defined by RFC2060
+	*/
 	public function setFlag(array $mailsIds, string $flag) : void
 	{
 		Imap::setflag_full($this->getImapStream(), implode(',', $mailsIds), $flag, ST_UID);
 	}
 
 	/**
-	 * Causes a store to delete the specified flag to the flags set for the mails in the specified sequence.
-	 *
-	 * @param array $mailsIds Array of mail IDs
-	 * @param string $flag Which you can delete are \Seen, \Answered, \Flagged, \Deleted, and \Draft as defined by RFC2060
-	 */
+	* Causes a store to delete the specified flag to the flags set for the mails in the specified sequence.
+	*
+	* @param array $mailsIds Array of mail IDs
+	* @param string $flag Which you can delete are \Seen, \Answered, \Flagged, \Deleted, and \Draft as defined by RFC2060
+	*/
 	public function clearFlag(array $mailsIds, string $flag) : void
 	{
 		Imap::clearflag_full($this->getImapStream(), implode(',', $mailsIds), $flag, ST_UID);
 	}
 
 	/**
-	 * Fetch mail headers for listed mails ids.
-	 *
-	 * Returns an array of objects describing one mail header each. The object will only define a property if it exists. The possible properties are:
-	 *  subject - the mails subject
-	 *  from - who sent it
-	 *  sender - who sent it
-	 *  to - recipient
-	 *  date - when was it sent
-	 *  message_id - Mail-ID
-	 *  references - is a reference to this mail id
-	 *  in_reply_to - is a reply to this mail id
-	 *  size - size in bytes
-	 *  uid - UID the mail has in the mailbox
-	 *  msgno - mail sequence number in the mailbox
-	 *  recent - this mail is flagged as recent
-	 *  flagged - this mail is flagged
-	 *  answered - this mail is flagged as answered
-	 *  deleted - this mail is flagged for deletion
-	 *  seen - this mail is flagged as already read
-	 *  draft - this mail is flagged as being a draft
-	 *
-	 * @return array $mailsIds Array of mail IDs
-	 *
-	 * @psalm-return list<object>
-	 *
-	 * @todo adjust types & conditionals pending resolution of https://github.com/vimeo/psalm/issues/2619
-	 */
+	* Fetch mail headers for listed mails ids.
+	*
+	* Returns an array of objects describing one mail header each. The object will only define a property if it exists. The possible properties are:
+	*  subject - the mails subject
+	*  from - who sent it
+	*  sender - who sent it
+	*  to - recipient
+	*  date - when was it sent
+	*  message_id - Mail-ID
+	*  references - is a reference to this mail id
+	*  in_reply_to - is a reply to this mail id
+	*  size - size in bytes
+	*  uid - UID the mail has in the mailbox
+	*  msgno - mail sequence number in the mailbox
+	*  recent - this mail is flagged as recent
+	*  flagged - this mail is flagged
+	*  answered - this mail is flagged as answered
+	*  deleted - this mail is flagged for deletion
+	*  seen - this mail is flagged as already read
+	*  draft - this mail is flagged as being a draft
+	*
+	* @return array $mailsIds Array of mail IDs
+	*
+	* @psalm-return list<object>
+	*
+	* @todo adjust types & conditionals pending resolution of https://github.com/vimeo/psalm/issues/2619
+	*/
 	public function getMailsInfo(array $mailsIds) : array
 	{
 		$mails = Imap::fetch_overview(
@@ -812,60 +812,60 @@ class Mailbox
 	}
 
 	/**
-	 * Get headers for all messages in the defined mailbox,
-	 * returns an array of string formatted with header info,
-	 * one element per mail message.
-	 *
-	 * @see	imap_headers()
-	 */
+	* Get headers for all messages in the defined mailbox,
+	* returns an array of string formatted with header info,
+	* one element per mail message.
+	*
+	* @see	imap_headers()
+	*/
 	public function getMailboxHeaders() : array
 	{
 		return Imap::headers($this->getImapStream());
 	}
 
 	/**
-	 * Get information about the current mailbox.
-	 *
-	 * Returns an object with following properties:
-	 *  Date - last change (current datetime)
-	 *  Driver - driver
-	 *  Mailbox - name of the mailbox
-	 *  Nmsgs - number of messages
-	 *  Recent - number of recent messages
-	 *  Unread - number of unread messages
-	 *  Deleted - number of deleted messages
-	 *  Size - mailbox size
-	 *
-	 * @return object Object with info
-	 *
-	 * @see	mailboxmsginfo
-	 */
+	* Get information about the current mailbox.
+	*
+	* Returns an object with following properties:
+	*  Date - last change (current datetime)
+	*  Driver - driver
+	*  Mailbox - name of the mailbox
+	*  Nmsgs - number of messages
+	*  Recent - number of recent messages
+	*  Unread - number of unread messages
+	*  Deleted - number of deleted messages
+	*  Size - mailbox size
+	*
+	* @return object Object with info
+	*
+	* @see	mailboxmsginfo
+	*/
 	public function getMailboxInfo() : object
 	{
 		return Imap::mailboxmsginfo($this->getImapStream());
 	}
 
 	/**
-	 * Gets mails ids sorted by some criteria.
-	 *
-	 * Criteria can be one (and only one) of the following constants:
-	 *  SORTDATE - mail Date
-	 *  SORTARRIVAL - arrival date (default)
-	 *  SORTFROM - mailbox in first From address
-	 *  SORTSUBJECT - mail subject
-	 *  SORTTO - mailbox in first To address
-	 *  SORTCC - mailbox in first cc address
-	 *  SORTSIZE - size of mail in octets
-	 *
-	 * @param int $criteria Sorting criteria (eg. SORTARRIVAL)
-	 * @param bool $reverse Sort reverse or not
-	 * @param string|null $searchCriteria See http://php.net/imap_search for a complete list of available criteria
-	 *
-	 * @psalm-param value-of<Imap::SORT_CRITERIA> $criteria
-	 * @psalm-param 1|5|0|2|6|3|4 $criteria
-	 *
-	 * @return array Mails ids
-	 */
+	* Gets mails ids sorted by some criteria.
+	*
+	* Criteria can be one (and only one) of the following constants:
+	*  SORTDATE - mail Date
+	*  SORTARRIVAL - arrival date (default)
+	*  SORTFROM - mailbox in first From address
+	*  SORTSUBJECT - mail subject
+	*  SORTTO - mailbox in first To address
+	*  SORTCC - mailbox in first cc address
+	*  SORTSIZE - size of mail in octets
+	*
+	* @param int $criteria Sorting criteria (eg. SORTARRIVAL)
+	* @param bool $reverse Sort reverse or not
+	* @param string|null $searchCriteria See http://php.net/imap_search for a complete list of available criteria
+	*
+	* @psalm-param value-of<Imap::SORT_CRITERIA> $criteria
+	* @psalm-param 1|5|0|2|6|3|4 $criteria
+	*
+	* @return array Mails ids
+	*/
 	public function sortMails(
 		int $criteria = SORTARRIVAL,
 		bool $reverse = true,
@@ -883,20 +883,20 @@ class Mailbox
 	}
 
 	/**
-	 * Get mails count in mail box.
-	 *
-	 * @see	imap_num_msg()
-	 */
+	* Get mails count in mail box.
+	*
+	* @see	imap_num_msg()
+	*/
 	public function countMails() : int
 	{
 		return Imap::num_msg($this->getImapStream());
 	}
 
 	/**
-	 * Return quota limit in KB.
-	 *
-	 * @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
-	 */
+	* Return quota limit in KB.
+	*
+	* @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
+	*/
 	public function getQuotaLimit(string $quota_root = 'INBOX') : int
 	{
 		$quota = $this->getQuota($quota_root);
@@ -906,12 +906,12 @@ class Mailbox
 	}
 
 	/**
-	 * Return quota usage in KB.
-	 *
-	 * @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
-	 *
-	 * @return int|false FALSE in the case of call failure
-	 */
+	* Return quota usage in KB.
+	*
+	* @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
+	*
+	* @return int|false FALSE in the case of call failure
+	*/
 	public function getQuotaUsage(string $quota_root = 'INBOX')
 	{
 		$quota = $this->getQuota($quota_root);
@@ -921,13 +921,13 @@ class Mailbox
 	}
 
 	/**
-	 * Get raw mail data.
-	 *
-	 * @param int $msgId ID of the message
-	 * @param bool $markAsSeen Mark the email as seen, when set to true
-	 *
-	 * @return string Message of the fetched body
-	 */
+	* Get raw mail data.
+	*
+	* @param int $msgId ID of the message
+	* @param bool $markAsSeen Mark the email as seen, when set to true
+	*
+	* @return string Message of the fetched body
+	*/
 	public function getRawMail(int $msgId, bool $markAsSeen = true) : string
 	{
 		$options = (SE_UID === $this->imapSearchOption) ? FT_UID : 0;
@@ -939,14 +939,14 @@ class Mailbox
 	}
 
 	/**
-	 * Get mail header.
-	 *
-	 * @param int $mailId ID of the message
-	 *
-	 * @throws Exception
-	 *
-	 * @todo update type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
-	 */
+	* Get mail header.
+	*
+	* @param int $mailId ID of the message
+	*
+	* @throws Exception
+	*
+	* @todo update type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
+	*/
 	public function getMailHeader(int $mailId) : IncomingMailHeader
 	{
 		$headersRaw = Imap::fetchheader(
@@ -1078,17 +1078,17 @@ class Mailbox
 	}
 
 	/**
-	 * taken from https://www.electrictoolbox.com/php-imap-message-parts/.
-	 *
-	 * @param stdClass[] $messageParts
-	 * @param stdClass[] $flattenedParts
-	 *
-	 * @psalm-param array<string, PARTSTRUCTURE> $flattenedParts
-	 *
-	 * @return stdClass[]
-	 *
-	 * @psalm-return array<string, PARTSTRUCTURE>
-	 */
+	* taken from https://www.electrictoolbox.com/php-imap-message-parts/.
+	*
+	* @param stdClass[] $messageParts
+	* @param stdClass[] $flattenedParts
+	*
+	* @psalm-param array<string, PARTSTRUCTURE> $flattenedParts
+	*
+	* @return stdClass[]
+	*
+	* @psalm-return array<string, PARTSTRUCTURE>
+	*/
 	public function flattenParts(array $messageParts, array $flattenedParts = [], string $prefix = '', int $index = 1, bool $fullPrefix = true) : array
 	{
 		foreach ($messageParts as $part) {
@@ -1117,11 +1117,11 @@ class Mailbox
 	}
 
 	/**
-	 * Get mail data.
-	 *
-	 * @param int $mailId ID of the mail
-	 * @param bool $markAsSeen Mark the email as seen, when set to true
-	 */
+	* Get mail data.
+	*
+	* @param int $mailId ID of the mail
+	* @param bool $markAsSeen Mark the email as seen, when set to true
+	*/
 	public function getMail(int $mailId, bool $markAsSeen = true) : IncomingMail
 	{
 		$mail = new IncomingMail();
@@ -1147,20 +1147,20 @@ class Mailbox
 	}
 
 	/**
-	 * Download attachment.
-	 *
-	 * @param array $params Array of params of mail
-	 * @param object $partStructure Part of mail
-	 * @param int $mailId ID of mail
-	 * @param bool $emlOrigin True, if it indicates, that the attachment comes from an EML (mail) file
-	 *
-	 * @psalm-param array<string, string> $params
-	 * @psalm-param PARTSTRUCTURE $partStructure
-	 *
-	 * @return IncomingMailAttachment $attachment
-	 *
-	 * @todo consider "requiring" psalm (suggest + conflict) then setting $params to array<string, string>
-	 */
+	* Download attachment.
+	*
+	* @param array $params Array of params of mail
+	* @param object $partStructure Part of mail
+	* @param int $mailId ID of mail
+	* @param bool $emlOrigin True, if it indicates, that the attachment comes from an EML (mail) file
+	*
+	* @psalm-param array<string, string> $params
+	* @psalm-param PARTSTRUCTURE $partStructure
+	*
+	* @return IncomingMailAttachment $attachment
+	*
+	* @todo consider "requiring" psalm (suggest + conflict) then setting $params to array<string, string>
+	*/
 	public function downloadAttachment(DataPartInfo $dataInfo, array $params, object $partStructure, int $mailId, bool $emlOrigin = false) : IncomingMailAttachment
 	{
 		if ('RFC822' === $partStructure->subtype && isset($partStructure->disposition) && 'attachment' === $partStructure->disposition) {
@@ -1218,16 +1218,16 @@ class Mailbox
 	}
 
 	/**
-	 * Decodes a mime string.
-	 *
-	 * @param string $string MIME string to decode
-	 *
-	 * @throws Exception
-	 *
-	 * @return string Converted string if conversion was successful, or the original string if not
-	 *
-	 * @todo update implementation pending resolution of https://github.com/vimeo/psalm/issues/2619 & https://github.com/vimeo/psalm/issues/2620
-	 */
+	* Decodes a mime string.
+	*
+	* @param string $string MIME string to decode
+	*
+	* @throws Exception
+	*
+	* @return string Converted string if conversion was successful, or the original string if not
+	*
+	* @todo update implementation pending resolution of https://github.com/vimeo/psalm/issues/2619 & https://github.com/vimeo/psalm/issues/2620
+	*/
 	public function decodeMimeStr(string $string, string $toCharset = 'utf-8') : string
 	{
 		if (empty(trim($string))) {
@@ -1263,13 +1263,13 @@ class Mailbox
 	}
 
 	/**
-	 * Converts the datetime to a RFC 3339 compliant format.
-	 *
-	 * @param string $dateHeader Header datetime
-	 *
-	 * @return string RFC 3339 compliant format or original (unchanged) format,
-	 *                if conversation is not possible
-	 */
+	* Converts the datetime to a RFC 3339 compliant format.
+	*
+	* @param string $dateHeader Header datetime
+	*
+	* @return string RFC 3339 compliant format or original (unchanged) format,
+	*                if conversation is not possible
+	*/
 	public function parseDateTime(string $dateHeader) : string
 	{
 		if (empty(trim($dateHeader))) {
@@ -1292,14 +1292,14 @@ class Mailbox
 	}
 
 	/**
-	 * Converts a string from one encoding to another.
-	 *
-	 * @param string $string the string, which you want to convert
-	 * @param string $fromEncoding the current charset (encoding)
-	 * @param string $toEncoding the new charset (encoding)
-	 *
-	 * @return string Converted string if conversion was successful, or the original string if not
-	 */
+	* Converts a string from one encoding to another.
+	*
+	* @param string $string the string, which you want to convert
+	* @param string $fromEncoding the current charset (encoding)
+	* @param string $toEncoding the new charset (encoding)
+	*
+	* @return string Converted string if conversion was successful, or the original string if not
+	*/
 	public function convertStringEncoding(string $string, string $fromEncoding, string $toEncoding) : string
 	{
 		if (preg_match('/default|ascii/i', $fromEncoding) || ! $string || $fromEncoding === $toEncoding) {
@@ -1319,18 +1319,18 @@ class Mailbox
 	}
 
 	/**
-	 * Gets IMAP path.
-	 */
+	* Gets IMAP path.
+	*/
 	public function getImapPath() : string
 	{
 		return $this->imapPath;
 	}
 
 	/**
-	 * Get message in MBOX format.
-	 *
-	 * @param int $mailId message number
-	 */
+	* Get message in MBOX format.
+	*
+	* @param int $mailId message number
+	*/
 	public function getMailMboxFormat(int $mailId) : string
 	{
 		$option = (SE_UID === $this->imapSearchOption) ? FT_UID : 0;
@@ -1339,8 +1339,8 @@ class Mailbox
 	}
 
 	/**
-	 * Get folders list.
-	 */
+	* Get folders list.
+	*/
 	public function getMailboxes(string $search = '*') : array
 	{
 		/** @psalm-var array<int, scalar|array|object{name?:string}|resource|null> */
@@ -1350,8 +1350,8 @@ class Mailbox
 	}
 
 	/**
-	 * Get folders list.
-	 */
+	* Get folders list.
+	*/
 	public function getSubscribedMailboxes(string $search = '*') : array
 	{
 		/** @psalm-var array<int, scalar|array|object{name?:string}|resource|null> */
@@ -1361,10 +1361,10 @@ class Mailbox
 	}
 
 	/**
-	 * Subscribe to a mailbox.
-	 *
-	 * @throws Exception
-	 */
+	* Subscribe to a mailbox.
+	*
+	* @throws Exception
+	*/
 	public function subscribeMailbox(string $mailbox) : void
 	{
 		Imap::subscribe(
@@ -1374,10 +1374,10 @@ class Mailbox
 	}
 
 	/**
-	 * Unsubscribe from a mailbox.
-	 *
-	 * @throws Exception
-	 */
+	* Unsubscribe from a mailbox.
+	*
+	* @throws Exception
+	*/
 	public function unsubscribeMailbox(string $mailbox) : void
 	{
 		Imap::unsubscribe(
@@ -1425,20 +1425,20 @@ class Mailbox
 	}
 
 	/**
-	 * Builds an OAuth2 authentication string for the given email address and access token.
-	 *
-	 * @return string $access_token Formatted OAuth access token
-	 */
+	* Builds an OAuth2 authentication string for the given email address and access token.
+	*
+	* @return string $access_token Formatted OAuth access token
+	*/
 	protected function _constructAuthString() : string
 	{
 		return base64_encode("user=$this->imapLogin\1auth=Bearer $this->imapOAuthAccessToken\1\1");
 	}
 
 	/**
-	 * Authenticates the IMAP client with the OAuth access token.
-	 *
-	 * @throws Exception If any error occured
-	 */
+	* Authenticates the IMAP client with the OAuth access token.
+	*
+	* @throws Exception If any error occured
+	*/
 	protected function _oauthAuthentication() : void
 	{
 		$oauth_command = 'A AUTHENTICATE XOAUTH2 ' . $this->_constructAuthString();
@@ -1472,12 +1472,12 @@ class Mailbox
 	}
 
 	/**
-	 * Open an IMAP stream to a mailbox.
-	 *
-	 * @throws Exception if an error occured
-	 *
-	 * @return resource IMAP stream on success
-	 */
+	* Open an IMAP stream to a mailbox.
+	*
+	* @throws Exception if an error occured
+	*
+	* @return resource IMAP stream on success
+	*/
 	protected function initImapStream()
 	{
 		foreach ($this->timeouts as $type => $timeout) {
@@ -1497,24 +1497,24 @@ class Mailbox
 	}
 
 	/**
-	 * Retrieve the quota settings per user.
-	 *
-	 * @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
-	 *
-	 * @see	imap_get_quotaroot()
-	 */
+	* Retrieve the quota settings per user.
+	*
+	* @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
+	*
+	* @see	imap_get_quotaroot()
+	*/
 	protected function getQuota(string $quota_root = 'INBOX') : array
 	{
 		return Imap::get_quotaroot($this->getImapStream(), $quota_root);
 	}
 
 	/**
-	 * @param string|0 $partNum
-	 *
-	 * @psalm-param PARTSTRUCTURE $partStructure
-	 *
-	 * @todo refactor type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
-	 */
+	* @param string|0 $partNum
+	*
+	* @psalm-param PARTSTRUCTURE $partStructure
+	*
+	* @todo refactor type checking pending resolution of https://github.com/vimeo/psalm/issues/2619
+	*/
 	protected function initMailPart(IncomingMail $mail, object $partStructure, $partNum, bool $markAsSeen = true, bool $emlParse = false) : void
 	{
 		if ( ! isset($mail->id)) {
@@ -1638,15 +1638,15 @@ class Mailbox
 	}
 
 	/**
-	 * Combine Subfolder or Folder to the connection.
-	 * Have the imapPath a folder added to the connection info, then will the $folder added as subfolder.
-	 * If the parameter $absolute TRUE, then will the connection new builded only with this folder as root element.
-	 *
-	 * @param string $folder Folder, the will added to the path
-	 * @param bool $absolute Add folder as root element to the connection and remove all other from this
-	 *
-	 * @return string Return the new path
-	 */
+	* Combine Subfolder or Folder to the connection.
+	* Have the imapPath a folder added to the connection info, then will the $folder added as subfolder.
+	* If the parameter $absolute TRUE, then will the connection new builded only with this folder as root element.
+	*
+	* @param string $folder Folder, the will added to the path
+	* @param bool $absolute Add folder as root element to the connection and remove all other from this
+	*
+	* @return string Return the new path
+	*/
 	protected function getCombinedPath(string $folder, bool $absolute = false) : string
 	{
 		if (empty(trim($folder))) {
@@ -1668,8 +1668,8 @@ class Mailbox
 	}
 
 	/**
-	 * @psalm-return array{0:string, 1:string|null}|null
-	 */
+	* @psalm-return array{0:string, 1:string|null}|null
+	*/
 	protected function possiblyGetEmailAndNameFromRecipient(object $recipient) : ?array
 	{
 		if (isset($recipient->mailbox, $recipient->host)) {
@@ -1705,10 +1705,10 @@ class Mailbox
 	}
 
 	/**
-	 * @psalm-param array<int, scalar|array|object{name?:string}|resource|null> $t
-	 *
-	 * @todo revisit implementation pending resolution of https://github.com/vimeo/psalm/issues/2619
-	 */
+	* @psalm-param array<int, scalar|array|object{name?:string}|resource|null> $t
+	*
+	* @todo revisit implementation pending resolution of https://github.com/vimeo/psalm/issues/2619
+	*/
 	protected function possiblyGetMailboxes(array $t) : array
 	{
 		$arr = [];
@@ -1745,10 +1745,10 @@ class Mailbox
 	}
 
 	/**
-	 * @psalm-param HOSTNAMEANDADDRESS $t
-	 *
-	 * @psalm-return array{0:string|null, 1:string|null, 2:string}
-	 */
+	* @psalm-param HOSTNAMEANDADDRESS $t
+	*
+	* @psalm-return array{0:string|null, 1:string|null, 2:string}
+	*/
 	protected function possiblyGetHostNameAndAddress(array $t) : array
 	{
 		$out = [
@@ -1772,8 +1772,8 @@ class Mailbox
 	}
 
 	/**
-	 * @todo revisit redundant condition issues pending fix of https://github.com/vimeo/psalm/issues/2626
-	 */
+	* @todo revisit redundant condition issues pending fix of https://github.com/vimeo/psalm/issues/2626
+	*/
 	protected function pingOrDisconnect() : void
 	{
 		if ($this->imapStream && ! Imap::ping($this->imapStream)) {
@@ -1783,14 +1783,14 @@ class Mailbox
 	}
 
 	/**
-	 * Search the mailbox for emails from multiple, specific senders.
-	 *
-	 * This function wraps Mailbox::searchMailbox() to overcome a shortcoming in ext-imap
-	 *
-	 * @return int[]
-	 *
-	 * @psalm-return list<int>
-	 */
+	* Search the mailbox for emails from multiple, specific senders.
+	*
+	* This function wraps Mailbox::searchMailbox() to overcome a shortcoming in ext-imap
+	*
+	* @return int[]
+	*
+	* @psalm-return list<int>
+	*/
 	protected function searchMailboxFromWithOrWithoutDisablingServerEncoding(string $criteria, bool $disableServerEncoding, string $sender, string ...$senders) : array
 	{
 		array_unshift($senders, $sender);

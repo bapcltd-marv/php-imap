@@ -9,29 +9,29 @@ use InvalidArgumentException;
 use function is_string;
 
 /**
- * The PhpImap IncomingMail class.
- *
- * @author Barbushin Sergey http://linkedin.com/in/barbushin
- *
- * @see https://github.com/barbushin/php-imap
- *
- * @property string $textPlain lazy plain message body
- * @property string $textHtml  lazy html message body
- */
+* The PhpImap IncomingMail class.
+*
+* @author Barbushin Sergey http://linkedin.com/in/barbushin
+*
+* @see https://github.com/barbushin/php-imap
+*
+* @property string $textPlain lazy plain message body
+* @property string $textHtml  lazy html message body
+*/
 class IncomingMail extends IncomingMailHeader
 {
 	/**
-	 * @var IncomingMailAttachment[]
-	 */
+	* @var IncomingMailAttachment[]
+	*/
 	protected array $attachments = [];
 
 	protected bool $hasAttachments = false;
 
 	/**
-	 * @var DataPartInfo[][]
-	 *
-	 * @psalm-var array{0:list<DataPartInfo>, 1:list<DataPartInfo>}
-	 */
+	* @var DataPartInfo[][]
+	*
+	* @psalm-var array{0:list<DataPartInfo>, 1:list<DataPartInfo>}
+	*/
 	protected array $dataInfo = [[], []];
 
 	private ?string $textPlain = null;
@@ -39,13 +39,13 @@ class IncomingMail extends IncomingMailHeader
 	private ?string $textHtml = null;
 
 	/**
-	 * __get() is utilized for reading data from inaccessible (protected
-	 * or private) or non-existing properties.
-	 *
-	 * @param string $name Name of the property (eg. textPlain)
-	 *
-	 * @return string Value of the property (eg. Plain text message)
-	 */
+	* __get() is utilized for reading data from inaccessible (protected
+	* or private) or non-existing properties.
+	*
+	* @param string $name Name of the property (eg. textPlain)
+	*
+	* @return string Value of the property (eg. Plain text message)
+	*/
 	public function __get(string $name) : string
 	{
 		$type = false;
@@ -68,13 +68,13 @@ class IncomingMail extends IncomingMailHeader
 	}
 
 	/**
-	 * The method __isset() is triggered by calling isset() or empty()
-	 * on inaccessible (protected or private) or non-existing properties.
-	 *
-	 * @param string $name Name of the property (eg. textPlain)
-	 *
-	 * @return bool True, if property is set or empty
-	 */
+	* The method __isset() is triggered by calling isset() or empty()
+	* on inaccessible (protected or private) or non-existing properties.
+	*
+	* @param string $name Name of the property (eg. textPlain)
+	*
+	* @return bool True, if property is set or empty
+	*/
 	public function __isset(string $name) : bool
 	{
 		self::__get($name);
@@ -92,8 +92,8 @@ class IncomingMail extends IncomingMailHeader
 	}
 
 	/**
-	 * @param DataPartInfo::TEXT_PLAIN|DataPartInfo::TEXT_HTML $type
-	 */
+	* @param DataPartInfo::TEXT_PLAIN|DataPartInfo::TEXT_HTML $type
+	*/
 	public function addDataPartInfo(DataPartInfo $dataInfo, int $type) : void
 	{
 		$this->dataInfo[$type][] = $dataInfo;
@@ -110,36 +110,36 @@ class IncomingMail extends IncomingMailHeader
 	}
 
 	/**
-	 * Sets property $hasAttachments.
-	 *
-	 * @param bool $hasAttachments True, if IncomingMail[] has one or more attachments
-	 */
+	* Sets property $hasAttachments.
+	*
+	* @param bool $hasAttachments True, if IncomingMail[] has one or more attachments
+	*/
 	public function setHasAttachments(bool $hasAttachments) : void
 	{
 		$this->hasAttachments = $hasAttachments;
 	}
 
 	/**
-	 * Returns, if the mail has attachments or not.
-	 *
-	 * @return bool true or false
-	 */
+	* Returns, if the mail has attachments or not.
+	*
+	* @return bool true or false
+	*/
 	public function hasAttachments() : bool
 	{
 		return $this->hasAttachments;
 	}
 
 	/**
-	 * @return IncomingMailAttachment[]
-	 */
+	* @return IncomingMailAttachment[]
+	*/
 	public function getAttachments() : array
 	{
 		return $this->attachments;
 	}
 
 	/**
-	 * @param string $id The attachment id
-	 */
+	* @param string $id The attachment id
+	*/
 	public function removeAttachment(string $id) : bool
 	{
 		if ( ! isset($this->attachments[$id])) {
@@ -154,12 +154,12 @@ class IncomingMail extends IncomingMailHeader
 	}
 
 	/**
-	 * Get array of internal HTML links placeholders.
-	 *
-	 * @return array attachmentId => link placeholder
-	 *
-	 * @psalm-return array<string, string>
-	 */
+	* Get array of internal HTML links placeholders.
+	*
+	* @return array attachmentId => link placeholder
+	*
+	* @psalm-return array<string, string>
+	*/
 	public function getInternalLinksPlaceholders() : array
 	{
 		$match = preg_match_all('/=["\'](ci?d:([\w\.%*@-]+))["\']/i', $this->textHtml, $matches);
@@ -193,9 +193,9 @@ class IncomingMail extends IncomingMailHeader
 	}
 
 	/**
-	 * Embed inline image attachments as base64 to allow for
-	 * email html to display inline images automatically.
-	 */
+	* Embed inline image attachments as base64 to allow for
+	* email html to display inline images automatically.
+	*/
 	public function embedImageAttachments() : void
 	{
 		preg_match_all("/\bcid:[^'\"\s]{1,256}/mi", $this->textHtml, $matches);

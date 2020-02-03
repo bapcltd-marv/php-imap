@@ -1,8 +1,8 @@
 <?php
 /**
- * @author Barbushin Sergey http://linkedin.com/in/barbushin
- * @author BAPCLTD-Marv
- */
+* @author Barbushin Sergey http://linkedin.com/in/barbushin
+* @author BAPCLTD-Marv
+*/
 declare(strict_types=1);
 
 namespace PhpImap;
@@ -737,10 +737,10 @@ final class Imap
 	}
 
 	/**
-	 * @psalm-param array{DISABLE_AUTHENTICATOR:string}|array<empty, empty> $params
-	 *
-	 * @return resource
-	 */
+	* @psalm-param array{DISABLE_AUTHENTICATOR:string}|array<empty, empty> $params
+	*
+	* @return resource
+	*/
 	public static function open(
 		string $mailbox,
 		string $username,
@@ -815,10 +815,10 @@ final class Imap
 	}
 
 	/**
-	 * @param resource $imap_stream
-	 *
-	 * @return true
-	 */
+	* @param resource $imap_stream
+	*
+	* @return true
+	*/
 	public static function reopen(
 		$imap_stream,
 		string $mailbox,
@@ -1124,10 +1124,10 @@ final class Imap
 	}
 
 	/**
-	 * Returns the provided string in UTF7-IMAP encoded format.
-	 *
-	 * @return string $str UTF-7 encoded string
-	 */
+	* Returns the provided string in UTF7-IMAP encoded format.
+	*
+	* @return string $str UTF-7 encoded string
+	*/
 	public static function encodeStringToUtf7Imap(string $str) : string
 	{
 		$out = mb_convert_encoding($str, 'UTF7-IMAP', mb_detect_encoding($str, 'UTF-8, ISO-8859-1, ISO-8859-15', true));
@@ -1140,10 +1140,10 @@ final class Imap
 	}
 
 	/**
-	 * Returns the provided string in UTF-8 encoded format.
-	 *
-	 * @return string $str UTF-7 encoded string or same as before, when it's no string
-	 */
+	* Returns the provided string in UTF-8 encoded format.
+	*
+	* @return string $str UTF-7 encoded string or same as before, when it's no string
+	*/
 	public static function decodeStringFromUtf7ImapToUtf8(string $str) : string
 	{
 		$out = mb_convert_encoding($str, 'UTF-8', 'UTF7-IMAP');
@@ -1173,8 +1173,8 @@ final class Imap
 	}
 
 	/**
-	 * @param array|false $errors
-	 */
+	* @param array|false $errors
+	*/
 	private static function HandleErrors($errors, string $method) : UnexpectedValueException
 	{
 		if ($errors) {

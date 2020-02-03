@@ -10,10 +10,10 @@ use PHPUnit\Framework\TestCase;
 final class RequirementsTest extends TestCase
 {
 	/**
-	 * Provides list of extensions, which are required by this library.
-	 *
-	 * @psalm-return array<string, array{0:string}>
-	 */
+	* Provides list of extensions, which are required by this library.
+	*
+	* @psalm-return array<string, array{0:string}>
+	*/
 	public function extensionProvider() : array
 	{
 		return [
@@ -24,10 +24,10 @@ final class RequirementsTest extends TestCase
 	}
 
 	/**
-	 * Test, that required modules are enabled.
-	 *
-	 * @dataProvider extensionProvider
-	 */
+	* Test, that required modules are enabled.
+	*
+	* @dataProvider extensionProvider
+	*/
 	public function test_required_extensions_are_enabled(string $extension) : void
 	{
 		static::assertTrue(extension_loaded($extension));

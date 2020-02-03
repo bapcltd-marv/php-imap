@@ -1,11 +1,11 @@
 <?php
 /**
- * Live Mailbox - PHPUnit tests.
- *
- * Runs tests on a live mailbox
- *
- * @author BAPCLTD-Marv
- */
+* Live Mailbox - PHPUnit tests.
+*
+* Runs tests on a live mailbox
+*
+* @author BAPCLTD-Marv
+*/
 declare(strict_types=1);
 
 namespace PhpImap;
@@ -45,10 +45,10 @@ class LiveMailboxTest extends TestCase
 	const RANDOM_MAILBOX_SAMPLE_SIZE = 3;
 
 	/**
-	 * Provides constructor arguments for a live mailbox.
-	 *
-	 * @psalm-return MAILBOX_ARGS[]
-	 */
+	* Provides constructor arguments for a live mailbox.
+	*
+	* @psalm-return MAILBOX_ARGS[]
+	*/
 	public function MailBoxProvider() : array
 	{
 		$sets = [];
@@ -65,8 +65,8 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	 * @dataProvider MailBoxProvider
-	 */
+	* @dataProvider MailBoxProvider
+	*/
 	public function test_get_imap_stream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8') : void
 	{
 		$mailbox = new Mailbox($imapPath->getString(), $login->getString(), $password, $attachmentsDir, $serverEncoding);
