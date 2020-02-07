@@ -58,15 +58,6 @@
       <code>unsubscribeMailbox</code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="tests/unit/LiveMailboxTest.php">
-    <PossiblyNullArgument occurrences="5">
-      <code>$envelope['subject']</code>
-      <code>$envelope['subject']</code>
-      <code>$envelope['subject']</code>
-      <code>$envelope['subject']</code>
-      <code>$envelope['subject']</code>
-    </PossiblyNullArgument>
-  </file>
   <file src="tests/unit/MailboxTest.php">
     <DeprecatedMethod occurrences="8">
       <code>assertAttributeEquals</code>
