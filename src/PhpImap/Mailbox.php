@@ -90,6 +90,12 @@ use function usleep;
 */
 class Mailbox
 {
+	const EXPECTED_SIZE_OF_MESSAGE_AS_ARRAY = 2;
+
+	const MAX_LENGTH_FILEPATH = 255;
+
+	const PART_TYPE_TWO = 2;
+
 	/**
 	* Allow to ignore attachments when they are not required and boost performance.
 	*/
@@ -1163,7 +1169,7 @@ class Mailbox
 				/** @var stdClass[] */
 				$part_parts = $part->parts;
 
-				if (2 === $part->type) {
+				if (self::PART_TYPE_TWO === $part->type) {
 					/** @var array<string, stdClass> */
 					$flattenedParts = $this->flattenParts($part_parts, $flattenedParts, $prefix . $index . '.', 0, false);
 				} elseif ($fullPrefix) {
@@ -1266,9 +1272,9 @@ class Mailbox
 			$fileSysName = bin2hex(random_bytes(16)) . '.bin';
 			$filePath = $attachmentsDir . DIRECTORY_SEPARATOR . $fileSysName;
 
-			if (mb_strlen($filePath) > 255) {
+			if (mb_strlen($filePath) > self::MAX_LENGTH_FILEPATH) {
 				$ext = pathinfo($filePath, PATHINFO_EXTENSION);
-				$filePath = mb_substr($filePath, 0, 255 - 1 - mb_strlen($ext)) . '.' . $ext;
+				$filePath = mb_substr($filePath, 0, self::MAX_LENGTH_FILEPATH - 1 - mb_strlen($ext)) . '.' . $ext;
 			}
 			$attachment->setFilePath($filePath);
 			$attachment->saveToDisk();
@@ -1465,7 +1471,7 @@ class Mailbox
 	) : bool {
 		if (
 			is_array($message) &&
-			2 === count($message) &&
+			self::EXPECTED_SIZE_OF_MESSAGE_AS_ARRAY === count($message) &&
 			isset($message[0], $message[1])
 		) {
 			$message = Imap::mail_compose($message[0], $message[1]);
