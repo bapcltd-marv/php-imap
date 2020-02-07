@@ -51,6 +51,7 @@
     "scripts": {
         "tests": [
             "parallel-lint .php_cs.dist src tests examples",
+            "phpcpd src tests",
             "phpunit",
             "composer-require-checker check ./composer.json",
             "psalm --show-info=false",
