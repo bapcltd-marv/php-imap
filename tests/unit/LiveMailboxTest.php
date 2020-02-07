@@ -471,27 +471,15 @@ class LiveMailboxTest extends TestCase
 		string $_expected_compose_result,
 		bool $pre_compose
 	) : void {
-		if ( ! isset($envelope['subject'])) {
-			static::markTestSkipped(
-				'Cannot search for message by subject, no subject specified!'
-			);
-
+		if ($this->MaybeSkipAppendTest($envelope)) {
 			return;
 		}
 
-		static::assertIsString($envelope['subject'] ?? null);
+		[$search_criteria] = $this->SubjectSearchCriteriaAndSubject($envelope);
 
-		[$path, $username, $password, $attachments_dir] = $mailbox_args;
-
-		[$mailbox, $remove_mailbox] = $this->getMailbox(
-			$path,
-			$username,
-			$password,
-			$attachments_dir,
-			$mailbox_args[4] ?? 'UTF-8'
+		[$mailbox, $remove_mailbox, $path] = $this->getMailboxFromArgs(
+			$mailbox_args
 		);
-
-		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
 
 		$count = $mailbox->countMails();
 
@@ -572,27 +560,15 @@ class LiveMailboxTest extends TestCase
 		string $_expected_compose_result,
 		bool $pre_compose
 	) : void {
-		if ( ! isset($envelope['subject'])) {
-			static::markTestSkipped(
-				'Cannot search for message by subject, no subject specified!'
-			);
-
+		if ($this->MaybeSkipAppendTest($envelope)) {
 			return;
 		}
 
-		static::assertIsString($envelope['subject'] ?? null);
+		[$search_criteria] = $this->SubjectSearchCriteriaAndSubject($envelope);
 
-		[$path, $username, $password, $attachments_dir] = $mailbox_args;
-
-		[$mailbox, $remove_mailbox] = $this->getMailbox(
-			$path,
-			$username,
-			$password,
-			$attachments_dir,
-			$mailbox_args[4] ?? 'UTF-8'
+		[$mailbox, $remove_mailbox, $path] = $this->getMailboxFromArgs(
+			$mailbox_args
 		);
-
-		$search_criteria = sprintf('SUBJECT "%s"', $envelope['subject']);
 
 		$message = [$envelope, $body];
 
