@@ -10,33 +10,23 @@ matrix:
     - php: 7.0.8
       dist: xenial
       env:
-        - analysis=no
-        - coverage=no
         - phpunitflags="--stop-on-failure --exclude-group=live"
         - lint="yes"
     - php: 7.0
       dist: xenial
       env:
-        - analysis=no
-        - coverage=no
         - phpunitflags="--stop-on-failure --exclude-group=live"
     - php: 7.1
       dist: xenial
       env:
-        - analysis=no
-        - coverage=no
         - phpunitflags="--stop-on-failure --exclude-group=live"
     - php: 7.2
       dist: xenial
       env:
-        - analysis=no
-        - coverage=no
         - phpunitflags="--stop-on-failure --exclude-group=live"
     - php: 7.3
       dist: xenial
       env:
-        - analysis=no
-        - coverage=no
         - phpunitflags="--stop-on-failure --exclude-group=live"
     - php: 7.4
       dist: bionic
@@ -50,7 +40,7 @@ cache:
     - ./vendor
 
 before_script:
-  - if [[ "$coverage" = "no" ]]; then phpenv config-rm xdebug.ini; fi
+  - if [[ "$coverage" != "yes" ]]; then phpenv config-rm xdebug.ini; fi
   - composer install --no-interaction
   - if [[ "$coverage" = "yes" ]]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
   - if [[ "$coverage" = "yes" ]]; then chmod +x ./cc-test-reporter; fi
