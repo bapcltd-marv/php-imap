@@ -251,7 +251,7 @@ class LiveMailboxTest extends TestCase
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
      */
-    public function test_mail_compose(array $envelope, array $body, string $expected_result)
+    public function testMailCompose(array $envelope, array $body, string $expected_result)
     {
         $this->assertSame($expected_result, Imap::mail_compose($envelope, $body));
     }
@@ -288,13 +288,13 @@ class LiveMailboxTest extends TestCase
      * @group live
      *
      * @depends testGetImapStream
-     * @depends test_mail_compose
+     * @depends testMailCompose
      *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
      */
-    public function test_append(
+    public function testAppend(
         array $mailbox_args,
         array $envelope,
         array $body,
@@ -365,13 +365,13 @@ class LiveMailboxTest extends TestCase
      *
      * @group live
      *
-     * @depends test_append
+     * @depends testAppend
      *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
      */
-    public function test_append_nudges_mailbox_count(
+    public function testAppendNudgesMailboxCount(
         array $mailbox_args,
         array $envelope,
         array $body,
@@ -454,13 +454,13 @@ class LiveMailboxTest extends TestCase
      *
      * @group live
      *
-     * @depends test_append
+     * @depends testAppend
      *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
      */
-    public function test_append_single_search_matches_sort(
+    public function testAppendSingleSearchMatchesSort(
         array $mailbox_args,
         array $envelope,
         array $body,
@@ -552,13 +552,13 @@ class LiveMailboxTest extends TestCase
      *
      * @group live
      *
-     * @depends test_append
+     * @depends testAppend
      *
      * @psalm-param MAILBOX_ARGS $mailbox_args
      * @psalm-param COMPOSE_ENVELOPE $envelope
      * @psalm-param COMPOSE_BODY $body
      */
-    public function test_append_retrieval_matches_expected(
+    public function testAppendRetrievalMatchesExpected(
         array $mailbox_args,
         array $envelope,
         array $body,
