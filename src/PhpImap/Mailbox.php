@@ -22,7 +22,6 @@ use Exception;
 use function fwrite;
 use function gettype;
 use function iconv;
-use function imap_fetchheader;
 use function imap_mime_header_decode;
 use function imap_ping;
 use function imap_rfc822_parse_headers;
@@ -1400,7 +1399,7 @@ class Mailbox
 	{
 		$option = (SE_UID === $this->imapSearchOption) ? FT_UID : 0;
 
-		return imap_fetchheader($this->getImapStream(), $mailId, $option | FT_PREFETCHTEXT) . Imap::body($this->getImapStream(), $mailId, $option);
+		return Imap::fetchheader($this->getImapStream(), $mailId, $option | FT_PREFETCHTEXT) . Imap::body($this->getImapStream(), $mailId, $option);
 	}
 
 	/**
