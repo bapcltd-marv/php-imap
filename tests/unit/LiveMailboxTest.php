@@ -93,9 +93,9 @@ class LiveMailboxTest extends TestCase
             $limit = \min(\count($mailboxes), self::RANDOM_MAILBOX_SAMPLE_SIZE);
 
             for ($i = 0; $i < $limit; ++$i) {
-                static::assertTrue(\is_array($mailboxes[$i]));
-                static::assertTrue(isset($mailboxes[$i]['shortpath']));
-                static::assertTrue(\is_string($mailboxes[$i]['shortpath']));
+                $this->assertTrue(\is_array($mailboxes[$i]));
+                $this->assertTrue(isset($mailboxes[$i]['shortpath']));
+                $this->assertTrue(\is_string($mailboxes[$i]['shortpath']));
                 $mailbox->switchMailbox($mailboxes[$i]['shortpath']);
 
                 $check = $mailbox->checkMailbox();
@@ -253,7 +253,7 @@ class LiveMailboxTest extends TestCase
      */
     public function test_mail_compose(array $envelope, array $body, string $expected_result)
     {
-        static::assertSame($expected_result, Imap::mail_compose($envelope, $body));
+        $this->assertSame($expected_result, Imap::mail_compose($envelope, $body));
     }
 
     /**
@@ -313,7 +313,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $search,
             (
@@ -333,7 +333,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             1,
             $search,
             (
@@ -350,7 +350,7 @@ class LiveMailboxTest extends TestCase
         $mailbox->switchMailbox($path->getString());
         $mailbox->deleteMailbox($remove_mailbox);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $mailbox->searchMailbox($search_criteria),
             (
@@ -398,7 +398,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $search,
             (
@@ -412,7 +412,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             1,
             $search,
             (
@@ -422,7 +422,7 @@ class LiveMailboxTest extends TestCase
             )
         );
 
-        static::assertSame(
+        $this->assertSame(
             $count + 1,
             $mailbox->countMails(),
             (
@@ -439,7 +439,7 @@ class LiveMailboxTest extends TestCase
         $mailbox->switchMailbox($path->getString());
         $mailbox->deleteMailbox($remove_mailbox);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $mailbox->searchMailbox($search_criteria),
             (
@@ -485,7 +485,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $search,
             (
@@ -499,7 +499,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             1,
             $search,
             (
@@ -509,22 +509,22 @@ class LiveMailboxTest extends TestCase
             )
         );
 
-        static::assertSame(
+        $this->assertSame(
             $search,
             $mailbox->sortMails(SORTARRIVAL, true, $search_criteria)
         );
 
-        static::assertSame(
+        $this->assertSame(
             $search,
             $mailbox->sortMails(SORTARRIVAL, false, $search_criteria)
         );
 
-        static::assertSame(
+        $this->assertSame(
             $search,
             $mailbox->sortMails(SORTARRIVAL, false, $search_criteria, 'UTF-8')
         );
 
-        static::assertTrue(\in_array(
+        $this->assertTrue(\in_array(
             $search[0],
             $mailbox->sortMails(SORTARRIVAL, false, null),
             true
@@ -537,7 +537,7 @@ class LiveMailboxTest extends TestCase
         $mailbox->switchMailbox($path->getString());
         $mailbox->deleteMailbox($remove_mailbox);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $mailbox->searchMailbox($search_criteria),
             (
@@ -583,7 +583,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $search,
             (
@@ -597,7 +597,7 @@ class LiveMailboxTest extends TestCase
 
         $search = $mailbox->searchMailbox($search_criteria);
 
-        static::assertCount(
+        $this->assertCount(
             1,
             $search,
             (
@@ -607,19 +607,19 @@ class LiveMailboxTest extends TestCase
             )
         );
 
-        static::assertSame(
+        $this->assertSame(
             $expected_compose_result,
             $mailbox->getMailMboxFormat($search[0])
         );
 
-        static::assertSame(
+        $this->assertSame(
             $expected_compose_result,
             $mailbox->getRawMail($search[0])
         );
 
         $mail = $mailbox->getMail($search[0], false);
 
-        static::assertSame(
+        $this->assertSame(
             $search_subject,
             $mail->subject,
             (
@@ -631,9 +631,9 @@ class LiveMailboxTest extends TestCase
 
         $info = $mailbox->getMailsInfo($search);
 
-        static::assertCount(1, $info);
+        $this->assertCount(1, $info);
 
-        static::assertSame(
+        $this->assertSame(
             $search_subject,
             $info[0]->subject,
             (
@@ -647,13 +647,13 @@ class LiveMailboxTest extends TestCase
             '/^barbushin\/php-imap#448:/',
             $search_subject
         )) {
-            static::assertTrue($mail->hasAttachments());
+            $this->assertTrue($mail->hasAttachments());
 
             $attachments = $mail->getAttachments();
 
-            static::assertCount(1, $attachments);
+            $this->assertCount(1, $attachments);
 
-            static::assertSame(
+            $this->assertSame(
                 \file_get_contents(__DIR__.'/../../.gitignore'),
                 \current($attachments)->getContents()
             );
@@ -666,7 +666,7 @@ class LiveMailboxTest extends TestCase
         $mailbox->switchMailbox($path->getString());
         $mailbox->deleteMailbox($remove_mailbox);
 
-        static::assertCount(
+        $this->assertCount(
             0,
             $mailbox->searchMailbox($search_criteria),
             (
@@ -722,7 +722,7 @@ class LiveMailboxTest extends TestCase
     protected function MaybeSkipAppendTest(array $envelope): bool
     {
         if (!isset($envelope['subject'])) {
-            static::markTestSkipped(
+            $this->markTestSkipped(
                 'Cannot search for message by subject, no subject specified!'
             );
 
@@ -744,7 +744,7 @@ class LiveMailboxTest extends TestCase
         /** @var string|null */
         $subject = isset($envelope['subject']) ? $envelope['subject'] : null;
 
-        static::assertTrue(\is_string($subject));
+        $this->assertTrue(\is_string($subject));
 
         $search_criteria = \sprintf('SUBJECT "%s"', (string) $subject);
 
