@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
-use function constant;
 use DateTime;
 use Exception;
 use function in_array;
@@ -532,11 +531,6 @@ final class MailboxTest extends TestCase
 			'array(IMAP_WRITETIMEOUT)' => ['assertNull', 1, [IMAP_WRITETIMEOUT]],
 			'array(IMAP_CLOSETIMEOUT)' => ['assertNull', 1, [IMAP_CLOSETIMEOUT]],
 			'array(IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT)' => ['assertNull', 1, [IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, IMAP_WRITETIMEOUT, IMAP_CLOSETIMEOUT]],
-			'array(OPENTIMEOUT)' => ['expectException', 1, [constant('OPENTIMEOUT')]],
-			'array(READTIMEOUT)' => ['expectException', 1, [constant('READTIMEOUT')]],
-			'array(WRITETIMEOUT)' => ['expectException', 1, [constant('WRITETIMEOUT')]],
-			'array(CLOSETIMEOUT)' => ['expectException', 1, [constant('CLOSETIMEOUT')]],
-			'array(IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, WRITETIMEOUT, IMAP_CLOSETIMEOUT)' => ['expectException', 1, [IMAP_OPENTIMEOUT, IMAP_READTIMEOUT, constant('WRITETIMEOUT'), IMAP_CLOSETIMEOUT]],
 		];
 	}
 
