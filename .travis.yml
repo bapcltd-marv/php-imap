@@ -6,8 +6,8 @@ matrix:
     - php: 7.4.0
       dist: bionic
       env:
-        - phpunitflags="--stop-on-failure --exclude-group=live"
         - lint="yes"
+        - phpunitflags="do not run"
     - php: 7.4
       dist: bionic
       env:
