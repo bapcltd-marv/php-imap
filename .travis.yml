@@ -19,6 +19,7 @@ cache:
   directories:
     - ./vendor
     - $HOME/.composer/cache
+    - ./psalm/cache
 
 before_script:
   - if [[ "$coverage" != "yes" ]]; then phpenv config-rm xdebug.ini; fi

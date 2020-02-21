@@ -3,6 +3,7 @@ vendor/
 *.phar
 .php_cs.cache
 coverage/
+psalm/cache/
 
 #################
 ## Eclipse
