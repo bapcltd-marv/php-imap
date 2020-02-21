@@ -9,7 +9,7 @@ php:
   - 7.4
 
 env:
-  - phpunitflags="--stop-on-failure --testdox --exclude-group=live"
+  - phpunitflags="do not run" lint="yes"
 
 matrix:
   fast_finish: true
@@ -17,11 +17,12 @@ matrix:
     - php: 7.4.0
       dist: xenial
       env:
-        - lint="yes"
-        - phpunitflags="do not run"
+        - lint=no
+        - phpunitflags="--stop-on-failure --exclude-group=live"
     - php: 7.4
       dist: bionic
       env:
+        - lint=no
         - analysis=yes
         - phpunitflags="do not run"
     - php: 7.4
