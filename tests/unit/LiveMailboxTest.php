@@ -748,7 +748,7 @@ class LiveMailboxTest extends TestCase
 
 		if (1 === preg_match(
 			'/^barbushin\/php-imap#(448|391):/',
-			$envelope['subject'],
+			$envelope['subject'] ?? '',
 			$matches
 		)) {
 			static::assertTrue($mail->hasAttachments());
