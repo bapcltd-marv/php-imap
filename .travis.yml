@@ -12,6 +12,11 @@ matrix:
       dist: bionic
       env:
         - analysis=yes
+        - phpunitflags="do not run"
+    - php: 7.4
+      dist: bionic
+      env:
+        - lint=no
         - coverage=yes
         - phpunitflags="--stop-on-failure --coverage-clover=clover.xml"
 
@@ -29,8 +34,8 @@ before_script:
   - if [[ "$coverage" = "yes" ]]; then ./cc-test-reporter before-build; fi
 
 script:
-  - vendor/bin/parallel-lint .php_cs.dist src tests examples
-  - vendor/bin/phpunit $phpunitflags
+  - if [[ "$lint" != "no" ]]; then vendor/bin/parallel-lint .php_cs.dist src tests examples; fi
+  - if [[ "$phpunitflags" != "do not run" ]]; then vendor/bin/phpunit $phpunitflags; fi
   - if [[ "$analysis" = "yes" ]]; then vendor/bin/composer-require-checker check ./composer.json; fi
   - if [[ "$analysis" = "yes" ]]; then vendor/bin/phpmnd ./ --exclude=./.github/ --exclude=./examples/ --exclude=./vendor/ --non-zero-exit-on-violation --hint; fi
   - if [[ "$analysis" = "yes" ]]; then vendor/bin/psalm --show-info=false --shepherd; fi
