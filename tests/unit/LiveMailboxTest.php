@@ -29,6 +29,7 @@ use function property_exists;
 use function random_bytes;
 use function shuffle;
 use function sprintf;
+use function str_replace;
 use function strtotime;
 use function sys_get_temp_dir;
 use Throwable;
@@ -59,6 +60,11 @@ use const TYPETEXT;
 class LiveMailboxTest extends TestCase
 {
 	const RANDOM_MAILBOX_SAMPLE_SIZE = 3;
+
+	const ISSUE_EXPECTED_ATTACHMENT_COUNT = [
+		448 => 1,
+		391 => 2,
+	];
 
 	/**
 	* Provides constructor arguments for a live mailbox.
@@ -258,6 +264,69 @@ class LiveMailboxTest extends TestCase
 				) . "\r\n"
 			),
 		];
+
+		$random_subject = 'barbushin/php-imap#391: ' . bin2hex(random_bytes(16));
+
+		$random_attachment_a = base64_encode(random_bytes(16));
+		$random_attachment_b = base64_encode(random_bytes(16));
+
+		yield [
+			['subject' => $random_subject],
+			[
+				[
+					'type' => TYPEMULTIPART,
+				],
+				[
+					'type' => TYPETEXT,
+					'contents.data' => 'test',
+				],
+				[
+					'type' => TYPEAPPLICATION,
+					'encoding' => ENCBASE64,
+					'subtype' => 'octet-stream',
+					'description' => 'foo.bin',
+					'disposition.type' => 'attachment',
+					'disposition' => ['filename' => 'foo.bin'],
+					'type.parameters' => ['name' => 'foo.bin'],
+					'contents.data' => $random_attachment_a,
+				],
+				[
+					'type' => TYPEAPPLICATION,
+					'encoding' => ENCBASE64,
+					'subtype' => 'octet-stream',
+					'description' => 'foo.bin',
+					'disposition.type' => 'attachment',
+					'disposition' => ['filename' => 'foo.bin'],
+					'type.parameters' => ['name' => 'foo.bin'],
+					'contents.data' => $random_attachment_b,
+				],
+			],
+			(
+				'Subject: ' . $random_subject . "\r\n" .
+				'MIME-Version: 1.0' . "\r\n" .
+				'Content-Type: MULTIPART/MIXED; BOUNDARY="{{REPLACE_BOUNDARY_HERE}}"' . "\r\n" .
+				"\r\n" .
+				'--{{REPLACE_BOUNDARY_HERE}}' . "\r\n" .
+				'Content-Type: TEXT/PLAIN; CHARSET=US-ASCII' . "\r\n" .
+				"\r\n" .
+				'test' . "\r\n" .
+				'--{{REPLACE_BOUNDARY_HERE}}' . "\r\n" .
+				'Content-Type: APPLICATION/octet-stream; name=foo.bin' . "\r\n" .
+				'Content-Transfer-Encoding: BASE64' . "\r\n" .
+				'Content-Description: foo.bin' . "\r\n" .
+				'Content-Disposition: attachment; filename=foo.bin' . "\r\n" .
+				"\r\n" .
+				$random_attachment_a . "\r\n" .
+				'--{{REPLACE_BOUNDARY_HERE}}' . "\r\n" .
+				'Content-Type: APPLICATION/octet-stream; name=foo.bin' . "\r\n" .
+				'Content-Transfer-Encoding: BASE64' . "\r\n" .
+				'Content-Description: foo.bin' . "\r\n" .
+				'Content-Disposition: attachment; filename=foo.bin' . "\r\n" .
+				"\r\n" .
+				$random_attachment_b . "\r\n" .
+				'--{{REPLACE_BOUNDARY_HERE}}--' . "\r\n"
+			),
+		];
 	}
 
 	/**
@@ -270,7 +339,14 @@ class LiveMailboxTest extends TestCase
 	*/
 	public function test_mail_compose(array $envelope, array $body, string $expected_result) : void
 	{
-		static::assertSame($expected_result, Imap::mail_compose($envelope, $body));
+		$actual_result = Imap::mail_compose($envelope, $body);
+
+		$expected_result = $this->ReplaceBoundaryHere(
+			$expected_result,
+			$actual_result
+		);
+
+		static::assertSame($expected_result, $actual_result);
 	}
 
 	/**
@@ -648,14 +724,24 @@ class LiveMailboxTest extends TestCase
 			)
 		);
 
-		static::assertSame(
-			$expected_compose_result,
-			$mailbox->getMailMboxFormat($search[0])
-		);
+		$actual_result = $mailbox->getMailMboxFormat($search[0]);
 
 		static::assertSame(
+			$this->ReplaceBoundaryHere(
 			$expected_compose_result,
-			$mailbox->getRawMail($search[0])
+				$actual_result
+			),
+			$actual_result
+		);
+
+		$actual_result = $mailbox->getRawMail($search[0]);
+
+		static::assertSame(
+			$this->ReplaceBoundaryHere(
+			$expected_compose_result,
+				$actual_result
+			),
+			$actual_result
 		);
 
 		$mail = $mailbox->getMail($search[0], false);
@@ -685,19 +771,25 @@ class LiveMailboxTest extends TestCase
 		);
 
 		if (1 === preg_match(
-			'/^barbushin\/php-imap#448:/',
-			$search_subject
+			'/^barbushin\/php-imap#(448|391):/',
+			$envelope['subject'],
+			$matches
 		)) {
 			static::assertTrue($mail->hasAttachments());
 
 			$attachments = $mail->getAttachments();
 
-			static::assertCount(1, $attachments);
+			static::assertCount(self::ISSUE_EXPECTED_ATTACHMENT_COUNT[
+				(int) $matches[1]],
+				$attachments
+			);
 
+			if ('448' === $matches[1]) {
 			static::assertSame(
 				file_get_contents(__DIR__ . '/../../.gitignore'),
 				current($attachments)->getContents()
 			);
+		}
 		}
 
 		$mailbox->deleteMail($search[0]);
@@ -735,6 +827,34 @@ class LiveMailboxTest extends TestCase
 		$mailbox->switchMailbox($random, false);
 
 		return [$mailbox, $random, $imapPath];
+	}
+
+	/**
+	 * @param string $expected_result
+	 * @param string $actual_result
+	 *
+	 * @return string
+	 */
+	protected function ReplaceBoundaryHere(
+		$expected_result,
+		$actual_result
+	) {
+		if (
+			1 === preg_match('/{{REPLACE_BOUNDARY_HERE}}/', $expected_result) &&
+			1 === preg_match(
+				'/Content-Type: MULTIPART\/MIXED; BOUNDARY="([^"]+)"/',
+				$actual_result,
+				$matches
+			)
+		) {
+			$expected_result = str_replace(
+				'{{REPLACE_BOUNDARY_HERE}}',
+				$matches[1],
+				$expected_result
+			);
+		}
+
+		return $expected_result;
 	}
 
 	/**
