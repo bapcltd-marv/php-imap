@@ -1,16 +1,24 @@
 language: php
 
+php:
+  - 7.4.0
+  - 7.4
+
+env:
+  - phpunitflags="do not run" lint="yes"
+
 matrix:
   fast_finish: true
   include:
     - php: 7.4.0
       dist: bionic
       env:
-        - lint="yes"
-        - phpunitflags="do not run"
+        - lint=no
+        - phpunitflags="--stop-on-failure --exclude-group=live"
     - php: 7.4
       dist: bionic
       env:
+        - lint=no
         - analysis=yes
         - phpunitflags="do not run"
     - php: 7.4
