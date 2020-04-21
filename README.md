@@ -3,11 +3,11 @@
 [![Release](https://img.shields.io/packagist/v/bapcltd/php-imap.svg?style=flat-square)](https://packagist.org/packages/bapcltd/php-imap)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Packagist](https://img.shields.io/packagist/dt/bapcltd/php-imap.svg?style=flat-square)](https://packagist.org/packages/bapcltd/php-imap)
-[![Build Status](https://travis-ci.org/bapcltd-marv/php-imap.svg?branch=master)](https://travis-ci.org/bapcltd-marv/php-imap)
-[![Supported PHP Version](https://img.shields.io/travis/php-v/bapcltd-marv/php-imap.svg)](README.md)
-[![Maintainability](https://api.codeclimate.com/v1/badges/debb2dab6d8ed688f466/maintainability)](https://codeclimate.com/github/bapcltd-marv/php-imap/maintainability)
-[![Test Coverage](https://coveralls.io/repos/github/bapcltd-marv/php-imap/badge.svg?branch=master)](https://coveralls.io/github/bapcltd-marv/php-imap?branch=master)
-[![Type Coverage](https://shepherd.dev/github/bapcltd-marv/php-imap/coverage.svg)](https://shepherd.dev/github/bapcltd-marv/php-imap)
+[![Build Status](https://travis-ci.org/bapcltd/php-imap.svg?branch=master)](https://travis-ci.org/bapcltd/php-imap)
+[![Supported PHP Version](https://img.shields.io/travis/php-v/bapcltd/php-imap.svg)](README.md)
+[![Maintainability](https://api.codeclimate.com/v1/badges/1a3d18633597ce5c8e89/maintainability)](https://codeclimate.com/github/bapcltd/php-imap/maintainability)
+[![Test Coverage](https://coveralls.io/repos/github/bapcltd/php-imap/badge.svg?branch=master)](https://coveralls.io/github/bapcltd/php-imap?branch=master)
+[![Type Coverage](https://shepherd.dev/github/bapcltd/php-imap/coverage.svg)](https://shepherd.dev/github/bapcltd/php-imap)
 
 Initially released in December 2012, the PHP IMAP Mailbox is a powerful and open source library to connect to a mailbox by POP3, IMAP and NNTP using the PHP IMAP extension. This library allows you to fetch emails from your email server. Extend the functionality or create powerful web applications to handle your incoming emails.
 
