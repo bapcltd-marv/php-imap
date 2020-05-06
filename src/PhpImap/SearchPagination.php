@@ -8,11 +8,14 @@ namespace PhpImap;
 
 class SearchPagination
 {
-    public int $pageSize;
+    /** @var int */
+    public $pageSize;
 
-    public bool $disableServerEncoding;
+    /** @var bool */
+    public $disableServerEncoding;
 
-    public bool $markAsSeen;
+    /** @var bool */
+    public $markAsSeen;
 
     private Mailbox $mailbox;
 

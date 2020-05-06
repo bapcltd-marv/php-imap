@@ -20,14 +20,17 @@ class IncomingMailSeekableIterator implements Countable, SeekableIterator
 {
     private Mailbox $mailbox;
 
-    private bool $markAsSeen;
+    /** @var bool */
+    private $markAsSeen;
 
-    private int $pageSize;
+    /** @var int */
+    private $pageSize;
 
     /** @var ArrayIterator<int, int> */
     private ArrayIterator $mailIds;
 
-    private int $page = 0;
+    /** @var int */
+    private $page = 0;
 
     /**
      * @param list<int> $mailIds

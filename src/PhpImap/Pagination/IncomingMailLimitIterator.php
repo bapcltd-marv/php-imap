@@ -18,7 +18,8 @@ class IncomingMailLimitIterator extends Base
 {
     private ?Mailbox $mailbox = null;
 
-    private bool $markAsSeen = false;
+    /** @var bool */
+    private $markAsSeen = false;
 
     /**
      * @param ArrayIterator<int, int> $iterator
