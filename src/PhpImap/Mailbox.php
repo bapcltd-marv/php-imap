@@ -616,6 +616,11 @@ class Mailbox
         return $this->searchMailboxMergeResultsWithOrWithoutDisablingServerEncoding(false, $single_criteria, ...$criteria);
     }
 
+    public function searchPagination(int $pageSize): SearchPagination
+    {
+        return new SearchPagination($this, $pageSize);
+    }
+
     /**
      * Save a specific body section to a file.
      *
