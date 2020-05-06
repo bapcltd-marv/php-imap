@@ -18,7 +18,8 @@ use SeekableIterator;
  */
 class IncomingMailSeekableIterator implements Countable, SeekableIterator
 {
-    private Mailbox $mailbox;
+    /** @var Mailbox */
+    private $mailbox;
 
     /** @var bool */
     private $markAsSeen;
@@ -27,7 +28,7 @@ class IncomingMailSeekableIterator implements Countable, SeekableIterator
     private $pageSize;
 
     /** @var ArrayIterator<int, int> */
-    private ArrayIterator $mailIds;
+    private $mailIds;
 
     /** @var int */
     private $page = 0;

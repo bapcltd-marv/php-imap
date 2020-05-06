@@ -17,7 +17,8 @@ class SearchPagination
     /** @var bool */
     public $markAsSeen;
 
-    private Mailbox $mailbox;
+    /** @var Mailbox */
+    private $mailbox;
 
     public function __construct(
         Mailbox $mailbox,

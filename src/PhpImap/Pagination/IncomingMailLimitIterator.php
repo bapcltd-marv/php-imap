@@ -16,7 +16,8 @@ use RuntimeException;
 
 class IncomingMailLimitIterator extends Base
 {
-    private ?Mailbox $mailbox = null;
+    /** @var Mailbox|null */
+    private $mailbox = null;
 
     /** @var bool */
     private $markAsSeen = false;
