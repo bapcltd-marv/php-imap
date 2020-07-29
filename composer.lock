@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "df4ff712ab763ea0206db02dee934f04",
+    "content-hash": "a7eb37792461b5b3134102474c9a88ae",
     "packages": [
         {
             "name": "paragonie/constant_time_encoding",
@@ -1154,6 +1154,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -3572,16 +3573,16 @@
         },
         {
             "name": "signpostmarv/php-cs-fixer-config",
-            "version": "v0.17.2",
+            "version": "v0.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SignpostMarv/PHP-CS-Fixer-Config.git",
-                "reference": "d588691af72fc17ed43aaf3ac0615c1aa5ab7e3f"
+                "reference": "49a5fefda6b82cf7c01ee84ec7080002cc189b59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SignpostMarv/PHP-CS-Fixer-Config/zipball/d588691af72fc17ed43aaf3ac0615c1aa5ab7e3f",
-                "reference": "d588691af72fc17ed43aaf3ac0615c1aa5ab7e3f",
+                "url": "https://api.github.com/repos/SignpostMarv/PHP-CS-Fixer-Config/zipball/49a5fefda6b82cf7c01ee84ec7080002cc189b59",
+                "reference": "49a5fefda6b82cf7c01ee84ec7080002cc189b59",
                 "shasum": ""
             },
             "require": {
@@ -3615,7 +3616,7 @@
                 }
             ],
             "description": "PHP-CS-Fixer Config",
-            "time": "2020-04-20T08:02:28+00:00"
+            "time": "2020-07-29T12:46:40+00:00"
         },
         {
             "name": "symfony/config",

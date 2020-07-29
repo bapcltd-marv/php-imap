@@ -48,7 +48,7 @@
         "psalm/plugin-phpunit": "^0.10.1",
         "roave/security-advisories": "dev-master",
         "sebastian/phpcpd": "^4.1",
-        "signpostmarv/php-cs-fixer-config": "^0.17.2",
+        "signpostmarv/php-cs-fixer-config": "^0.18.0",
         "vimeo/psalm": "^3.12"
     },
     "scripts": {
