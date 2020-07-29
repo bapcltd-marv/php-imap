@@ -229,9 +229,6 @@ final class MailboxTest extends TestCase
 		$mailbox->setImapSearchOption(SE_FREE);
 		static::assertSame($mailbox->getImapSearchOption(), 2);
 
-		$mailbox->setImapSearchOption(SE_FREE);
-		static::assertSame($mailbox->getImapSearchOption(), 2);
-
 		$this->expectException(InvalidParameterException::class);
 		$mailbox->setImapSearchOption(self::ANYTHING);
 
