@@ -80,7 +80,7 @@ class LiveMailboxIssue250Test extends AbstractLiveMailboxTest
 		string $expected_compose_result,
 		bool $pre_compose
 	) : void {
-		parent::testAppend(
+		parent::test_append(
 			$mailbox_args,
 			$envelope,
 			$body,
