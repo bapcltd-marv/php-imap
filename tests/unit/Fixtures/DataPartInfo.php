@@ -1,7 +1,7 @@
 <?php
 /**
-* @author BAPCLTD-Marv
-*/
+ * @author BAPCLTD-Marv
+ */
 declare(strict_types=1);
 
 namespace PhpImap\Fixtures;

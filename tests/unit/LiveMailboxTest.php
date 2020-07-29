@@ -1,11 +1,11 @@
 <?php
 /**
-* Live Mailbox - PHPUnit tests.
-*
-* Runs tests on a live mailbox
-*
-* @author BAPCLTD-Marv
-*/
+ * Live Mailbox - PHPUnit tests.
+ *
+ * Runs tests on a live mailbox
+ *
+ * @author BAPCLTD-Marv
+ */
 declare(strict_types=1);
 
 namespace PhpImap;
