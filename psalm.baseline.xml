@@ -7,15 +7,15 @@
   </file>
   <file src="src/PhpImap/Imap.php">
     <DocblockTypeContradiction occurrences="3">
-      <code>\is_int($section)</code>
-      <code>!\is_string($section) &amp;&amp; !\is_int($section)</code>
-      <code>\is_resource($maybe)</code>
+      <code>is_int($section)</code>
+      <code>! is_string($section) &amp;&amp; ! is_int($section)</code>
+      <code>is_resource($maybe)</code>
     </DocblockTypeContradiction>
   </file>
   <file src="src/PhpImap/Mailbox.php">
     <DocblockTypeContradiction occurrences="2">
-      <code>\in_array($imapSearchOption, $supported_options, true)</code>
-      <code>\in_array($key, $supported_params, true)</code>
+      <code>in_array($imapSearchOption, $supported_options, true)</code>
+      <code>in_array($key, $supported_params, true)</code>
     </DocblockTypeContradiction>
     <InvalidArgument occurrences="3">
       <code>$element-&gt;charset</code>
