@@ -8,6 +8,7 @@ namespace PhpImap;
 
 use function date;
 use const DATE_RFC3339;
+use const ENCOTHER;
 use ParagonIE\HiddenString\HiddenString;
 use PHPUnit\Framework\TestCase;
 
@@ -47,7 +48,7 @@ class IncomingMailTest extends TestCase
 		$mail = new IncomingMail();
 		$mailbox = new Mailbox('', '', new HiddenString('', true, true));
 
-		$data_part = new Fixtures\DataPartInfo($mailbox, 1, 0, 'UTF-8', 0);
+		$data_part = new Fixtures\DataPartInfo($mailbox, 1, 0, ENCOTHER, 0);
 		$data_part->setData('foo');
 
 		static::assertSame('foo', $data_part->fetch());

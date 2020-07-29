@@ -10,11 +10,13 @@ namespace PhpImap;
 use function array_map;
 use function array_values;
 use const CL_EXPUNGE;
+use function gettype;
 use function imap_append;
 use function imap_body;
 use function imap_check;
 use function imap_clearflag_full;
 use function imap_close;
+use const IMAP_CLOSETIMEOUT;
 use function imap_createmailbox;
 use function imap_delete;
 use function imap_deletemailbox;
@@ -36,7 +38,9 @@ use function imap_mail_move;
 use function imap_mailboxmsginfo;
 use function imap_num_msg;
 use function imap_open;
+use const IMAP_OPENTIMEOUT;
 use function imap_ping;
+use const IMAP_READTIMEOUT;
 use function imap_renamemailbox;
 use function imap_reopen;
 use function imap_savebody;
@@ -47,6 +51,7 @@ use function imap_status;
 use function imap_subscribe;
 use function imap_timeout;
 use function imap_unsubscribe;
+use const IMAP_WRITETIMEOUT;
 use function implode;
 use InvalidArgumentException;
 use function is_int;
@@ -58,7 +63,15 @@ use const NIL;
 use ParagonIE\HiddenString\HiddenString;
 use function preg_match;
 use const SE_FREE;
+use const SORTARRIVAL;
+use const SORTCC;
+use const SORTDATE;
+use const SORTFROM;
+use const SORTSIZE;
+use const SORTSUBJECT;
+use const SORTTO;
 use function sprintf;
+use Throwable;
 use function trim;
 use UnexpectedValueException;
 
@@ -77,8 +90,33 @@ use UnexpectedValueException;
  */
 final class Imap
 {
+	/** @psalm-var list<int> */
+	const SORT_CRITERIA = [
+		SORTARRIVAL,
+		SORTCC,
+		SORTDATE,
+		SORTFROM,
+		SORTSIZE,
+		SORTSUBJECT,
+		SORTTO,
+	];
+
+	/** @psalm-var list<int> */
+	const TIMEOUT_TYPES = [
+		IMAP_CLOSETIMEOUT,
+		IMAP_OPENTIMEOUT,
+		IMAP_READTIMEOUT,
+		IMAP_WRITETIMEOUT,
+	];
+
+	/** @psalm-var list<int> */
+	const CLOSE_FLAGS = [
+		0,
+		CL_EXPUNGE,
+	];
+
 	/**
-	 * @param false|resource $imap_stream
+	 * @param resource|false $imap_stream
 	 *
 	 * @return true
 	 *
@@ -93,7 +131,7 @@ final class Imap
 	) : bool {
 		imap_errors(); // flush errors
 
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 
 		if (null !== $options && null !== $internal_date) {
 			$result = imap_append(
@@ -127,7 +165,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_body(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			$msg_number,
 			$options
 		);
@@ -146,7 +184,7 @@ final class Imap
 	{
 		imap_errors(); // flush errors
 
-		$result = imap_check(self::EnsureResource($imap_stream, __METHOD__, 1));
+		$result = imap_check(self::EnsureConnection($imap_stream, __METHOD__, 1));
 
 		if (false === $result) {
 			throw new UnexpectedValueException('Could not check imap mailbox!', 0, self::HandleErrors(imap_errors(), 'imap_check'));
@@ -171,7 +209,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_clearflag_full(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			self::encodeStringToUtf7Imap(static::EnsureRange(
 				$sequence,
 				__METHOD__,
@@ -192,7 +230,7 @@ final class Imap
 	/**
 	 * @param false|resource $imap_stream
 	 *
-	 * @psalm-param 0|32768 $flag
+	 * @psalm-param value-of<self::CLOSE_FLAGS> $flag
 	 *
 	 * @return true
 	 */
@@ -200,7 +238,10 @@ final class Imap
 	{
 		imap_errors(); // flush errors
 
-		$result = imap_close(self::EnsureResource($imap_stream, __METHOD__, 1), $flag);
+		/** @var int */
+		$flag = $flag;
+
+		$result = imap_close(self::EnsureConnection($imap_stream, __METHOD__, 1), $flag);
 
 		if (false === $result) {
 			$message = 'Could not close imap connection';
@@ -226,7 +267,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_createmailbox(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			static::encodeStringToUtf7Imap($mailbox)
 		);
 
@@ -262,7 +303,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_delete(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			$msg_number,
 			$options
 		);
@@ -284,7 +325,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_deletemailbox(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			static::encodeStringToUtf7Imap($mailbox)
 		);
 
@@ -305,7 +346,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_expunge(
-			self::EnsureResource($imap_stream, __METHOD__, 1)
+			self::EnsureConnection($imap_stream, __METHOD__, 1)
 		);
 
 		if (false === $result) {
@@ -331,7 +372,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_fetch_overview(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			self::encodeStringToUtf7Imap(self::EnsureRange(
 				$sequence,
 				__METHOD__,
@@ -359,10 +400,14 @@ final class Imap
 		$section,
 		int $options = 0
 	) : string {
+		if ( ! is_string($section) && ! is_int($section)) {
+			throw new InvalidArgumentException('Argument 3 passed to ' . __METHOD__ . '() must be a string or integer, ' . gettype($section) . ' given!');
+		}
+
 		imap_errors(); // flush errors
 
 		$result = imap_fetchbody(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			$msg_number,
 			self::encodeStringToUtf7Imap((string) $section),
 			$options
@@ -386,7 +431,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_fetchheader(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			$msg_number,
 			$options
 		);
@@ -411,7 +456,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_fetchstructure(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			$msg_number,
 			$options
 		);
@@ -436,7 +481,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_get_quotaroot(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			self::encodeStringToUtf7Imap($quota_root)
 		);
 
@@ -448,7 +493,7 @@ final class Imap
 	}
 
 	/**
-	 * @param false|resource $imap_stream
+	 * @param resource|false $imap_stream
 	 *
 	 * @return object[]
 	 *
@@ -462,7 +507,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_getmailboxes(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			$ref,
 			$pattern
 		);
@@ -486,7 +531,7 @@ final class Imap
 	}
 
 	/**
-	 * @param false|resource $imap_stream
+	 * @param resource|false $imap_stream
 	 *
 	 * @return object[]
 	 *
@@ -500,7 +545,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_getsubscribed(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			$ref,
 			$pattern
 		);
@@ -521,7 +566,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_headers(
-			self::EnsureResource($imap_stream, __METHOD__, 1)
+			self::EnsureConnection($imap_stream, __METHOD__, 1)
 		);
 
 		if (false === $result) {
@@ -543,7 +588,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_list(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			static::encodeStringToUtf7Imap($ref),
 			static::encodeStringToUtf7Imap($pattern)
 		);
@@ -598,7 +643,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_mail_copy(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			static::encodeStringToUtf7Imap(self::EnsureRange(
 				$msglist,
 				__METHOD__,
@@ -631,7 +676,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_mail_move(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			static::encodeStringToUtf7Imap(self::EnsureRange(
 				$msglist,
 				__METHOD__,
@@ -657,7 +702,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_mailboxmsginfo(
-			self::EnsureResource($imap_stream, __METHOD__, 1)
+			self::EnsureConnection($imap_stream, __METHOD__, 1)
 		);
 
 		if (false === $result) {
@@ -674,7 +719,7 @@ final class Imap
 	{
 		imap_errors(); // flush errors
 
-		$result = imap_num_msg(self::EnsureResource($imap_stream, __METHOD__, 1));
+		$result = imap_num_msg(self::EnsureConnection($imap_stream, __METHOD__, 1));
 
 		if (false === $result) {
 			throw new UnexpectedValueException('Could not get the number of messages in the mailbox!', 0, self::HandleErrors(imap_errors(), 'imap_num_msg'));
@@ -700,13 +745,13 @@ final class Imap
 			$mailbox_name = $matches[1];
 
 			if ( ! mb_detect_encoding($mailbox_name, 'ASCII', true)) {
-				$mailbox = static::encodeStringToUtf7Imap($mailbox_name);
+				$mailbox = static::encodeStringToUtf7Imap($mailbox);
 			}
 		}
 
 		imap_errors(); // flush errors
 
-		$result = imap_open($mailbox, $username, $password->getString(), $options, $n_retries, $params);
+		$result = @imap_open($mailbox, $username, $password->getString(), $options, $n_retries, $params);
 
 		if ( ! $result) {
 			$lastError = imap_last_error();
@@ -722,7 +767,7 @@ final class Imap
 	}
 
 	/**
-	 * @param false|resource $imap_stream
+	 * @param resource|false $imap_stream
 	 */
 	public static function ping($imap_stream) : bool
 	{
@@ -739,7 +784,7 @@ final class Imap
 		string $old_mbox,
 		string $new_mbox
 	) : bool {
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 
 		$old_mbox = static::encodeStringToUtf7Imap($old_mbox);
 		$new_mbox = static::encodeStringToUtf7Imap($new_mbox);
@@ -766,7 +811,7 @@ final class Imap
 		int $options = 0,
 		int $n_retries = 0
 	) : bool {
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 
 		$mailbox = static::encodeStringToUtf7Imap($mailbox);
 
@@ -794,7 +839,7 @@ final class Imap
 		string $part_number = '',
 		int $options = 0
 	) : bool {
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 		$file = is_string($file) ? $file : self::EnsureResource($file, __METHOD__, 2);
 		$part_number = self::encodeStringToUtf7Imap($part_number);
 
@@ -820,12 +865,16 @@ final class Imap
 		$imap_stream,
 		string $criteria,
 		int $options = SE_FREE,
-		string $charset = null
+		string $charset = null,
+		bool $encodeCriteriaAsUtf7Imap = false
 	) : array {
 		imap_errors(); // flush errors
 
-		$imap_stream = static::EnsureResource($imap_stream, __METHOD__, 1);
-		$criteria = static::encodeStringToUtf7Imap($criteria);
+		$imap_stream = static::EnsureConnection($imap_stream, __METHOD__, 1);
+
+		if ($encodeCriteriaAsUtf7Imap) {
+			$criteria = static::encodeStringToUtf7Imap($criteria);
+		}
 
 		if (is_string($charset)) {
 			$result = imap_search(
@@ -871,7 +920,7 @@ final class Imap
 		imap_errors(); // flush errors
 
 		$result = imap_setflag_full(
-			self::EnsureResource($imap_stream, __METHOD__, 1),
+			self::EnsureConnection($imap_stream, __METHOD__, 1),
 			self::encodeStringToUtf7Imap(static::EnsureRange(
 				$sequence,
 				__METHOD__,
@@ -892,7 +941,7 @@ final class Imap
 	/**
 	 * @param false|resource $imap_stream
 	 *
-	 * @psalm-param 1|5|0|2|6|3|4 $criteria
+	 * @psalm-param value-of<self::SORT_CRITERIA> $criteria
 	 *
 	 * @return int[]
 	 *
@@ -908,8 +957,11 @@ final class Imap
 	) : array {
 		imap_errors(); // flush errors
 
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 		$reverse = (int) $reverse;
+
+		/** @var int */
+		$criteria = $criteria;
 
 		if (null !== $search_criteria && null !== $charset) {
 			$result = imap_sort(
@@ -955,7 +1007,7 @@ final class Imap
 		string $mailbox,
 		int $options
 	) : object {
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 
 		$mailbox = static::encodeStringToUtf7Imap($mailbox);
 
@@ -977,7 +1029,7 @@ final class Imap
 		$imap_stream,
 		string $mailbox
 	) : void {
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 
 		$mailbox = static::encodeStringToUtf7Imap($mailbox);
 
@@ -991,7 +1043,7 @@ final class Imap
 	}
 
 	/**
-	 * @psalm-param 4|1|2|3 $timeout_type
+	 * @psalm-param value-of<self::TIMEOUT_TYPES> $timeout_type
 	 *
 	 * @return true|int
 	 */
@@ -1000,6 +1052,9 @@ final class Imap
 		int $timeout = -1
 	) {
 		imap_errors(); // flush errors
+
+		/** @var int */
+		$timeout_type = $timeout_type;
 
 		$result = imap_timeout(
 			$timeout_type,
@@ -1020,7 +1075,7 @@ final class Imap
 		$imap_stream,
 		string $mailbox
 	) : void {
-		$imap_stream = self::EnsureResource($imap_stream, __METHOD__, 1);
+		$imap_stream = self::EnsureConnection($imap_stream, __METHOD__, 1);
 
 		$mailbox = static::encodeStringToUtf7Imap($mailbox);
 
@@ -1080,6 +1135,22 @@ final class Imap
 
 		/** @var resource */
 		return $maybe;
+	}
+
+	/**
+	 * @param false|resource $maybe
+	 *
+	 * @throws Exceptions\ConnectionException if $maybe is not a valid resource
+	 *
+	 * @return resource
+	 */
+	private static function EnsureConnection($maybe, string $method, int $argument)
+	{
+		try {
+			return self::EnsureResource($maybe, $method, $argument);
+		} catch (Throwable $e) {
+			throw new Exceptions\ConnectionException('Argument ' . (string) $argument . ' passed to ' . $method . ' must be valid resource!', 0, $e);
+		}
 	}
 
 	/**

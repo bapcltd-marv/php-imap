@@ -25,9 +25,10 @@ Forked in 2020, [see original](https://github.com/barbushin/php-imap).
 ### Requirements
 
 * PHP 7.4
+* PHP `fileinfo` extension must be present; so make sure this line is active in your php.ini: `extension=php_fileinfo.dll`
+* PHP `iconv` extension must be present; so make sure this line is active in your php.ini: `extension=php_iconv.dll`
 * PHP `imap` extension must be present; so make sure this line is active in your php.ini: `extension=php_imap.dll`
 * PHP `mbstring` extension must be present; so make sure this line is active in your php.ini: `extension=php_mbstring.dll`
-* PHP `iconv` extension must be present, if `mbstring` is not available; so make sure this line is active in your php.ini: `extension=php_iconv.dll`
 
 ### Installation by Composer
 
@@ -35,9 +36,15 @@ Install the latest available and may unstable source code from `master`, which i
 
 	$ composer require bapcltd/php-imap:dev-master
 
-### PHPUnit Tests
+### Run Tests
 
-Before you can run the PHPUnit tests you may need to run `composer install` to install all (development) dependencies.
+Before you can run the any tests you may need to run `composer install` to install all (development) dependencies.
+
+#### Run all tests
+
+You can run all available tests by running the following command (inside of the installed `php-imap` directory): `composer run tests`
+
+#### Run only PHPUnit tests
 
 You can run all PHPUnit tests by running the following command (inside of the installed `php-imap` directory): `php vendor/bin/phpunit --testdox`
 
@@ -53,6 +60,12 @@ $mailbox = new PhpImap\Mailbox(
 	'*********', // Password for the before configured username
 	__DIR__, // Directory, where attachments will be saved (optional)
 	'UTF-8' // Server encoding (optional)
+);
+
+// set some connection arguments (if appropriate)
+$mailbox->setConnectionArgs(
+    CL_EXPUNGE // expunge deleted mails upon mailbox close
+    | OP_SECURE // don't do non-secure authentication
 );
 
 try {

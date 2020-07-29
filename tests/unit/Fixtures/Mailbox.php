@@ -15,4 +15,9 @@ class Mailbox extends Base
 	{
 		return $this->imapPassword;
 	}
+
+	public function getImapOptions() : int
+	{
+		return $this->imapOptions;
+	}
 }

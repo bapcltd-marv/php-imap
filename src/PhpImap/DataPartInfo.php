@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function base64_decode;
 use const ENC8BIT;
 use const ENCBASE64;
 use const ENCBINARY;
 use const ENCQUOTEDPRINTABLE;
-use function imap_base64;
 use function imap_binary;
 use function imap_utf8;
-use function preg_replace;
 use function quoted_printable_decode;
 use function trim;
 
@@ -93,8 +92,7 @@ class DataPartInfo
 				$this->data = imap_binary((string) $this->data);
 				break;
 			case ENCBASE64:
-				$this->data = preg_replace('~[^a-zA-Z0-9+=/]+~s', '', (string) $this->data); // https://github.com/barbushin/php-imap/issues/88
-				$this->data = imap_base64((string) $this->data);
+				$this->data = base64_decode((string) $this->data, false);
 				break;
 			case ENCQUOTEDPRINTABLE:
 				$this->data = quoted_printable_decode((string) $this->data);
@@ -107,10 +105,8 @@ class DataPartInfo
 	protected function convertEncodingAfterFetch() : string
 	{
 		if (isset($this->charset) && ! empty(trim($this->charset))) {
-			$this->data = $this->mail->convertStringEncoding(
-				(string) $this->data, // Data to convert
-				$this->charset, // FROM-Encoding (Charset)
-				$this->mail->getServerEncoding() // TO-Encoding (Charset)
+			$this->data = $this->mail->decodeMimeStr(
+				(string) $this->data // Data to convert
 			);
 		}
 

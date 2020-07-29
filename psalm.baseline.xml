@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.9.3@2e4154d76e24d1b4e59e6cc2bebef7790cb9e550">
+<files psalm-version="3.12.2@7c7ebd068f8acaba211d4a2c707c4ba90874fa26">
   <file src="examples/get_and_parse_all_emails_without_saving_attachments.php">
     <UnusedVariable occurrences="1">
       <code>$mailbox</code>
     </UnusedVariable>
   </file>
   <file src="src/PhpImap/Imap.php">
-    <DocblockTypeContradiction occurrences="1">
+    <DocblockTypeContradiction occurrences="3">
+      <code>is_int($section)</code>
+      <code>! is_string($section) &amp;&amp; ! is_int($section)</code>
       <code>is_resource($maybe)</code>
     </DocblockTypeContradiction>
-  </file>
-  <file src="src/PhpImap/IncomingMail.php">
-    <PossiblyUnusedMethod occurrences="2">
-      <code>replaceInternalLinks</code>
-      <code>embedImageAttachments</code>
-    </PossiblyUnusedMethod>
-    <PropertyTypeCoercion occurrences="1">
-      <code>$this-&gt;dataInfo</code>
-    </PropertyTypeCoercion>
   </file>
   <file src="src/PhpImap/Mailbox.php">
     <DocblockTypeContradiction occurrences="2">
       <code>in_array($imapSearchOption, $supported_options, true)</code>
       <code>in_array($key, $supported_params, true)</code>
     </DocblockTypeContradiction>
-    <PossiblyUnusedMethod occurrences="26">
-      <code>setOAuthToken</code>
-      <code>getOAuthToken</code>
+    <InvalidArgument occurrences="3">
+      <code>$element-&gt;charset</code>
+      <code>$element-&gt;text</code>
+      <code>$element-&gt;text</code>
+    </InvalidArgument>
+    <PossiblyUnusedMethod occurrences="24">
       <code>setConnectionRetry</code>
       <code>setConnectionRetryDelay</code>
       <code>setExpungeOnDisconnect</code>
@@ -57,5 +53,12 @@
     <InvalidArgument occurrences="1">
       <code>self::ANYTHING</code>
     </InvalidArgument>
+  </file>
+  <file src="vendor/phpunit/phpunit/src/Framework/MockObject/Builder/ParametersMatch.php">
+    <ParseError occurrences="3">
+      <code>Match</code>
+      <code>;</code>
+      <code>;</code>
+    </ParseError>
   </file>
 </files>

@@ -8,13 +8,17 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function base64_decode;
 use const CL_EXPUNGE;
+use function count;
 use DateTime;
-use Exception;
+use Generator;
+use function imap_base64;
 use const IMAP_CLOSETIMEOUT;
 use const IMAP_OPENTIMEOUT;
 use const IMAP_READTIMEOUT;
 use const IMAP_WRITETIMEOUT;
+use function implode;
 use function in_array;
 use function mb_list_encodings;
 use function mb_strtoupper;
@@ -29,6 +33,7 @@ use const OP_SILENT;
 use ParagonIE\HiddenString\HiddenString;
 use PhpImap\Exceptions\InvalidParameterException;
 use PHPUnit\Framework\TestCase;
+use function preg_replace;
 use function realpath;
 use const SE_FREE;
 use const SE_UID;
@@ -374,6 +379,7 @@ final class MailboxTest extends TestCase
 			'Deutsch' => ['Deutsch'], // German
 			'U.S. English' => ['U.S. English'], // U.S. English
 			'français' => ['français'], // French
+			'Éléments envoyés' => ['Éléments envoyés'], // issue 499
 			'føroyskt' => ['føroyskt'], // Faroese
 			'Kĩmĩrũ' => ['Kĩmĩrũ'], // Kimîîru
 			'Kɨlaangi' => ['Kɨlaangi'], // Langi
@@ -421,7 +427,7 @@ final class MailboxTest extends TestCase
 	 */
 	public function test_mime_decoding_returns_correct_values(string $str) : void
 	{
-		static::assertSame($this->getMailbox()->decodeMimeStr($str, 'utf-8'), $str);
+		static::assertSame($this->getMailbox()->decodeMimeStr($str), $str);
 	}
 
 	/**
@@ -458,7 +464,7 @@ final class MailboxTest extends TestCase
 	{
 		$parsedDt = $this->getMailbox()->parseDateTime($dateToParse);
 		$parsedDateTime = new DateTime($parsedDt);
-		static::assertSame($parsedDateTime->getTimestamp(), $epochToCompare);
+		static::assertSame((int) $parsedDateTime->format('U'), $epochToCompare);
 	}
 
 	/**
@@ -509,10 +515,11 @@ final class MailboxTest extends TestCase
 			['=?iso-8859-1?Q?Sebastian_Kr=E4tzig?=', 'Sebastian Krätzig'],
 			['sebastian.kraetzig', 'sebastian.kraetzig'],
 			['=?US-ASCII?Q?Keith_Moore?= <km@ab.example.edu>', 'Keith Moore <km@ab.example.edu>'],
-			['   ', ''],
+			['   ', '   '],
 			['=?ISO-8859-1?Q?Max_J=F8rn_Simsen?= <max.joern.s@example.dk>', 'Max Jørn Simsen <max.joern.s@example.dk>'],
 			['=?ISO-8859-1?Q?Andr=E9?= Muster <andre.muster@vm1.ulg.ac.be>', 'André Muster <andre.muster@vm1.ulg.ac.be>'],
 			['=?ISO-8859-1?B?SWYgeW91IGNhbiByZWFkIHRoaXMgeW8=?= =?ISO-8859-2?B?dSB1bmRlcnN0YW5kIHRoZSBleGFtcGxlLg==?=', 'If you can read this you understand the example.'],
+			['', ''], // barbushin/php-imap#501
 		];
 	}
 
@@ -525,12 +532,7 @@ final class MailboxTest extends TestCase
 	{
 		$mailbox = $this->getMailbox();
 
-		if (empty($expected)) {
-			$this->expectException(Exception::class);
-			$mailbox->decodeMimeStr($str);
-		} else {
-			static::assertSame($mailbox->decodeMimeStr($str), $expected);
-		}
+		static::assertSame($mailbox->decodeMimeStr($str), $expected);
 	}
 
 	/**
@@ -575,33 +577,63 @@ final class MailboxTest extends TestCase
 	/**
 	 * Provides test data for testing connection args.
 	 *
-	 * @psalm-return list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>}>
+	 * @psalm-return Generator<string, array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>}>
 	 */
-	public function connectionArgsProvider() : array
+	public function connectionArgsProvider() : Generator
 	{
-		/** @psalm-var list<array{0:'assertNull'|'expectException', 1:int, 2:int, 3:array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>}> */
-		return [
-			['assertNull', OP_READONLY, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_READONLY, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_ANONYMOUS, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_HALFOPEN, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', CL_EXPUNGE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_SHORTCACHE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_SILENT, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_PROTOTYPE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_SECURE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_READONLY, 1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_READONLY, 3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['assertNull', OP_READONLY, 12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-
-			['expectException', OP_READONLY | OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['expectException', OP_READONLY, -1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['expectException', OP_READONLY, -3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['expectException', OP_READONLY, -12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['expectException', OP_READONLY, -1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
-			['expectException', OP_READONLY, 0, [null]],
+		yield from [
+			'readonly, disable gssapi' => ['assertNull', OP_READONLY, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'anonymous, disable gssapi' => ['assertNull', OP_ANONYMOUS, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'half open, disable gssapi' => ['assertNull', OP_HALFOPEN, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'expunge on close, disable gssapi' => ['assertNull', CL_EXPUNGE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'debug, disable gssapi' => ['assertNull', OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'short cache, disable gssapi' => ['assertNull', OP_SHORTCACHE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'silent, disable gssapi' => ['assertNull', OP_SILENT, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'return driver prototype, disable gssapi' => ['assertNull', OP_PROTOTYPE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'don\'t do non-secure authentication, disable gssapi' => ['assertNull', OP_SECURE, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly, disable gssapi, 1 retry' => ['assertNull', OP_READONLY, 1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly, disable gssapi, 3 retries' => ['assertNull', OP_READONLY, 3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly, disable gssapi, 12 retries' => ['assertNull', OP_READONLY, 12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly debug, disable gssapi' => ['assertNull', OP_READONLY | OP_DEBUG, 0, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly, -1 retries' => ['expectException', OP_READONLY, -1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly, -3 retries' => ['expectException', OP_READONLY, -3, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly, -12 retries' => ['expectException', OP_READONLY, -12, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']],
+			'readonly, null options' => ['expectException', OP_READONLY, 0, [null]],
 		];
+
+		/** @psalm-var list<array{0:int, 1:string}> */
+		$options = [
+			[OP_DEBUG, 'debug'], // 1
+			[OP_READONLY, 'readonly'], // 2
+			[OP_ANONYMOUS, 'anonymous'], // 4
+			[OP_SHORTCACHE, 'short cache'], // 8
+			[OP_SILENT, 'silent'], // 16
+			[OP_PROTOTYPE, 'return driver prototype'], // 32
+			[OP_HALFOPEN, 'half-open'], // 64
+			[OP_SECURE, 'don\'t do non-secure authnetication'], // 256
+			[CL_EXPUNGE, 'expunge on close'], // 32768
+		];
+
+		foreach ($options as $i => $option) {
+			$value = $option[0];
+
+			for ($j = $i + 1; $j < count($options); ++$j) {
+				$value |= $options[$j][0];
+
+				$fields = [];
+
+				foreach ($options as $option) {
+					if (0 !== ($value & $option[0])) {
+						$fields[] = $option[1];
+					}
+				}
+
+				$key = implode(', ', $fields);
+
+				yield $key => ['assertNull', $value, 0, []];
+				yield ('INVALID + ' . $key) => ['expectException', $value | 128, 0, []];
+			}
+		}
 	}
 
 	/**
@@ -609,7 +641,7 @@ final class MailboxTest extends TestCase
 	 *
 	 * @dataProvider connectionArgsProvider
 	 *
-	 * @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty>|null $param
+	 * @psalm-param array{DISABLE_AUTHENTICATOR?:string}|array<empty, empty> $param
 	 */
 	public function test_set_connection_args(string $assertMethod, int $option, int $retriesNum, array $param = null) : void
 	{
@@ -618,9 +650,12 @@ final class MailboxTest extends TestCase
 		if ('expectException' === $assertMethod) {
 			$this->expectException(InvalidParameterException::class);
 			$mailbox->setConnectionArgs($option, $retriesNum, $param);
+			static::assertSame($option, $mailbox->getImapOptions());
 		} elseif ('assertNull' === $assertMethod) {
 			static::assertNull($mailbox->setConnectionArgs($option, $retriesNum, $param));
 		}
+
+		$mailbox->disconnect();
 	}
 
 	/**
@@ -641,6 +676,7 @@ final class MailboxTest extends TestCase
 			'Some subject here 😘 US-ASCII' => ['=?UTF-8?q?Some_subject_here_?= =?UTF-8?q?=F0=9F=98=98?=', 'Some subject here 😘', 'US-ASCII'],
 			'mountainguan测试 US-ASCII' => ['=?UTF-8?Q?mountainguan=E6=B5=8B=E8=AF=95?=', 'mountainguan测试', 'US-ASCII'],
 			'مقتطفات من: صن تزو. "فن الحرب". كتب أبل. Something' => ['مقتطفات من: صن تزو. "فن الحرب". كتب أبل. Something', 'مقتطفات من: صن تزو. "فن الحرب". كتب أبل. Something'],
+			'(事件单编号:TESTA-111111)(通报)入口有陌生人' => ['=?utf-8?b?KOS6i+S7tuWNlee8luWPtzpURVNUQS0xMTExMTEpKOmAmuaKpSnl?= =?utf-8?b?haXlj6PmnInpmYznlJ/kuro=?=', '(事件单编号:TESTA-111111)(通报)入口有陌生人'],
 		];
 	}
 
@@ -654,7 +690,34 @@ final class MailboxTest extends TestCase
 		$mailbox = $this->getMailbox();
 
 		$mailbox->setServerEncoding($serverEncoding);
-		static::assertSame($mailbox->decodeMimeStr($str, $mailbox->getServerEncoding()), $expectedStr);
+		static::assertSame($mailbox->decodeMimeStr($str), $expectedStr);
+	}
+
+	/**
+	 * Provides test data for testing base64 string decoding.
+	 *
+	 * @psalm-return list<array{0:string, 1:string}>
+	 */
+	public function Base64DecodeProvider()
+	{
+		return [
+			['bm8tcmVwbHlAZXhhbXBsZS5jb20=', 'no-reply@example.com'],
+			['TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4K', 'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.' . "\n"],
+			['SSBjYW4gZWF0IGdsYXNzIGFuZCBpdCBkb2VzIG5vdCBodXJ0IG1lLg==', 'I can eat glass and it does not hurt me.'],
+			['77u/4KSV4KS+4KSa4KSCIOCktuCkleCljeCkqOCli+CkruCljeCkr+CkpOCljeCkpOClgeCkruCljSDgpaQg4KSo4KWL4KSq4KS54KS/4KSo4KS44KWN4KSk4KS/IOCkruCkvuCkruCljSDgpaU=', '﻿काचं शक्नोम्यत्तुम् । नोपहिनस्ति माम् ॥'],
+			['SmUgcGV1eCBtYW5nZXIgZHUgdmVycmUsIMOnYSBuZSBtZSBmYWl0IHBhcyBtYWwu', 'Je peux manger du verre, ça ne me fait pas mal.'],
+			['UG90IHPEgyBtxINuw6JuYyBzdGljbMSDIMiZaSBlYSBudSBtxIMgcsSDbmXImXRlLg==', 'Pot să mănânc sticlă și ea nu mă rănește.'],
+			['5oiR6IO95ZCe5LiL546755KD6ICM5LiN5YK36Lqr6auU44CC', '我能吞下玻璃而不傷身體。'],
+		];
+	}
+
+	/**
+	 * @dataProvider Base64DecodeProvider
+	 */
+	public function test_base64_decode(string $input, string $expected) : void
+	{
+		static::assertSame($expected, imap_base64(preg_replace('~[^a-zA-Z0-9+=/]+~s', '', $input)));
+		static::assertSame($expected, base64_decode($input, false));
 	}
 
 	/**
@@ -689,7 +752,7 @@ final class MailboxTest extends TestCase
 	 *
 	 * @dataProvider attachmentDirFailureProvider
 	 *
-	 * @psalm-param class-string<\Throwable> $expectedException
+	 * @psalm-param class-string<\Exception> $expectedException
 	 */
 	public function test_attachment_dir_failure(string $initialDir, string $attachmentsDir, string $expectedException, string $expectedExceptionMessage) : void
 	{
@@ -703,8 +766,8 @@ final class MailboxTest extends TestCase
 		$mailbox->setAttachmentsDir($attachmentsDir);
 	}
 
-	protected function getMailbox() : Mailbox
+	protected function getMailbox() : Fixtures\Mailbox
 	{
-		return new Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, $this->serverEncoding);
+		return new Fixtures\Mailbox($this->imapPath, $this->login, new HiddenString($this->password, true, true), $this->attachmentsDir, $this->serverEncoding);
 	}
 }

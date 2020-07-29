@@ -11,8 +11,12 @@ namespace PhpImap;
  */
 class IncomingMailHeader
 {
-	/** @var int|null $id The IMAP message ID - not the "Message-ID:"-header of the email */
+	/** @var int|null The IMAP message ID - not the "Message-ID:"-header of the email */
 	public ?int $id = null;
+
+	public ?string $imapPath = null;
+
+	public ?string $mailboxFolder = null;
 
 	public bool $isDraft = false;
 
@@ -21,6 +25,20 @@ class IncomingMailHeader
 	public ?string $headersRaw = null;
 
 	public ?object $headers = null;
+
+	public ?string $mimeVersion = null;
+
+	public ?string $xVirusScanned = null;
+
+	public ?string $organization = null;
+
+	public ?string $contentType = null;
+
+	public ?string $xMailer = null;
+
+	public ?string $contentLanguage = null;
+
+	public ?string $xSenderIp = null;
 
 	public ?string $priority = null;
 

@@ -8,10 +8,13 @@ use function array_combine;
 use function base64_encode;
 use function basename;
 use function count;
+use const FILEINFO_MIME;
 use function get_object_vars;
 use InvalidArgumentException;
+use function is_array;
 use function is_string;
 use function mb_strstr;
+use function mb_strtolower;
 use function preg_match_all;
 use function rtrim;
 use function str_replace;
@@ -65,10 +68,15 @@ class IncomingMail extends IncomingMailHeader
 		if ('textHtml' === $name) {
 			$type = DataPartInfo::TEXT_HTML;
 		}
+		if (('textPlain' === $name || 'textHtml' === $name) && isset($this->$name)) {
+			return (string) $this->$name;
+		}
 		if (false === $type) {
 			trigger_error("Undefined property: IncomingMail::$name");
 		}
-		$this->$name = '';
+		if ( ! isset($this->$name)) {
+			$this->$name = '';
+		}
 		foreach ($this->dataInfo[$type] as $data) {
 			$this->$name .= trim($data->fetch());
 		}
@@ -172,7 +180,9 @@ class IncomingMail extends IncomingMailHeader
 	 */
 	public function getInternalLinksPlaceholders() : array
 	{
-		$match = preg_match_all('/=["\'](ci?d:([\w\.%*@-]+))["\']/i', $this->textHtml, $matches);
+		$fetchedHtml = (string) $this->__get('textHtml');
+
+		$match = preg_match_all('/=["\'](ci?d:([\w\.%*@-]+))["\']/i', $fetchedHtml, $matches);
 
 		/** @psalm-var array{1:list<string>, 2:list<string>} */
 		$matches = $matches;
@@ -208,23 +218,21 @@ class IncomingMail extends IncomingMailHeader
 	 */
 	public function embedImageAttachments() : void
 	{
-		preg_match_all("/\bcid:[^'\"\s]{1,256}/mi", $this->textHtml, $matches);
+		$fetchedHtml = (string) $this->__get('textHtml');
 
-		/** @psalm-var list<list<string>> */
-		$matches = $matches;
+		preg_match_all("/\bcid:[^'\"\s]{1,256}/mi", $fetchedHtml, $matches);
 
-		if (count($matches)) {
+		if (isset($matches[0]) && is_array($matches[0]) && count($matches[0])) {
+			/** @var list<string> */
+			$matches = $matches[0];
+			$attachments = $this->getAttachments();
 			foreach ($matches as $match) {
-				if ( ! isset($match[0])) {
-					continue;
-				}
+				$cid = str_replace('cid:', '', $match);
 
-				$cid = str_replace('cid:', '', $match[0]);
-
-				foreach ($this->getAttachments() as $attachment) {
-					if ($attachment->contentId === $cid && 'inline' === $attachment->disposition) {
+				foreach ($attachments as $attachment) {
+					if ($attachment->contentId === $cid && 'inline' === mb_strtolower((string) $attachment->disposition)) {
 						$contents = $attachment->getContents();
-						$contentType = $attachment->getMimeType();
+						$contentType = (string) $attachment->getFileInfo(FILEINFO_MIME);
 
 						if ( ! mb_strstr($contentType, 'image')) {
 							continue;
@@ -235,7 +243,7 @@ class IncomingMail extends IncomingMailHeader
 						$base64encoded = base64_encode($contents);
 						$replacement = 'data:' . $contentType . ';base64, ' . $base64encoded;
 
-						$this->textHtml = str_replace($match[0], $replacement, $this->textHtml);
+						$this->textHtml = str_replace($match, $replacement, $this->textHtml);
 
 						$this->removeAttachment($attachment->id);
 					}

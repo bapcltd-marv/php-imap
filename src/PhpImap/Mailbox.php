@@ -12,7 +12,6 @@ use function array_merge;
 use function array_unique;
 use function array_unshift;
 use function array_values;
-use function base64_encode;
 use function bin2hex;
 use const CL_EXPUNGE;
 use function count;
@@ -22,10 +21,15 @@ use const DATE_RFC3339;
 use DateTime;
 use const DIRECTORY_SEPARATOR;
 use Exception;
+use function explode;
+use const FILEINFO_EXTENSION;
+use const FILEINFO_MIME;
+use const FILEINFO_MIME_ENCODING;
+use const FILEINFO_NONE;
+use const FILEINFO_RAW;
 use const FT_PEEK;
 use const FT_PREFETCHTEXT;
 use const FT_UID;
-use function fwrite;
 use function gettype;
 use function iconv;
 use const IMAP_CLOSETIMEOUT;
@@ -40,6 +44,7 @@ use function in_array;
 use InvalidArgumentException;
 use function is_array;
 use function is_dir;
+use function is_int;
 use function is_object;
 use function is_resource;
 use function is_string;
@@ -76,7 +81,6 @@ use const SORTARRIVAL;
 use const ST_UID;
 use stdClass;
 use function strtotime;
-use Throwable;
 use function trim;
 use const TYPEMESSAGE;
 use const TYPEMULTIPART;
@@ -126,6 +130,20 @@ class Mailbox
 
 	const PART_TYPE_TWO = 2;
 
+	const IMAP_OPTIONS_SUPPORTED_VALUES =
+		OP_READONLY // 2
+		| OP_ANONYMOUS // 4
+		| OP_HALFOPEN // 64
+		| CL_EXPUNGE // 32768
+		| OP_DEBUG // 1
+		| OP_SHORTCACHE // 8
+		| OP_SILENT // 16
+		| OP_PROTOTYPE // 32
+		| OP_SECURE // 256
+;
+
+	public string $decodeMimeStrDefaultCharset = 'default';
+
 	/**
 	 * Allow to ignore attachments when they are not required and boost performance.
 	 */
@@ -136,8 +154,6 @@ class Mailbox
 	protected string $imapLogin;
 
 	protected HiddenString $imapPassword;
-
-	protected ?string $imapOAuthAccessToken = null;
 
 	protected int $imapSearchOption = SE_UID;
 
@@ -167,6 +183,9 @@ class Mailbox
 
 	protected string $pathDelimiter = '.';
 
+	/** @var string */
+	protected $mailboxFolder;
+
 	/** @var resource|null */
 	private $imapStream;
 
@@ -182,6 +201,8 @@ class Mailbox
 		if (null !== $attachmentsDir) {
 			$this->setAttachmentsDir($attachmentsDir);
 		}
+
+		$this->setMailboxFolder();
 	}
 
 	/**
@@ -190,39 +211,6 @@ class Mailbox
 	public function __destruct()
 	{
 		$this->disconnect();
-	}
-
-	/**
-	 * Sets / Changes the OAuth Token for the authentication.
-	 *
-	 * @param string $access_token OAuth token from your application (eg. Google Mail)
-	 *
-	 * @throws InvalidArgumentException If no access token is provided
-	 * @throws Exception If OAuth authentication was unsuccessful
-	 */
-	public function setOAuthToken(string $access_token) : void
-	{
-		if (empty(trim($access_token))) {
-			throw new InvalidParameterException('setOAuthToken() requires an access token as parameter!');
-		}
-
-		$this->imapOAuthAccessToken = trim($access_token);
-
-		try {
-			$this->_oauthAuthentication();
-		} catch (Exception $ex) {
-			throw new Exception('Invalid OAuth token provided. Error: ' . $ex->getMessage());
-		}
-	}
-
-	/**
-	 * Gets the OAuth Token for the authentication.
-	 *
-	 * @return string|null $access_token OAuth Access Token
-	 */
-	public function getOAuthToken() : ?string
-	{
-		return $this->imapOAuthAccessToken;
 	}
 
 	/**
@@ -375,8 +363,7 @@ class Mailbox
 	public function setConnectionArgs(int $options = 0, int $retriesNum = 0, array $params = null) : void
 	{
 		if (0 !== $options) {
-			$supported_options = [OP_READONLY, OP_ANONYMOUS, OP_HALFOPEN, CL_EXPUNGE, OP_DEBUG, OP_SHORTCACHE, OP_SILENT, OP_PROTOTYPE, OP_SECURE];
-			if ( ! in_array($options, $supported_options, true)) {
+			if (($options & self::IMAP_OPTIONS_SUPPORTED_VALUES) !== $options) {
 				throw new InvalidParameterException('Please check your option for setConnectionArgs()! Unsupported option "' . $options . '". Available options: https://www.php.net/manual/de/function.imap-open.php');
 			}
 			$this->imapOptions = $options;
@@ -505,6 +492,15 @@ class Mailbox
 	}
 
 	/**
+	 * Sets the folder of the current mailbox.
+	 */
+	public function setMailboxFolder() : void
+	{
+		$imapPathParts = explode('}', $this->imapPath);
+		$this->mailboxFolder = ( ! empty($imapPathParts[1])) ? $imapPathParts[1] : 'INBOX';
+	}
+
+	/**
 	 * Switch mailbox without opening a new connection.
 	 *
 	 * @throws Exception
@@ -516,6 +512,8 @@ class Mailbox
 		} else {
 			$this->imapPath = $this->getCombinedPath($imapPath, $absolute);
 		}
+
+		$this->setMailboxFolder();
 
 		Imap::reopen($this->getImapStream(), $this->imapPath);
 	}
@@ -862,10 +860,6 @@ class Mailbox
 	 *  seen - this mail is flagged as already read
 	 *  draft - this mail is flagged as being a draft
 	 *
-	 * @param int[] $mailsIds
-	 *
-	 * @psalm-param list<int> $mailsIds
-	 *
 	 * @return array $mailsIds Array of mail IDs
 	 *
 	 * @psalm-return list<object>
@@ -895,16 +889,16 @@ class Mailbox
 				}
 
 				if (isset($mail->subject) && ! empty(trim($mail->subject))) {
-					$mail->subject = $this->decodeMimeStr($mail->subject, $this->getServerEncoding());
+					$mail->subject = $this->decodeMimeStr($mail->subject);
 				}
 				if (isset($mail->from) && ! empty(trim($mail->from))) {
-					$mail->from = $this->decodeMimeStr($mail->from, $this->getServerEncoding());
+					$mail->from = $this->decodeMimeStr($mail->from);
 				}
 				if (isset($mail->sender) && ! empty(trim($mail->sender))) {
-					$mail->sender = $this->decodeMimeStr($mail->sender, $this->getServerEncoding());
+					$mail->sender = $this->decodeMimeStr($mail->sender);
 				}
 				if (isset($mail->to) && ! empty(trim($mail->to))) {
-					$mail->to = $this->decodeMimeStr($mail->to, $this->getServerEncoding());
+					$mail->to = $this->decodeMimeStr($mail->to);
 				}
 			}
 		}
@@ -963,7 +957,7 @@ class Mailbox
 	 * @param bool $reverse Sort reverse or not
 	 * @param string|null $searchCriteria See http://php.net/imap_search for a complete list of available criteria
 	 *
-	 * @psalm-param 1|5|0|2|6|3|4 $criteria
+	 * @psalm-param value-of<Imap::SORT_CRITERIA> $criteria
 	 *
 	 * @return array Mails ids
 	 */
@@ -1102,7 +1096,16 @@ class Mailbox
 		$header->headersRaw = $headersRaw;
 		$header->headers = $head;
 		$header->id = $mailId;
+		$header->imapPath = $this->imapPath;
+		$header->mailboxFolder = $this->mailboxFolder;
 		$header->isDraft = ( ! isset($head->date)) ? true : false;
+		$header->mimeVersion = (preg_match("/MIME-Version\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
+		$header->xVirusScanned = (preg_match("/X-Virus-Scanned\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
+		$header->organization = (preg_match("/Organization\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
+		$header->contentType = (preg_match("/Content-Type\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
+		$header->xMailer = (preg_match("/X-Mailer\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
+		$header->contentLanguage = (preg_match("/Content-Language\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
+		$header->xSenderIp = (preg_match("/X-Sender-IP\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
 		$header->priority = (preg_match("/Priority\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
 		$header->importance = (preg_match("/Importance\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
 		$header->sensitivity = (preg_match("/Sensitivity\:(.*)/i", $headersRaw, $matches)) ? trim($matches[1]) : '';
@@ -1119,7 +1122,7 @@ class Mailbox
 			$header->date = self::parseDateTime($now->format('Y-m-d H:i:s'));
 		}
 
-		$header->subject = (isset($head->subject) && ! empty(trim($head->subject))) ? $this->decodeMimeStr($head->subject, $this->getServerEncoding()) : null;
+		$header->subject = (isset($head->subject) && ! empty(trim($head->subject))) ? $this->decodeMimeStr($head->subject) : null;
 		if (isset($head->from) && ! empty($head->from)) {
 			[$header->fromHost, $header->fromName, $header->fromAddress] = $this->possiblyGetHostNameAndAddress($head->from);
 		} elseif (preg_match('/smtp.mailfrom=[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+.[a-zA-Z]{2,4}/', $headersRaw, $matches)) {
@@ -1269,16 +1272,39 @@ class Mailbox
 			$fileName = mb_strtolower($partStructure->subtype);
 		} else {
 			$fileName = (isset($params['filename']) && ! empty(trim($params['filename']))) ? $params['filename'] : $params['name'];
-			$fileName = $this->decodeMimeStr($fileName, $this->getServerEncoding());
-			$fileName = $this->decodeRFC2231($fileName, $this->getServerEncoding());
+			$fileName = $this->decodeMimeStr($fileName);
+			$fileName = $this->decodeRFC2231($fileName);
 		}
 
-		$partStructure_id = ($partStructure->ifid && isset($partStructure->id)) ? $partStructure->id : null;
+		/** @var scalar|array|object|null */
+		$sizeInBytes = isset($partStructure->bytes) ? $partStructure->bytes : null;
+
+		/** @var scalar|array|object|null */
+		$encoding = isset($partStructure->encoding) ? $partStructure->encoding : null;
+
+		if (null !== $sizeInBytes && ! is_int($sizeInBytes)) {
+			throw new UnexpectedValueException('Supplied part structure specifies a non-integer, non-null bytes header!');
+		}
+		if (null !== $encoding && ! is_int($encoding)) {
+			throw new UnexpectedValueException('Supplied part structure specifies a non-integer, non-null encoding header!');
+		}
+		if (isset($partStructure->type) && ! is_int($partStructure->type)) {
+			throw new UnexpectedValueException('Supplied part structure specifies a non-integer, non-null type header!');
+		}
+
+		$partStructure_id = ($partStructure->ifid && isset($partStructure->id)) ? trim($partStructure->id) : null;
 
 		$attachment = new IncomingMailAttachment();
 		$attachment->id = bin2hex(random_bytes(20));
 		$attachment->contentId = isset($partStructure_id) ? trim($partStructure_id, ' <>') : null;
+		if (isset($partStructure->type)) {
+			$attachment->type = $partStructure->type;
+		}
+		$attachment->encoding = $encoding;
+		$attachment->subtype = ($partStructure->ifsubtype && isset($partStructure->subtype)) ? trim($partStructure->subtype) : null;
+		$attachment->description = ($partStructure->ifdescription && isset($partStructure->description)) ? trim((string) $partStructure->description) : null;
 		$attachment->name = $fileName;
+		$attachment->sizeInBytes = $sizeInBytes;
 		$attachment->disposition = (isset($partStructure->disposition) && is_string($partStructure->disposition)) ? $partStructure->disposition : null;
 
 		/** @var scalar|array|object|resource|null */
@@ -1291,6 +1317,12 @@ class Mailbox
 		$attachment->emlOrigin = $emlOrigin;
 
 		$attachment->addDataPartInfo($dataInfo);
+
+		$attachment->fileInfoRaw = $attachment->getFileInfo(FILEINFO_RAW);
+		$attachment->fileInfo = $attachment->getFileInfo(FILEINFO_NONE);
+		$attachment->mime = $attachment->getFileInfo(FILEINFO_MIME);
+		$attachment->mimeEncoding = $attachment->getFileInfo(FILEINFO_MIME_ENCODING);
+		$attachment->fileExtension = $attachment->getFileInfo(FILEINFO_EXTENSION);
 
 		$attachmentsDir = $this->getAttachmentsDir();
 
@@ -1320,26 +1352,44 @@ class Mailbox
 	 *
 	 * @todo update implementation pending resolution of https://github.com/vimeo/psalm/issues/2619 & https://github.com/vimeo/psalm/issues/2620
 	 */
-	public function decodeMimeStr(string $string, string $toCharset = 'utf-8') : string
+	public function decodeMimeStr(string $string) : string
 	{
-		if (empty(trim($string))) {
-			throw new Exception('decodeMimeStr() Can not decode an empty string!');
-		}
-
 		$newString = '';
 		/** @var list<object{charset?:string, text?:string}>|false */
 		$elements = imap_mime_header_decode($string);
 
 		if (false === $elements) {
-			return $newString;
+			return $string;
 		}
 
 		foreach ($elements as $element) {
-			if (isset($element->text)) {
-				$fromCharset = ! isset($element->charset) ? 'iso-8859-1' : $element->charset;
-				// Convert to UTF-8, if string has UTF-8 characters to avoid broken strings. See https://github.com/barbushin/php-imap/issues/232
-				$toCharset = isset($element->charset) && preg_match('/(UTF\-8)|(default)/i', $element->charset) ? 'UTF-8' : $toCharset;
-				$newString .= $this->convertStringEncoding($element->text, $fromCharset, $toCharset);
+			$charset = mb_strtolower($element->charset);
+
+			if ('default' === $charset) {
+				$charset = $this->decodeMimeStrDefaultCharset;
+			}
+
+			switch ($charset) {
+				case 'default': // Charset default is already ASCII (not encoded)
+				case 'utf-8': // Charset UTF-8 is OK
+					$newString .= $element->text;
+					break;
+				default:
+					// If charset exists in mb_list_encodings(), convert using mb_convert function
+					if (in_array($charset, $this->lowercase_mb_list_encodings(), true)) {
+						$newString .= mb_convert_encoding($element->text, 'UTF-8', $charset);
+					} else {
+						// Fallback: Try to convert with iconv()
+						$iconv_converted_string = @iconv($charset, 'UTF-8', $element->text);
+						if ( ! $iconv_converted_string) {
+							// If iconv() could also not convert, return string as it is
+							// (unknown charset)
+							$newString .= $element->text;
+						} else {
+							$newString .= $iconv_converted_string;
+						}
+					}
+					break;
 			}
 		}
 
@@ -1381,33 +1431,6 @@ class Mailbox
 		}
 
 		return $dateHeaderRfc3339;
-	}
-
-	/**
-	 * Converts a string from one encoding to another.
-	 *
-	 * @param string $string the string, which you want to convert
-	 * @param string $fromEncoding the current charset (encoding)
-	 * @param string $toEncoding the new charset (encoding)
-	 *
-	 * @return string Converted string if conversion was successful, or the original string if not
-	 */
-	public function convertStringEncoding(string $string, string $fromEncoding, string $toEncoding) : string
-	{
-		if (preg_match('/default|ascii/i', $fromEncoding) || ! $string || $fromEncoding === $toEncoding) {
-			return $string;
-		}
-		$supportedEncodings = array_map('strtolower', mb_list_encodings());
-		if (in_array(mb_strtolower($fromEncoding), $supportedEncodings, true) && in_array(mb_strtolower($toEncoding), $supportedEncodings, true)) {
-			$convertedString = mb_convert_encoding($string, $toEncoding, $fromEncoding);
-		} else {
-			$convertedString = @iconv($fromEncoding, $toEncoding . '//TRANSLIT//IGNORE', $string);
-		}
-		if (('' === $convertedString) || (false === $convertedString)) {
-			return $string;
-		}
-
-		return $convertedString;
 	}
 
 	/**
@@ -1517,35 +1540,19 @@ class Mailbox
 	}
 
 	/**
-	 * Builds an OAuth2 authentication string for the given email address and access token.
+	 * Returns the list of available encodings in lower case.
 	 *
-	 * @return string $access_token Formatted OAuth access token
+	 * @return array mb_list_encodings() in lower case
 	 */
-	protected function _constructAuthString() : string
+	protected function lowercase_mb_list_encodings()
 	{
-		return base64_encode("user=$this->imapLogin\1auth=Bearer $this->imapOAuthAccessToken\1\1");
-	}
-
-	/**
-	 * Authenticates the IMAP client with the OAuth access token.
-	 *
-	 * @throws Exception If any error occured
-	 */
-	protected function _oauthAuthentication() : void
-	{
-		$oauth_command = 'A AUTHENTICATE XOAUTH2 ' . $this->_constructAuthString();
-
-		$oauth_result = fwrite($this->getImapStream(), $oauth_command);
-
-		if (false === $oauth_result) {
-			throw new Exception('Could not authenticate using OAuth!');
+		$lowercase_encodings = [];
+		$encodings = mb_list_encodings();
+		foreach ($encodings as $encoding) {
+			$lowercase_encodings[] = mb_strtolower($encoding);
 		}
 
-		try {
-			$this->checkMailbox();
-		} catch (Throwable $ex) {
-			throw new Exception('OAuth authentication failed! IMAP Error: ' . $ex->getMessage());
-		}
+		return $lowercase_encodings;
 	}
 
 	/** @return resource */
@@ -1561,6 +1568,18 @@ class Mailbox
 		} while (--$retry > 0 && ( ! $this->connectionRetryDelay || ! usleep($this->connectionRetryDelay * 1000)));
 
 		throw $exception;
+	}
+
+	/**
+	 * Retrieve the quota settings per user.
+	 *
+	 * @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
+	 *
+	 * @see imap_get_quotaroot()
+	 */
+	protected function getQuota(string $quota_root = 'INBOX') : array
+	{
+		return Imap::get_quotaroot($this->getImapStream(), $quota_root);
 	}
 
 	/**
@@ -1586,18 +1605,6 @@ class Mailbox
 		);
 
 		return $imapStream;
-	}
-
-	/**
-	 * Retrieve the quota settings per user.
-	 *
-	 * @param string $quota_root Should normally be in the form of which mailbox (i.e. INBOX)
-	 *
-	 * @see imap_get_quotaroot()
-	 */
-	protected function getQuota(string $quota_root = 'INBOX') : array
-	{
-		return Imap::get_quotaroot($this->getImapStream(), $quota_root);
 	}
 
 	/**
@@ -1644,8 +1651,18 @@ class Mailbox
 
 		$isAttachment = isset($params['filename']) || isset($params['name']);
 
+		$dispositionAttachment = (
+			isset($partStructure->disposition) &&
+			is_string($partStructure->disposition) &&
+			'attachment' === mb_strtolower($partStructure->disposition)
+		);
+
 		// ignore contentId on body when mail isn't multipart (https://github.com/barbushin/php-imap/issues/71)
-		if ( ! $partNum && TYPETEXT === $partStructure->type) {
+		if (
+			! $partNum &&
+			TYPETEXT === $partStructure->type &&
+			! $dispositionAttachment
+		) {
 			$isAttachment = false;
 		}
 
@@ -1702,12 +1719,16 @@ class Mailbox
 		} else {
 			if (TYPETEXT === $partStructure->type) {
 				if ('plain' === mb_strtolower($partStructure->subtype)) {
+					if ($dispositionAttachment) {
+						return;
+					}
+
 					$mail->addDataPartInfo($dataInfo, DataPartInfo::TEXT_PLAIN);
 				} elseif ( ! $partStructure->ifdisposition) {
 					$mail->addDataPartInfo($dataInfo, DataPartInfo::TEXT_HTML);
 				} elseif ( ! is_string($partStructure->disposition)) {
 					throw new InvalidArgumentException('disposition property of object passed as argument 2 to ' . __METHOD__ . '() was present but not a string!');
-				} elseif ('attachment' !== mb_strtolower($partStructure->disposition)) {
+				} elseif ( ! $dispositionAttachment) {
 					$mail->addDataPartInfo($dataInfo, DataPartInfo::TEXT_HTML);
 				}
 			} elseif (TYPEMESSAGE === $partStructure->type) {
@@ -1716,13 +1737,12 @@ class Mailbox
 		}
 	}
 
-	protected function decodeRFC2231(string $string, string $charset = 'utf-8') : string
+	protected function decodeRFC2231(string $string) : string
 	{
 		if (preg_match("/^(.*?)'.*?'(.*?)$/", $string, $matches)) {
-			$encoding = $matches[1];
 			$data = $matches[2];
 			if ($this->isUrlEncoded($data)) {
-				$string = $this->convertStringEncoding(urldecode($data), $encoding, $charset);
+				$string = $this->decodeMimeStr(urldecode($data));
 			}
 		}
 
@@ -1784,7 +1804,7 @@ class Mailbox
 
 			if ('' !== trim($recipientMailbox) && '' !== trim($recipientHost)) {
 				$recipientEmail = mb_strtolower($recipientMailbox . '@' . $recipientHost);
-				$recipientName = (is_string($recipientPersonal) && '' !== trim($recipientPersonal)) ? $this->decodeMimeStr($recipientPersonal, $this->getServerEncoding()) : null;
+				$recipientName = (is_string($recipientPersonal) && '' !== trim($recipientPersonal)) ? $this->decodeMimeStr($recipientPersonal) : null;
 
 				return [
 					$recipientEmail,
@@ -1850,7 +1870,7 @@ class Mailbox
 		foreach ([0, 1] as $index) {
 			$maybe = isset($t[$index], $t[$index]->personal) ? $t[$index]->personal : null;
 			if (is_string($maybe) && '' !== trim($maybe)) {
-				$out[1] = $this->decodeMimeStr($maybe, $this->getServerEncoding());
+				$out[1] = $this->decodeMimeStr($maybe);
 
 				break;
 			}

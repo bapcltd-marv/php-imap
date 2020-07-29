@@ -19,23 +19,18 @@ use function date;
 use const ENCBASE64;
 use function file_get_contents;
 use Generator;
-use function getenv;
 use function in_array;
-use function is_string;
 use function mb_strrpos;
 use function mb_substr;
 use function min;
 use ParagonIE\HiddenString\HiddenString;
-use PHPUnit\Framework\TestCase;
 use function preg_match;
 use function property_exists;
 use function random_bytes;
 use function shuffle;
 use const SORTARRIVAL;
-use function sprintf;
 use function str_replace;
 use function strtotime;
-use function sys_get_temp_dir;
 use Throwable;
 use const TYPEAPPLICATION;
 use const TYPEMULTIPART;
@@ -63,7 +58,7 @@ use const TYPETEXT;
  *
  * @todo see @todo of Imap::mail_compose()
  */
-class LiveMailboxTest extends TestCase
+class LiveMailboxTest extends AbstractLiveMailboxTest
 {
 	const RANDOM_MAILBOX_SAMPLE_SIZE = 3;
 
@@ -71,26 +66,6 @@ class LiveMailboxTest extends TestCase
 		448 => 1,
 		391 => 2,
 	];
-
-	/**
-	 * Provides constructor arguments for a live mailbox.
-	 *
-	 * @psalm-return MAILBOX_ARGS[]
-	 */
-	public function MailBoxProvider() : array
-	{
-		$sets = [];
-
-		$imapPath = getenv('PHPIMAP_IMAP_PATH');
-		$login = getenv('PHPIMAP_LOGIN');
-		$password = getenv('PHPIMAP_PASSWORD');
-
-		if (is_string($imapPath) && is_string($login) && is_string($password)) {
-			$sets['CI ENV'] = [new HiddenString($imapPath, true, true), new HiddenString($login, true, true), new HiddenString($password, true, true), sys_get_temp_dir()];
-		}
-
-		return $sets;
-	}
 
 	/**
 	 * @dataProvider MailBoxProvider
@@ -111,7 +86,7 @@ class LiveMailboxTest extends TestCase
 		$exception = null;
 
 		try {
-			static::assertIsResource($mailbox->getImapStream());
+			$mailbox->getImapStream();
 			static::assertTrue($mailbox->hasImapStream());
 
 			$mailboxes = $mailbox->getMailboxes();
@@ -353,110 +328,6 @@ class LiveMailboxTest extends TestCase
 		);
 
 		static::assertSame($expected_result, $actual_result);
-	}
-
-	/**
-	 * @psalm-return Generator<int, array{
-	 *	0:MAILBOX_ARGS,
-	 *	1:COMPOSE_ENVELOPE,
-	 *	2:COMPOSE_BODY,
-	 *	3:string,
-	 *	4:bool
-	 * }, mixed, void>
-	 */
-	public function AppendProvider() : Generator
-	{
-		foreach ($this->MailBoxProvider() as $mailbox_args) {
-			foreach ($this->ComposeProvider() as $compose_args) {
-				[$envelope, $body, $expected_compose_result] = $compose_args;
-
-				yield [$mailbox_args, $envelope, $body, $expected_compose_result, false];
-			}
-
-			foreach ($this->ComposeProvider() as $compose_args) {
-				[$envelope, $body, $expected_compose_result] = $compose_args;
-
-				yield [$mailbox_args, $envelope, $body, $expected_compose_result, true];
-			}
-		}
-	}
-
-	/**
-	 * @dataProvider AppendProvider
-	 *
-	 * @group live
-	 *
-	 * @depends test_get_imap_stream
-	 * @depends test_mail_compose
-	 *
-	 * @psalm-param MAILBOX_ARGS $mailbox_args
-	 * @psalm-param COMPOSE_ENVELOPE $envelope
-	 * @psalm-param COMPOSE_BODY $body
-	 */
-	public function test_append(
-		array $mailbox_args,
-		array $envelope,
-		array $body,
-		string $_expected_compose_result,
-		bool $pre_compose
-	) : void {
-		if ($this->MaybeSkipAppendTest($envelope)) {
-			return;
-		}
-
-		[$search_criteria] = $this->SubjectSearchCriteriaAndSubject($envelope);
-
-		[$mailbox, $remove_mailbox, $path] = $this->getMailboxFromArgs(
-			$mailbox_args
-		);
-
-		$search = $mailbox->searchMailbox($search_criteria);
-
-		static::assertCount(
-			0,
-			$search,
-			(
-				'If a subject was found,' .
-				' then the message is insufficiently unique to assert that' .
-				' a newly-appended message was actually created.'
-			)
-		);
-
-		$message = [$envelope, $body];
-
-		if ($pre_compose) {
-			$message = Imap::mail_compose($envelope, $body);
-		}
-
-		$mailbox->appendMessageToMailbox($message);
-
-		$search = $mailbox->searchMailbox($search_criteria);
-
-		static::assertCount(
-			1,
-			$search,
-			(
-				'If a subject was not found, ' .
-				' then Mailbox::appendMessageToMailbox() failed' .
-				' despite not throwing an exception.'
-			)
-		);
-
-		$mailbox->deleteMail($search[0]);
-
-		$mailbox->expungeDeletedMails();
-
-		$mailbox->switchMailbox($path->getString());
-		$mailbox->deleteMailbox($remove_mailbox);
-
-		static::assertCount(
-			0,
-			$mailbox->searchMailbox($search_criteria),
-			(
-				'If a subject was found,' .
-				' then the message is was not expunged as requested.'
-			)
-		);
 	}
 
 	/**
@@ -710,7 +581,7 @@ class LiveMailboxTest extends TestCase
 
 		static::assertSame(
 			$this->ReplaceBoundaryHere(
-			$expected_compose_result,
+				$expected_compose_result,
 				$actual_result
 			),
 			$actual_result
@@ -720,7 +591,7 @@ class LiveMailboxTest extends TestCase
 
 		static::assertSame(
 			$this->ReplaceBoundaryHere(
-			$expected_compose_result,
+				$expected_compose_result,
 				$actual_result
 			),
 			$actual_result
@@ -792,26 +663,6 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	 * Get instance of Mailbox, pre-set to a random mailbox.
-	 *
-	 * @return mixed[]
-	 *
-	 * @psalm-return array{0:Mailbox, 1:string, 2:HiddenString}
-	 */
-	protected function getMailbox(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8') : array
-	{
-		$mailbox = new Mailbox($imapPath->getString(), $login->getString(), $password, $attachmentsDir, $serverEncoding);
-
-		$random = 'test-box-' . date('c') . bin2hex(random_bytes(4));
-
-		$mailbox->createMailbox($random);
-
-		$mailbox->switchMailbox($random, false);
-
-		return [$mailbox, $random, $imapPath];
-	}
-
-	/**
 	 * @param string $expected_result
 	 * @param string $actual_result
 	 *
@@ -837,58 +688,5 @@ class LiveMailboxTest extends TestCase
 		}
 
 		return $expected_result;
-	}
-
-	/**
-	 * @psalm-param MAILBOX_ARGS $mailbox_args
-	 *
-	 * @return mixed[]
-	 *
-	 * @psalm-return array{0:Mailbox, 1:string, 2:HiddenString}
-	 */
-	protected function getMailboxFromArgs(array $mailbox_args) : array
-	{
-		[$path, $username, $password, $attachments_dir] = $mailbox_args;
-
-		return $this->getMailbox(
-			$path,
-			$username,
-			$password,
-			$attachments_dir,
-			$mailbox_args[4] ?? 'UTF-8'
-		);
-	}
-
-	protected function MaybeSkipAppendTest(array $envelope) : bool
-	{
-		if ( ! isset($envelope['subject'])) {
-			static::markTestSkipped(
-				'Cannot search for message by subject, no subject specified!'
-			);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Get subject search criteria and subject.
-	 *
-	 * @psalm-param array{subject?:mixed} $envelope
-	 *
-	 * @psalm-return array{0:string, 1:string}
-	 */
-	protected function SubjectSearchCriteriaAndSubject(array $envelope) : array
-	{
-		/** @var string|null */
-		$subject = $envelope['subject'] ?? null;
-
-		static::assertIsString($subject);
-
-		$search_criteria = sprintf('SUBJECT "%s"', (string) $subject);
-
-		/** @psalm-var array{0:string, 1:string} */
-		return [$search_criteria, (string) $subject];
 	}
 }
