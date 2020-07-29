@@ -11,8 +11,8 @@
 
 	use function count;
 	use PhpImap\Exceptions\ConnectionException;
-use PhpImap\Mailbox;
-use function time;
+	use PhpImap\Mailbox;
+	use function time;
 
 	$mailbox = new Mailbox(
 		'{imap.gmail.com:993/imap/ssl}INBOX', // IMAP server and mailbox folder
