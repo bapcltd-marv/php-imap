@@ -10,18 +10,18 @@ use PhpImap\IncomingMailAttachment as Base;
 
 class IncomingMailAttachment extends Base
 {
-    /** @var string|null */
-    public $override_getFileInfo_mime = null;
+	/** @var string|null */
+	public $override_getFileInfo_mime = null;
 
-    public function getFileInfo(int $fileinfo_const = FILEINFO_NONE): string
-    {
-        if (
-            FILEINFO_MIME === $fileinfo_const &&
-            isset($this->override_getFileInfo_mime)
-        ) {
-            return $this->override_getFileInfo_mime;
-        }
+	public function getFileInfo(int $fileinfo_const = FILEINFO_NONE) : string
+	{
+		if (
+			FILEINFO_MIME === $fileinfo_const &&
+			isset($this->override_getFileInfo_mime)
+		) {
+			return $this->override_getFileInfo_mime;
+		}
 
-        return parent::getFileInfo($fileinfo_const);
-    }
+		return parent::getFileInfo($fileinfo_const);
+	}
 }

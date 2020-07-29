@@ -24,47 +24,47 @@ use ParagonIE\HiddenString\HiddenString;
  */
 class LiveMailboxWithManualSetupTest extends AbstractLiveMailboxTest
 {
-    /**
-     * @return Generator<int, array{0:string}, void, void>
-     */
-    public function RelativeToRootPathProvider(): Generator
-    {
-        yield [
-            '.issue-499.Éléments envoyés',
-        ];
-    }
+	/**
+	 * @return Generator<int, array{0:string}, void, void>
+	 */
+	public function RelativeToRootPathProvider() : Generator
+	{
+		yield [
+			'.issue-499.Éléments envoyés',
+		];
+	}
 
-    /**
-     * @return Generator<int, array{0:MAILBOX_ARGS}, void, void>
-     */
-    public function statusProviderAbsolutePath(): Generator
-    {
-        foreach ($this->RelativeToRootPathProvider() as $path_args) {
-            foreach ($this->MailBoxProvider() as $args) {
-                $args[0] = new HiddenString($args[0]->getString().$path_args[0]);
+	/**
+	 * @return Generator<int, array{0:MAILBOX_ARGS}, void, void>
+	 */
+	public function statusProviderAbsolutePath() : Generator
+	{
+		foreach ($this->RelativeToRootPathProvider() as $path_args) {
+			foreach ($this->MailBoxProvider() as $args) {
+				$args[0] = new HiddenString($args[0]->getString() . $path_args[0]);
 
-                yield [$args];
-            }
-        }
-    }
+				yield [$args];
+			}
+		}
+	}
 
-    /**
-     * Tests the status of an absolute mailbox path set from the Mailbox constructor.
-     *
-     * @dataProvider statusProviderAbsolutePath
-     *
-     * @group live
-     * @group live-manual
-     *
-     * @psalm-param MAILBOX_ARGS $mailbox_args
-     */
-    public function testAbsolutePathStatusFromConstruction(
-        array $mailbox_args
-    ): void {
-        list($mailbox) = $this->getMailboxFromArgs($mailbox_args);
+	/**
+	 * Tests the status of an absolute mailbox path set from the Mailbox constructor.
+	 *
+	 * @dataProvider statusProviderAbsolutePath
+	 *
+	 * @group live
+	 * @group live-manual
+	 *
+	 * @psalm-param MAILBOX_ARGS $mailbox_args
+	 */
+	public function test_absolute_path_status_from_construction(
+		array $mailbox_args
+	) : void {
+		[$mailbox] = $this->getMailboxFromArgs($mailbox_args);
 
-        $mailbox->statusMailbox();
+		$mailbox->statusMailbox();
 
-        $this->assertTrue(true);
-    }
+		static::assertTrue(true);
+	}
 }

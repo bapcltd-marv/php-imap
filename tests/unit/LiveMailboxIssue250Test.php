@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function bin2hex;
 use Generator;
 use ParagonIE\HiddenString\HiddenString;
+use function random_bytes;
 use const TYPETEXT;
 
 /**
@@ -36,54 +38,54 @@ use const TYPETEXT;
  */
 class LiveMailboxIssue250Test extends AbstractLiveMailboxTest
 {
-    /**
-     * @psalm-return Generator<int, array{0:COMPOSE_ENVELOPE, 1:COMPOSE_BODY, 2:string}, mixed, void>
-     */
-    public function ComposeProvider(): Generator
-    {
-        $random_subject = 'barbushin/php-imap#250 测试: '.\bin2hex(\random_bytes(16));
+	/**
+	 * @psalm-return Generator<int, array{0:COMPOSE_ENVELOPE, 1:COMPOSE_BODY, 2:string}, mixed, void>
+	 */
+	public function ComposeProvider() : Generator
+	{
+		$random_subject = 'barbushin/php-imap#250 测试: ' . bin2hex(random_bytes(16));
 
-        yield [
-            ['subject' => $random_subject],
-            [
-                [
-                    'type' => TYPETEXT,
-                    'contents.data' => 'test',
-                ],
-            ],
-            (
-                'Subject: '.$random_subject."\r\n".
-                'MIME-Version: 1.0'."\r\n".
-                'Content-Type: TEXT/PLAIN; CHARSET=US-ASCII'."\r\n".
-                "\r\n".
-                'test'."\r\n"
-            ),
-        ];
-    }
+		yield [
+			['subject' => $random_subject],
+			[
+				[
+					'type' => TYPETEXT,
+					'contents.data' => 'test',
+				],
+			],
+			(
+				'Subject: ' . $random_subject . "\r\n" .
+				'MIME-Version: 1.0' . "\r\n" .
+				'Content-Type: TEXT/PLAIN; CHARSET=US-ASCII' . "\r\n" .
+				"\r\n" .
+				'test' . "\r\n"
+			),
+		];
+	}
 
-    /**
-     * @dataProvider AppendProvider
-     *
-     * @group live
-     * @group live-issue-250
-     *
-     * @psalm-param MAILBOX_ARGS $mailbox_args
-     * @psalm-param COMPOSE_ENVELOPE $envelope
-     * @psalm-param COMPOSE_BODY $body
-     */
-    public function testAppend(
-        array $mailbox_args,
-        array $envelope,
-        array $body,
-        string $expected_compose_result,
-        bool $pre_compose
-    ): void {
-        parent::testAppend(
-            $mailbox_args,
-            $envelope,
-            $body,
-            $expected_compose_result,
-            $pre_compose
-        );
-    }
+	/**
+	 * @dataProvider AppendProvider
+	 *
+	 * @group live
+	 * @group live-issue-250
+	 *
+	 * @psalm-param MAILBOX_ARGS $mailbox_args
+	 * @psalm-param COMPOSE_ENVELOPE $envelope
+	 * @psalm-param COMPOSE_BODY $body
+	 */
+	public function test_append(
+		array $mailbox_args,
+		array $envelope,
+		array $body,
+		string $expected_compose_result,
+		bool $pre_compose
+	) : void {
+		parent::testAppend(
+			$mailbox_args,
+			$envelope,
+			$body,
+			$expected_compose_result,
+			$pre_compose
+		);
+	}
 }

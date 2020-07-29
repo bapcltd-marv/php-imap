@@ -10,8 +10,16 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use function array_keys;
+use function base64_encode;
+use function basename;
+use function bin2hex;
 use const ENCBASE64;
+use function file_get_contents;
+use function implode;
 use ParagonIE\HiddenString\HiddenString;
+use function random_bytes;
+use function str_replace;
 use Throwable;
 use const TYPEIMAGE;
 use const TYPEMULTIPART;
@@ -22,237 +30,237 @@ use const TYPETEXT;
  */
 class LiveMailboxIssue514Test extends AbstractLiveMailboxTest
 {
-    /**
-     * @dataProvider MailBoxProvider
-     *
-     * @group live
-     * @group issue-514
-     */
-    public function testEmbed(
-        HiddenString $imapPath,
-        HiddenString $login,
-        HiddenString $password,
-        string $attachmentsDir,
-        string $serverEncoding = 'UTF-8'
-    ): void {
-        /** @var Throwable|null */
-        $exception = null;
+	/**
+	 * @dataProvider MailBoxProvider
+	 *
+	 * @group live
+	 * @group issue-514
+	 */
+	public function test_embed(
+		HiddenString $imapPath,
+		HiddenString $login,
+		HiddenString $password,
+		string $attachmentsDir,
+		string $serverEncoding = 'UTF-8'
+	) : void {
+		/** @var Throwable|null */
+		$exception = null;
 
-        $mailboxDeleted = false;
+		$mailboxDeleted = false;
 
-        /** @psalm-var COMPOSE_ENVELOPE */
-        $envelope = [
-            'subject' => 'barbushin/php-imap#514--'.\bin2hex(\random_bytes(16)),
-        ];
+		/** @psalm-var COMPOSE_ENVELOPE */
+		$envelope = [
+			'subject' => 'barbushin/php-imap#514--' . bin2hex(random_bytes(16)),
+		];
 
-        list($search_criteria) = $this->SubjectSearchCriteriaAndSubject($envelope);
+		[$search_criteria] = $this->SubjectSearchCriteriaAndSubject($envelope);
 
-        $body = [
-            [
-                'type' => TYPEMULTIPART,
-            ],
-            [
-                'type' => TYPETEXT,
-                'subtype' => 'plain',
-                'contents.data' => 'foo',
-            ],
-            [
-                'type' => TYPETEXT,
-                'subtype' => 'html',
-                'contents.data' => \implode('', [
-                    '<img alt="png" width="5" height="1" src="cid:foo.png">',
-                    '<img alt="webp" width="5" height="1" src="cid:foo.webp">',
-                ]),
-            ],
-            [
-                'type' => TYPEIMAGE,
-                'subtype' => 'png',
-                'encoding' => ENCBASE64,
-                'id' => 'foo.png',
-                'description' => 'foo.png',
-                'disposition' => ['filename' => 'foo.png'],
-                'disposition.type' => 'inline',
-                'type.parameters' => ['name' => 'foo.png'],
-                'contents.data' => \base64_encode(
-                    \file_get_contents(__DIR__.'/Fixtures/rgbkw5x1.png')
-                ),
-            ],
-            [
-                'type' => TYPEIMAGE,
-                'subtype' => 'webp',
-                'encoding' => ENCBASE64,
-                'id' => 'foo.webp',
-                'description' => 'foo.webp',
-                'disposition' => ['filename' => 'foo.webp'],
-                'disposition.type' => 'inline',
-                'type.parameters' => ['name' => 'foo.webp'],
-                'contents.data' => \base64_encode(
-                    \file_get_contents(__DIR__.'/Fixtures/rgbkw5x1.webp')
-                ),
-            ],
-        ];
+		$body = [
+			[
+				'type' => TYPEMULTIPART,
+			],
+			[
+				'type' => TYPETEXT,
+				'subtype' => 'plain',
+				'contents.data' => 'foo',
+			],
+			[
+				'type' => TYPETEXT,
+				'subtype' => 'html',
+				'contents.data' => implode('', [
+					'<img alt="png" width="5" height="1" src="cid:foo.png">',
+					'<img alt="webp" width="5" height="1" src="cid:foo.webp">',
+				]),
+			],
+			[
+				'type' => TYPEIMAGE,
+				'subtype' => 'png',
+				'encoding' => ENCBASE64,
+				'id' => 'foo.png',
+				'description' => 'foo.png',
+				'disposition' => ['filename' => 'foo.png'],
+				'disposition.type' => 'inline',
+				'type.parameters' => ['name' => 'foo.png'],
+				'contents.data' => base64_encode(
+					file_get_contents(__DIR__ . '/Fixtures/rgbkw5x1.png')
+				),
+			],
+			[
+				'type' => TYPEIMAGE,
+				'subtype' => 'webp',
+				'encoding' => ENCBASE64,
+				'id' => 'foo.webp',
+				'description' => 'foo.webp',
+				'disposition' => ['filename' => 'foo.webp'],
+				'disposition.type' => 'inline',
+				'type.parameters' => ['name' => 'foo.webp'],
+				'contents.data' => base64_encode(
+					file_get_contents(__DIR__ . '/Fixtures/rgbkw5x1.webp')
+				),
+			],
+		];
 
-        $message = Imap::mail_compose(
-            $envelope,
-            $body
-        );
+		$message = Imap::mail_compose(
+			$envelope,
+			$body
+		);
 
-        list($mailbox, $remove_mailbox, $path) = $this->getMailboxFromArgs([
-            $imapPath,
-            $login,
-            $password,
-            $attachmentsDir,
-            $serverEncoding,
-        ]);
+		[$mailbox, $remove_mailbox, $path] = $this->getMailboxFromArgs([
+			$imapPath,
+			$login,
+			$password,
+			$attachmentsDir,
+			$serverEncoding,
+		]);
 
-        $result = null;
+		$result = null;
 
-        try {
-            $search = $mailbox->searchMailbox($search_criteria);
+		try {
+			$search = $mailbox->searchMailbox($search_criteria);
 
-            $this->assertCount(
-                0,
-                $search,
-                (
-                    'If a subject was found,'.
-                    ' then the message is insufficiently unique to assert that'.
-                    ' a newly-appended message was actually created.'
-                )
-            );
+			static::assertCount(
+				0,
+				$search,
+				(
+					'If a subject was found,' .
+					' then the message is insufficiently unique to assert that' .
+					' a newly-appended message was actually created.'
+				)
+			);
 
-            $mailbox->appendMessageToMailbox($message);
+			$mailbox->appendMessageToMailbox($message);
 
-            $search = $mailbox->searchMailbox($search_criteria);
+			$search = $mailbox->searchMailbox($search_criteria);
 
-            $this->assertCount(
-                1,
-                $search,
-                (
-                    'If a subject was not found, '.
-                    ' then Mailbox::appendMessageToMailbox() failed'.
-                    ' despite not throwing an exception.'
-                )
-            );
+			static::assertCount(
+				1,
+				$search,
+				(
+					'If a subject was not found, ' .
+					' then Mailbox::appendMessageToMailbox() failed' .
+					' despite not throwing an exception.'
+				)
+			);
 
-            $result = $mailbox->getMail($search[0], false);
+			$result = $mailbox->getMail($search[0], false);
 
-            /** @var array<string, int> */
-            $counts = [];
+			/** @var array<string, int> */
+			$counts = [];
 
-            foreach ($result->getAttachments() as $attachment) {
-                if (!isset($counts[(string) $attachment->contentId])) {
-                    $counts[(string) $attachment->contentId] = 0;
-                }
+			foreach ($result->getAttachments() as $attachment) {
+				if ( ! isset($counts[(string) $attachment->contentId])) {
+					$counts[(string) $attachment->contentId] = 0;
+				}
 
-                ++$counts[(string) $attachment->contentId];
-            }
+				++$counts[(string) $attachment->contentId];
+			}
 
-            $this->assertCount(
-                2,
-                $counts,
-                (
-                    'counts should only contain foo.png and foo.webp, found: '.
-                    \implode(
-                        ', ',
-                        \array_keys($counts)
-                    )
-                )
-            );
+			static::assertCount(
+				2,
+				$counts,
+				(
+					'counts should only contain foo.png and foo.webp, found: ' .
+					implode(
+						', ',
+						array_keys($counts)
+					)
+				)
+			);
 
-            foreach ($counts as $cid => $count) {
-                $this->assertSame(
-                    1,
-                    $count,
-                    $cid.' had '.(string) $count.', expected 1.'
-                );
-            }
+			foreach ($counts as $cid => $count) {
+				static::assertSame(
+					1,
+					$count,
+					$cid . ' had ' . (string) $count . ', expected 1.'
+				);
+			}
 
-            $this->assertSame(
-                'foo',
-                $result->textPlain,
-                'plain text body did not match expected result!'
-            );
+			static::assertSame(
+				'foo',
+				$result->textPlain,
+				'plain text body did not match expected result!'
+			);
 
-            $embedded = \implode('', [
-                '<img alt="png" width="5" height="1" src="',
-                'data:image/png; charset=binary;base64, ',
-                $body[3]['contents.data'],
-                '">',
-                '<img alt="webp" width="5" height="1" src="',
-                'data:image/webp; charset=binary;base64, ',
-                $body[4]['contents.data'],
-                '">',
-            ]);
+			$embedded = implode('', [
+				'<img alt="png" width="5" height="1" src="',
+				'data:image/png; charset=binary;base64, ',
+				$body[3]['contents.data'],
+				'">',
+				'<img alt="webp" width="5" height="1" src="',
+				'data:image/webp; charset=binary;base64, ',
+				$body[4]['contents.data'],
+				'">',
+			]);
 
-            $this->assertSame(
-                [
-                    'foo.png' => 'cid:foo.png',
-                    'foo.webp' => 'cid:foo.webp',
-                ],
-                $result->getInternalLinksPlaceholders(),
-                'Internal link placeholders did not match expected result!'
-            );
+			static::assertSame(
+				[
+					'foo.png' => 'cid:foo.png',
+					'foo.webp' => 'cid:foo.webp',
+				],
+				$result->getInternalLinksPlaceholders(),
+				'Internal link placeholders did not match expected result!'
+			);
 
-            $replaced = \implode('', [
-                '<img alt="png" width="5" height="1" src="',
-                'foo.png',
-                '">',
-                '<img alt="webp" width="5" height="1" src="',
-                'foo.webp',
-                '">',
-            ]);
+			$replaced = implode('', [
+				'<img alt="png" width="5" height="1" src="',
+				'foo.png',
+				'">',
+				'<img alt="webp" width="5" height="1" src="',
+				'foo.webp',
+				'">',
+			]);
 
-            foreach ($result->getAttachments() as $attachment) {
-                if ('foo.png' === $attachment->contentId) {
-                    $replaced = \str_replace(
-                        'foo.png',
-                        '/'.\basename($attachment->filePath),
-                        $replaced
-                    );
-                } elseif ('foo.webp' === $attachment->contentId) {
-                    $replaced = \str_replace(
-                        'foo.webp',
-                        '/'.\basename($attachment->filePath),
-                        $replaced
-                    );
-                }
-            }
+			foreach ($result->getAttachments() as $attachment) {
+				if ('foo.png' === $attachment->contentId) {
+					$replaced = str_replace(
+						'foo.png',
+						'/' . basename($attachment->filePath),
+						$replaced
+					);
+				} elseif ('foo.webp' === $attachment->contentId) {
+					$replaced = str_replace(
+						'foo.webp',
+						'/' . basename($attachment->filePath),
+						$replaced
+					);
+				}
+			}
 
-            $this->assertSame(
-                $replaced,
-                $result->replaceInternalLinks(''),
-                'replaced html body did not match expected result!'
-            );
+			static::assertSame(
+				$replaced,
+				$result->replaceInternalLinks(''),
+				'replaced html body did not match expected result!'
+			);
 
-            $this->assertSame(
-                $body[2]['contents.data'],
-                $result->textHtml,
-                'unembeded html body did not match expected result!'
-            );
+			static::assertSame(
+				$body[2]['contents.data'],
+				$result->textHtml,
+				'unembeded html body did not match expected result!'
+			);
 
-            $result->embedImageAttachments();
+			$result->embedImageAttachments();
 
-            $this->assertSame(
-                $embedded,
-                $result->textHtml,
-                'embeded html body did not match expected result!'
-            );
+			static::assertSame(
+				$embedded,
+				$result->textHtml,
+				'embeded html body did not match expected result!'
+			);
 
-            $mailbox->deleteMail($search[0]);
-        } catch (Throwable $ex) {
-            $exception = $ex;
-        } finally {
-            $mailbox->switchMailbox($path->getString());
+			$mailbox->deleteMail($search[0]);
+		} catch (Throwable $ex) {
+			$exception = $ex;
+		} finally {
+			$mailbox->switchMailbox($path->getString());
 
-            if (!$mailboxDeleted) {
-                $mailbox->deleteMailbox($remove_mailbox);
-            }
+			if ( ! $mailboxDeleted) {
+				$mailbox->deleteMailbox($remove_mailbox);
+			}
 
-            $mailbox->disconnect();
-        }
+			$mailbox->disconnect();
+		}
 
-        if (null !== $exception) {
-            throw $exception;
-        }
-    }
+		if (null !== $exception) {
+			throw $exception;
+		}
+	}
 }
