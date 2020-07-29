@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace PhpImap;
 
+use const ENC8BIT;
+use const ENCBASE64;
+use const ENCBINARY;
+use const ENCQUOTEDPRINTABLE;
 use function imap_base64;
 use function imap_binary;
 use function imap_utf8;

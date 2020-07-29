@@ -6,6 +6,7 @@ namespace PhpImap;
 
 use function file_exists;
 use function file_put_contents;
+use const FILEINFO_MIME;
 use finfo;
 use function trigger_error;
 use UnexpectedValueException;

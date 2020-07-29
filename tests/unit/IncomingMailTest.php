@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace PhpImap;
 
 use function date;
+use const DATE_RFC3339;
 use ParagonIE\HiddenString\HiddenString;
 use PHPUnit\Framework\TestCase;
 

@@ -57,6 +57,7 @@ use function mb_detect_encoding;
 use const NIL;
 use ParagonIE\HiddenString\HiddenString;
 use function preg_match;
+use const SE_FREE;
 use function sprintf;
 use function trim;
 use UnexpectedValueException;
