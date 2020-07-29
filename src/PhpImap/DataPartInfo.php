@@ -12,10 +12,10 @@ use function quoted_printable_decode;
 use function trim;
 
 /**
-* @see https://github.com/barbushin/php-imap
-*
-* @author nickl- http://github.com/nickl-
-*/
+ * @see https://github.com/barbushin/php-imap
+ *
+ * @author nickl- http://github.com/nickl-
+ */
 class DataPartInfo
 {
 	const TEXT_PLAIN = 0;
@@ -23,42 +23,42 @@ class DataPartInfo
 	const TEXT_HTML = 1;
 
 	/**
-	* @readonly
-	*/
+	 * @readonly
+	 */
 	public int $id;
 
 	/**
-	* @var int|mixed
-	*
-	* @readonly
-	*/
+	 * @var int|mixed
+	 *
+	 * @readonly
+	 */
 	public $encoding;
 
 	public ?string $charset = null;
 
 	/**
-	* @var 0|string
-	*
-	* @readonly
-	*/
+	 * @var 0|string
+	 *
+	 * @readonly
+	 */
 	public $part;
 
 	/**
-	* @readonly
-	*/
+	 * @readonly
+	 */
 	public Mailbox $mail;
 
 	/**
-	* @readonly
-	*/
+	 * @readonly
+	 */
 	public int $options;
 
 	protected ?string $data = null;
 
 	/**
-	* @param 0|string $part
-	* @param int|mixed $encoding
-	*/
+	 * @param 0|string $part
+	 * @param int|mixed $encoding
+	 */
 	public function __construct(Mailbox $mail, int $id, $part, $encoding, int $options)
 	{
 		$this->mail = $mail;

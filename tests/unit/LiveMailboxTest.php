@@ -36,27 +36,27 @@ use Throwable;
 use const TYPETEXT;
 
 /**
-* @psalm-type MAILBOX_ARGS = array{
-*	0:HiddenString,
-*	1:HiddenString,
-*	2:HiddenString,
-*	3:string,
-*	4?:string
-* }
-* @psalm-type COMPOSE_ENVELOPE = array{
-*	subject?:string
-* }
-* @psalm-type COMPOSE_BODY = list<array{
-*	type?:int,
-*	encoding?:int,
-*	charset?:string,
-*	subtype?:string,
-*	description?:string,
-*	disposition?:array{filename:string}
-* }>
-*
-* @todo see @todo of Imap::mail_compose()
-*/
+ * @psalm-type MAILBOX_ARGS = array{
+ *	0:HiddenString,
+ *	1:HiddenString,
+ *	2:HiddenString,
+ *	3:string,
+ *	4?:string
+ * }
+ * @psalm-type COMPOSE_ENVELOPE = array{
+ *	subject?:string
+ * }
+ * @psalm-type COMPOSE_BODY = list<array{
+ *	type?:int,
+ *	encoding?:int,
+ *	charset?:string,
+ *	subtype?:string,
+ *	description?:string,
+ *	disposition?:array{filename:string}
+ * }>
+ *
+ * @todo see @todo of Imap::mail_compose()
+ */
 class LiveMailboxTest extends TestCase
 {
 	const RANDOM_MAILBOX_SAMPLE_SIZE = 3;
@@ -67,10 +67,10 @@ class LiveMailboxTest extends TestCase
 	];
 
 	/**
-	* Provides constructor arguments for a live mailbox.
-	*
-	* @psalm-return MAILBOX_ARGS[]
-	*/
+	 * Provides constructor arguments for a live mailbox.
+	 *
+	 * @psalm-return MAILBOX_ARGS[]
+	 */
 	public function MailBoxProvider() : array
 	{
 		$sets = [];
@@ -87,10 +87,10 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @dataProvider MailBoxProvider
-	*
-	* @group live
-	*/
+	 * @dataProvider MailBoxProvider
+	 *
+	 * @group live
+	 */
 	public function test_get_imap_stream(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8') : void
 	{
 		[$mailbox, $remove_mailbox] = $this->getMailbox(
@@ -178,8 +178,8 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @psalm-return Generator<int, array{0:COMPOSE_ENVELOPE, 1:COMPOSE_BODY, 2:string}, mixed, void>
-	*/
+	 * @psalm-return Generator<int, array{0:COMPOSE_ENVELOPE, 1:COMPOSE_BODY, 2:string}, mixed, void>
+	 */
 	public function ComposeProvider() : Generator
 	{
 		$random_subject = 'test: ' . bin2hex(random_bytes(16));
@@ -330,13 +330,13 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @dataProvider ComposeProvider
-	*
-	* @group compose
-	*
-	* @psalm-param COMPOSE_ENVELOPE $envelope
-	* @psalm-param COMPOSE_BODY $body
-	*/
+	 * @dataProvider ComposeProvider
+	 *
+	 * @group compose
+	 *
+	 * @psalm-param COMPOSE_ENVELOPE $envelope
+	 * @psalm-param COMPOSE_BODY $body
+	 */
 	public function test_mail_compose(array $envelope, array $body, string $expected_result) : void
 	{
 		$actual_result = Imap::mail_compose($envelope, $body);
@@ -350,14 +350,14 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @psalm-return Generator<int, array{
-	*	0:MAILBOX_ARGS,
-	*	1:COMPOSE_ENVELOPE,
-	*	2:COMPOSE_BODY,
-	*	3:string,
-	*	4:bool
-	* }, mixed, void>
-	*/
+	 * @psalm-return Generator<int, array{
+	 *	0:MAILBOX_ARGS,
+	 *	1:COMPOSE_ENVELOPE,
+	 *	2:COMPOSE_BODY,
+	 *	3:string,
+	 *	4:bool
+	 * }, mixed, void>
+	 */
 	public function AppendProvider() : Generator
 	{
 		foreach ($this->MailBoxProvider() as $mailbox_args) {
@@ -376,17 +376,17 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @dataProvider AppendProvider
-	*
-	* @group live
-	*
-	* @depends test_get_imap_stream
-	* @depends test_mail_compose
-	*
-	* @psalm-param MAILBOX_ARGS $mailbox_args
-	* @psalm-param COMPOSE_ENVELOPE $envelope
-	* @psalm-param COMPOSE_BODY $body
-	*/
+	 * @dataProvider AppendProvider
+	 *
+	 * @group live
+	 *
+	 * @depends test_get_imap_stream
+	 * @depends test_mail_compose
+	 *
+	 * @psalm-param MAILBOX_ARGS $mailbox_args
+	 * @psalm-param COMPOSE_ENVELOPE $envelope
+	 * @psalm-param COMPOSE_BODY $body
+	 */
 	public function test_append(
 		array $mailbox_args,
 		array $envelope,
@@ -454,16 +454,16 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @dataProvider AppendProvider
-	*
-	* @group live
-	*
-	* @depends test_append
-	*
-	* @psalm-param MAILBOX_ARGS $mailbox_args
-	* @psalm-param COMPOSE_ENVELOPE $envelope
-	* @psalm-param COMPOSE_BODY $body
-	*/
+	 * @dataProvider AppendProvider
+	 *
+	 * @group live
+	 *
+	 * @depends test_append
+	 *
+	 * @psalm-param MAILBOX_ARGS $mailbox_args
+	 * @psalm-param COMPOSE_ENVELOPE $envelope
+	 * @psalm-param COMPOSE_BODY $body
+	 */
 	public function test_append_nudges_mailbox_count(
 		array $mailbox_args,
 		array $envelope,
@@ -543,16 +543,16 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @dataProvider AppendProvider
-	*
-	* @group live
-	*
-	* @depends test_append
-	*
-	* @psalm-param MAILBOX_ARGS $mailbox_args
-	* @psalm-param COMPOSE_ENVELOPE $envelope
-	* @psalm-param COMPOSE_BODY $body
-	*/
+	 * @dataProvider AppendProvider
+	 *
+	 * @group live
+	 *
+	 * @depends test_append
+	 *
+	 * @psalm-param MAILBOX_ARGS $mailbox_args
+	 * @psalm-param COMPOSE_ENVELOPE $envelope
+	 * @psalm-param COMPOSE_BODY $body
+	 */
 	public function test_append_single_search_matches_sort(
 		array $mailbox_args,
 		array $envelope,
@@ -641,16 +641,16 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @dataProvider AppendProvider
-	*
-	* @group live
-	*
-	* @depends test_append
-	*
-	* @psalm-param MAILBOX_ARGS $mailbox_args
-	* @psalm-param COMPOSE_ENVELOPE $envelope
-	* @psalm-param COMPOSE_BODY $body
-	*/
+	 * @dataProvider AppendProvider
+	 *
+	 * @group live
+	 *
+	 * @depends test_append
+	 *
+	 * @psalm-param MAILBOX_ARGS $mailbox_args
+	 * @psalm-param COMPOSE_ENVELOPE $envelope
+	 * @psalm-param COMPOSE_BODY $body
+	 */
 	public function test_append_retrieval_matches_expected(
 		array $mailbox_args,
 		array $envelope,
@@ -786,12 +786,12 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* Get instance of Mailbox, pre-set to a random mailbox.
-	*
-	* @return mixed[]
-	*
-	* @psalm-return array{0:Mailbox, 1:string, 2:HiddenString}
-	*/
+	 * Get instance of Mailbox, pre-set to a random mailbox.
+	 *
+	 * @return mixed[]
+	 *
+	 * @psalm-return array{0:Mailbox, 1:string, 2:HiddenString}
+	 */
 	protected function getMailbox(HiddenString $imapPath, HiddenString $login, HiddenString $password, string $attachmentsDir, string $serverEncoding = 'UTF-8') : array
 	{
 		$mailbox = new Mailbox($imapPath->getString(), $login->getString(), $password, $attachmentsDir, $serverEncoding);
@@ -834,12 +834,12 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* @psalm-param MAILBOX_ARGS $mailbox_args
-	*
-	* @return mixed[]
-	*
-	* @psalm-return array{0:Mailbox, 1:string, 2:HiddenString}
-	*/
+	 * @psalm-param MAILBOX_ARGS $mailbox_args
+	 *
+	 * @return mixed[]
+	 *
+	 * @psalm-return array{0:Mailbox, 1:string, 2:HiddenString}
+	 */
 	protected function getMailboxFromArgs(array $mailbox_args) : array
 	{
 		[$path, $username, $password, $attachments_dir] = $mailbox_args;
@@ -867,12 +867,12 @@ class LiveMailboxTest extends TestCase
 	}
 
 	/**
-	* Get subject search criteria and subject.
-	*
-	* @psalm-param array{subject?:mixed} $envelope
-	*
-	* @psalm-return array{0:string, 1:string}
-	*/
+	 * Get subject search criteria and subject.
+	 *
+	 * @psalm-param array{subject?:mixed} $envelope
+	 *
+	 * @psalm-return array{0:string, 1:string}
+	 */
 	protected function SubjectSearchCriteriaAndSubject(array $envelope) : array
 	{
 		/** @var string|null */

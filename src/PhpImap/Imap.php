@@ -15,7 +15,6 @@ use function imap_body;
 use function imap_check;
 use function imap_clearflag_full;
 use function imap_close;
-use const IMAP_CLOSETIMEOUT;
 use function imap_createmailbox;
 use function imap_delete;
 use function imap_deletemailbox;
@@ -37,9 +36,7 @@ use function imap_mail_move;
 use function imap_mailboxmsginfo;
 use function imap_num_msg;
 use function imap_open;
-use const IMAP_OPENTIMEOUT;
 use function imap_ping;
-use const IMAP_READTIMEOUT;
 use function imap_renamemailbox;
 use function imap_reopen;
 use function imap_savebody;
@@ -50,7 +47,6 @@ use function imap_status;
 use function imap_subscribe;
 use function imap_timeout;
 use function imap_unsubscribe;
-use const IMAP_WRITETIMEOUT;
 use function implode;
 use InvalidArgumentException;
 use function is_int;
@@ -61,64 +57,32 @@ use function mb_detect_encoding;
 use const NIL;
 use ParagonIE\HiddenString\HiddenString;
 use function preg_match;
-use const SORTARRIVAL;
-use const SORTCC;
-use const SORTDATE;
-use const SORTFROM;
-use const SORTSIZE;
-use const SORTSUBJECT;
-use const SORTTO;
 use function sprintf;
 use function trim;
 use UnexpectedValueException;
 
 /**
-* @psalm-type PARTSTRUCTURE_PARAM = object{attribute:string, value?:string}
-* @psalm-type PARTSTRUCTURE = object{
-*	id?:string,
-*	encoding:int|mixed,
-*	partStructure:object[],
-*	parameters:PARTSTRUCTURE_PARAM[],
-*	dparameters:object{attribute:string, value:string}[],
-*	parts:array<int, object{disposition?:string}>,
-*	type:int,
-*	subtype:string
-* }
-*/
+ * @psalm-type PARTSTRUCTURE_PARAM = object{attribute:string, value?:string}
+ * @psalm-type PARTSTRUCTURE = object{
+ *	id?:string,
+ *	encoding:int|mixed,
+ *	partStructure:object[],
+ *	parameters:PARTSTRUCTURE_PARAM[],
+ *	dparameters:object{attribute:string, value:string}[],
+ *	parts:array<int, object{disposition?:string}>,
+ *	type:int,
+ *	subtype:string
+ * }
+ */
 final class Imap
 {
-	/** @psalm-var list<int> */
-	const SORT_CRITERIA = [
-		SORTARRIVAL,
-		SORTCC,
-		SORTDATE,
-		SORTFROM,
-		SORTSIZE,
-		SORTSUBJECT,
-		SORTTO,
-	];
-
-	/** @psalm-var list<int> */
-	const TIMEOUT_TYPES = [
-		IMAP_CLOSETIMEOUT,
-		IMAP_OPENTIMEOUT,
-		IMAP_READTIMEOUT,
-		IMAP_WRITETIMEOUT,
-	];
-
-	/** @psalm-var list<int> */
-	const CLOSE_FLAGS = [
-		0,
-		CL_EXPUNGE,
-	];
-
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return true
-	*
-	* @see imap_append()
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return true
+	 *
+	 * @see imap_append()
+	 */
 	public static function append(
 		$imap_stream,
 		string $mailbox,
@@ -152,8 +116,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function body(
 		$imap_stream,
 		int $msg_number,
@@ -175,8 +139,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function check($imap_stream) : object
 	{
 		imap_errors(); // flush errors
@@ -192,11 +156,11 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param int|string $sequence
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 * @param int|string $sequence
+	 *
+	 * @return true
+	 */
 	public static function clearflag_full(
 		$imap_stream,
 		$sequence,
@@ -225,13 +189,12 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @psalm-param value-of<self::CLOSE_FLAGS> $flag
-	* @psalm-param 0|32768 $flag
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @psalm-param 0|32768 $flag
+	 *
+	 * @return true
+	 */
 	public static function close($imap_stream, int $flag = 0) : bool
 	{
 		imap_errors(); // flush errors
@@ -253,10 +216,10 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return true
+	 */
 	public static function createmailbox($imap_stream, string $mailbox) : bool
 	{
 		imap_errors(); // flush errors
@@ -274,11 +237,11 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param string|int $msg_number
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 * @param string|int $msg_number
+	 *
+	 * @return true
+	 */
 	public static function delete(
 		$imap_stream,
 		$msg_number,
@@ -311,10 +274,10 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return true
+	 */
 	public static function deletemailbox($imap_stream, string $mailbox) : bool
 	{
 		imap_errors(); // flush errors
@@ -332,10 +295,10 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return true
+	 */
 	public static function expunge($imap_stream) : bool
 	{
 		imap_errors(); // flush errors
@@ -352,13 +315,13 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param int|string $sequence
-	*
-	* @return object[]
-	*
-	* @psalm-return list<object>
-	*/
+	 * @param false|resource $imap_stream
+	 * @param int|string $sequence
+	 *
+	 * @return object[]
+	 *
+	 * @psalm-return list<object>
+	 */
 	public static function fetch_overview(
 		$imap_stream,
 		$sequence,
@@ -386,9 +349,9 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param string|int $section
-	*/
+	 * @param false|resource $imap_stream
+	 * @param string|int $section
+	 */
 	public static function fetchbody(
 		$imap_stream,
 		int $msg_number,
@@ -412,8 +375,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function fetchheader(
 		$imap_stream,
 		int $msg_number,
@@ -435,10 +398,10 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @psalm-return PARTSTRUCTURE
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @psalm-return PARTSTRUCTURE
+	 */
 	public static function fetchstructure(
 		$imap_stream,
 		int $msg_number,
@@ -461,10 +424,10 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @todo add return array shape pending resolution of https://github.com/vimeo/psalm/issues/2620
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @todo add return array shape pending resolution of https://github.com/vimeo/psalm/issues/2620
+	 */
 	public static function get_quotaroot(
 		$imap_stream,
 		string $quota_root
@@ -484,12 +447,12 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return object[]
-	*
-	* @psalm-return list<object>
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return object[]
+	 *
+	 * @psalm-return list<object>
+	 */
 	public static function getmailboxes(
 		$imap_stream,
 		string $ref,
@@ -522,12 +485,12 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return object[]
-	*
-	* @psalm-return list<object>
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return object[]
+	 *
+	 * @psalm-return list<object>
+	 */
 	public static function getsubscribed(
 		$imap_stream,
 		string $ref,
@@ -550,8 +513,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function headers($imap_stream) : array
 	{
 		imap_errors(); // flush errors
@@ -568,12 +531,12 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return string[]
-	*
-	* @psalm-return list<string>
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return string[]
+	 *
+	 * @psalm-return list<string>
+	 */
 	public static function listOfMailboxes($imap_stream, string $ref, string $pattern) : array
 	{
 		imap_errors(); // flush errors
@@ -597,34 +560,34 @@ final class Imap
 	}
 
 	/**
-	* @param mixed[] An associative array of headers fields
-	* @param mixed[] An indexed array of bodies
-	*
-	* @psalm-param array{
-	*	subject?:string
-	* } $envelope An associative array of headers fields (docblock is not complete)
-	* @psalm-param list<array{
-	*	type?:int,
-	*	encoding?:int,
-	*	charset?:string,
-	*	subtype?:string,
-	*	description?:string,
-	*	disposition?:array{filename:string}
-	* }> $body An indexed array of bodies (docblock is not complete)
-	*
-	* @todo flesh out array shape pending resolution of https://github.com/vimeo/psalm/issues/1518
-	*/
+	 * @param mixed[] An associative array of headers fields
+	 * @param mixed[] An indexed array of bodies
+	 *
+	 * @psalm-param array{
+	 *	subject?:string
+	 * } $envelope An associative array of headers fields (docblock is not complete)
+	 * @psalm-param list<array{
+	 *	type?:int,
+	 *	encoding?:int,
+	 *	charset?:string,
+	 *	subtype?:string,
+	 *	description?:string,
+	 *	disposition?:array{filename:string}
+	 * }> $body An indexed array of bodies (docblock is not complete)
+	 *
+	 * @todo flesh out array shape pending resolution of https://github.com/vimeo/psalm/issues/1518
+	 */
 	public static function mail_compose(array $envelope, array $body) : string
 	{
 		return imap_mail_compose($envelope, $body);
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param int|string $msglist
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 * @param int|string $msglist
+	 *
+	 * @return true
+	 */
 	public static function mail_copy(
 		$imap_stream,
 		$msglist,
@@ -653,11 +616,11 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param int|string $msglist
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 * @param int|string $msglist
+	 *
+	 * @return true
+	 */
 	public static function mail_move(
 		$imap_stream,
 		$msglist,
@@ -686,8 +649,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function mailboxmsginfo($imap_stream) : object
 	{
 		imap_errors(); // flush errors
@@ -704,8 +667,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function num_msg($imap_stream) : int
 	{
 		imap_errors(); // flush errors
@@ -720,10 +683,10 @@ final class Imap
 	}
 
 	/**
-	* @psalm-param array{DISABLE_AUTHENTICATOR:string}|array<empty, empty> $params
-	*
-	* @return resource
-	*/
+	 * @psalm-param array{DISABLE_AUTHENTICATOR:string}|array<empty, empty> $params
+	 *
+	 * @return resource
+	 */
 	public static function open(
 		string $mailbox,
 		string $username,
@@ -758,18 +721,18 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function ping($imap_stream) : bool
 	{
 		return is_resource($imap_stream) && imap_ping($imap_stream);
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return true
+	 */
 	public static function renamemailbox(
 		$imap_stream,
 		string $old_mbox,
@@ -792,10 +755,10 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return true
+	 */
 	public static function reopen(
 		$imap_stream,
 		string $mailbox,
@@ -818,11 +781,11 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param string|false|resource $file
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 * @param string|false|resource $file
+	 *
+	 * @return true
+	 */
 	public static function savebody(
 		$imap_stream,
 		$file,
@@ -846,12 +809,12 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @return int[]
-	*
-	* @psalm-return list<int>
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @return int[]
+	 *
+	 * @psalm-return list<int>
+	 */
 	public static function search(
 		$imap_stream,
 		string $criteria,
@@ -893,11 +856,11 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	* @param int|string $sequence
-	*
-	* @return true
-	*/
+	 * @param false|resource $imap_stream
+	 * @param int|string $sequence
+	 *
+	 * @return true
+	 */
 	public static function setflag_full(
 		$imap_stream,
 		$sequence,
@@ -926,15 +889,14 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @psalm-param value-of<self::SORT_CRITERIA> $criteria
-	* @psalm-param 1|5|0|2|6|3|4 $criteria
-	*
-	* @return int[]
-	*
-	* @psalm-return list<int>
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @psalm-param 1|5|0|2|6|3|4 $criteria
+	 *
+	 * @return int[]
+	 *
+	 * @psalm-return list<int>
+	 */
 	public static function sort(
 		$imap_stream,
 		int $criteria,
@@ -983,10 +945,10 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*
-	* @psalm-param SA_MESSAGES|SA_RECENT|SA_UNSEEN|SA_UIDNEXT|SA_UIDVALIDITY|SA_ALL $flags
-	*/
+	 * @param false|resource $imap_stream
+	 *
+	 * @psalm-param SA_MESSAGES|SA_RECENT|SA_UNSEEN|SA_UIDNEXT|SA_UIDVALIDITY|SA_ALL $flags
+	 */
 	public static function status(
 		$imap_stream,
 		string $mailbox,
@@ -1008,8 +970,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function subscribe(
 		$imap_stream,
 		string $mailbox
@@ -1028,11 +990,10 @@ final class Imap
 	}
 
 	/**
-	* @psalm-param value-of<self::TIMEOUT_TYPES> $timeout_type
-	* @psalm-param 4|1|2|3 $timeout_type
-	*
-	* @return true|int
-	*/
+	 * @psalm-param 4|1|2|3 $timeout_type
+	 *
+	 * @return true|int
+	 */
 	public static function timeout(
 		int $timeout_type,
 		int $timeout = -1
@@ -1052,8 +1013,8 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $imap_stream
-	*/
+	 * @param false|resource $imap_stream
+	 */
 	public static function unsubscribe(
 		$imap_stream,
 		string $mailbox
@@ -1072,10 +1033,10 @@ final class Imap
 	}
 
 	/**
-	* Returns the provided string in UTF7-IMAP encoded format.
-	*
-	* @return string $str UTF-7 encoded string
-	*/
+	 * Returns the provided string in UTF7-IMAP encoded format.
+	 *
+	 * @return string $str UTF-7 encoded string
+	 */
 	public static function encodeStringToUtf7Imap(string $str) : string
 	{
 		$out = mb_convert_encoding($str, 'UTF7-IMAP', mb_detect_encoding($str, 'UTF-8, ISO-8859-1, ISO-8859-15', true));
@@ -1088,10 +1049,10 @@ final class Imap
 	}
 
 	/**
-	* Returns the provided string in UTF-8 encoded format.
-	*
-	* @return string $str, but UTF-8 encoded
-	*/
+	 * Returns the provided string in UTF-8 encoded format.
+	 *
+	 * @return string $str, but UTF-8 encoded
+	 */
 	public static function decodeStringFromUtf7ImapToUtf8(string $str) : string
 	{
 		$out = mb_convert_encoding($str, 'UTF-8', 'UTF7-IMAP');
@@ -1104,12 +1065,12 @@ final class Imap
 	}
 
 	/**
-	* @param false|resource $maybe
-	*
-	* @throws InvalidArgumentException if $maybe is not a valid resource
-	*
-	* @return resource
-	*/
+	 * @param false|resource $maybe
+	 *
+	 * @throws InvalidArgumentException if $maybe is not a valid resource
+	 *
+	 * @return resource
+	 */
 	private static function EnsureResource($maybe, string $method, int $argument)
 	{
 		if ( ! $maybe || ! is_resource($maybe)) {
@@ -1121,8 +1082,8 @@ final class Imap
 	}
 
 	/**
-	* @param array|false $errors
-	*/
+	 * @param array|false $errors
+	 */
 	private static function HandleErrors($errors, string $method) : UnexpectedValueException
 	{
 		if ($errors) {
@@ -1133,8 +1094,8 @@ final class Imap
 	}
 
 	/**
-	* @param scalar $msg_number
-	*/
+	 * @param scalar $msg_number
+	 */
 	private static function EnsureRange(
 		$msg_number,
 		string $method,

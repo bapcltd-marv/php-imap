@@ -1,10 +1,10 @@
 <?php
 
 	/**
-	* Example: Get and parse all emails without saving their attachments.
-	*
-	* @author Sebastian Krätzig <info@ts3-tools.info>
-	*/
+	 * Example: Get and parse all emails without saving their attachments.
+	 *
+	 * @author Sebastian Krätzig <info@ts3-tools.info>
+	 */
 	declare(strict_types=1);
 
 	require_once __DIR__ . '/../vendor/autoload.php';

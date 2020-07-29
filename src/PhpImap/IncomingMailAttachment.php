@@ -11,12 +11,12 @@ use function trigger_error;
 use UnexpectedValueException;
 
 /**
-* @see https://github.com/barbushin/php-imap
-*
-* @author Barbushin Sergey http://linkedin.com/in/barbushin
-*
-* @property string $filePath lazy attachment data file
-*/
+ * @see https://github.com/barbushin/php-imap
+ *
+ * @author Barbushin Sergey http://linkedin.com/in/barbushin
+ *
+ * @property string $filePath lazy attachment data file
+ */
 class IncomingMailAttachment
 {
 	public ?string $id = null;
@@ -40,8 +40,8 @@ class IncomingMailAttachment
 	private ?string $filePath = null;
 
 	/**
-	* @return string|false|null
-	*/
+	 * @return string|false|null
+	 */
 	public function __get(string $name)
 	{
 		if ('filePath' !== $name) {
@@ -62,28 +62,28 @@ class IncomingMailAttachment
 	}
 
 	/**
-	* Sets the file path.
-	*
-	* @param string $filePath File path incl. file name and optional extension
-	*/
+	 * Sets the file path.
+	 *
+	 * @param string $filePath File path incl. file name and optional extension
+	 */
 	public function setFilePath(string $filePath) : void
 	{
 		$this->file_path = $filePath;
 	}
 
 	/**
-	* Sets the data part info.
-	*
-	* @param DataPartInfo $dataInfo Date info (file content)
-	*/
+	 * Sets the data part info.
+	 *
+	 * @param DataPartInfo $dataInfo Date info (file content)
+	 */
 	public function addDataPartInfo(DataPartInfo $dataInfo) : void
 	{
 		$this->dataInfo = $dataInfo;
 	}
 
 	/**
-	* Gets the MIME type.
-	*/
+	 * Gets the MIME type.
+	 */
 	public function getMimeType() : string
 	{
 		if ( ! $this->mimeType) {
@@ -96,8 +96,8 @@ class IncomingMailAttachment
 	}
 
 	/**
-	* Gets the file content.
-	*/
+	 * Gets the file content.
+	 */
 	public function getContents() : string
 	{
 		if (null === $this->dataInfo) {
@@ -108,10 +108,10 @@ class IncomingMailAttachment
 	}
 
 	/**
-	* Saves the attachment object on the disk.
-	*
-	* @return bool True, if it could save the attachment on the disk
-	*/
+	 * Saves the attachment object on the disk.
+	 *
+	 * @return bool True, if it could save the attachment on the disk
+	 */
 	public function saveToDisk() : bool
 	{
 		if (null === $this->dataInfo) {

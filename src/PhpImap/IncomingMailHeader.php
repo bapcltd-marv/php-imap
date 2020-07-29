@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhpImap;
 
 /**
-* @see https://github.com/barbushin/php-imap
-*
-* @author Barbushin Sergey http://linkedin.com/in/barbushin
-*/
+ * @see https://github.com/barbushin/php-imap
+ *
+ * @author Barbushin Sergey http://linkedin.com/in/barbushin
+ */
 class IncomingMailHeader
 {
 	/** @var int|null $id The IMAP message ID - not the "Message-ID:"-header of the email */
@@ -49,33 +49,33 @@ class IncomingMailHeader
 	public ?string $senderAddress = null;
 
 	/**
-	* @var (string|null)[]
-	*
-	* @psalm-var array<string, string|null>
-	*/
+	 * @var (string|null)[]
+	 *
+	 * @psalm-var array<string, string|null>
+	 */
 	public array $to = [];
 
 	public ?string $toString = null;
 
 	/**
-	* @var (string|null)[]
-	*
-	* @psalm-var array<string, string|null>
-	*/
+	 * @var (string|null)[]
+	 *
+	 * @psalm-var array<string, string|null>
+	 */
 	public array $cc = [];
 
 	/**
-	* @var (string|null)[]
-	*
-	* @psalm-var array<string, string|null>
-	*/
+	 * @var (string|null)[]
+	 *
+	 * @psalm-var array<string, string|null>
+	 */
 	public array $bcc = [];
 
 	/**
-	* @var (string|null)[]
-	*
-	* @psalm-var array<string, string|null>
-	*/
+	 * @var (string|null)[]
+	 *
+	 * @psalm-var array<string, string|null>
+	 */
 	public array $replyTo = [];
 
 	public ?string $messageId = null;
