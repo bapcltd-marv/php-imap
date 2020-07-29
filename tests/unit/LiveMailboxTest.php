@@ -20,6 +20,8 @@ use const ENCBASE64;
 use function file_get_contents;
 use Generator;
 use function in_array;
+use function mb_strrpos;
+use function mb_substr;
 use function min;
 use ParagonIE\HiddenString\HiddenString;
 use function preg_match;

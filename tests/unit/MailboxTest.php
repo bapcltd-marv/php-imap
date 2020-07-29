@@ -21,6 +21,7 @@ use const IMAP_WRITETIMEOUT;
 use function implode;
 use function in_array;
 use function mb_list_encodings;
+use function mb_strtoupper;
 use const OP_ANONYMOUS;
 use const OP_DEBUG;
 use const OP_HALFOPEN;

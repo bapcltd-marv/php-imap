@@ -13,6 +13,7 @@ use function get_object_vars;
 use InvalidArgumentException;
 use function is_array;
 use function is_string;
+use function mb_strstr;
 use function mb_strtolower;
 use function preg_match_all;
 use function rtrim;
